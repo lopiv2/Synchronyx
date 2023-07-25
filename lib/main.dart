@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'widgets/ArcadeBoxButton.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 
 void main() {
@@ -14,9 +15,9 @@ void main() {
   });
 }
 
-var sideBarColor = Colors.amber;
-var backgroundStartColor = Colors.amberAccent;
-var backgroundEndColor = Colors.orange;
+var sideBarColor = Color.fromARGB(255, 71, 192, 60);
+var backgroundStartColor = Color.fromARGB(255, 33, 187, 115);
+var backgroundEndColor = Color.fromARGB(255, 5, 148, 29);
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -65,36 +66,46 @@ class LeftSide extends StatelessWidget {
     return SizedBox(
       width: 200,
       child: Container(
-          color: sideBarColor,
+          decoration: BoxDecoration(
+            border: Border.all(
+                color: Color.fromARGB(255, 2, 34, 14), // Color del borde
+                width: 0.2, // Ancho del borde
+              ),
+            gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [sideBarColor, Color.fromARGB(255, 33, 109, 72), Color.fromARGB(255, 48, 87, 3)],
+                ),
+          ),
           child: Column(
             children: [
               WindowTitleBarBox(
                 child: MoveWindow(),
               ),
               //Padding(padding: EdgeInsets.only(top: 10.0)),
-              const Row(
+              Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Column(
-                    children: [
+                    children: const [
                       Icon(Icons.favorite, size: 20, color: Colors.red),
                     ],
                   ),
                   Column(
-                    children: [
+                    children: const [
                       Text('Synchronyx'),
                     ],
                   ),
                   Column(
-                    children: [
+                    children: const [
                       Icon(Icons.menu, size: 20, color: Colors.blue),
                     ],
                   ),
                 ],
               ),
               const Padding(padding: EdgeInsets.only(top: 20.0)),
-              const Row(
-                children: <Widget>[
+              Row(
+                children: const <Widget>[
                   SizedBox(width: 10), // give it width
                   Flexible(
                       child: TextField(
@@ -173,8 +184,8 @@ class RightSide extends StatelessWidget {
             gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [backgroundStartColor, backgroundEndColor],
-                stops: const [0.0, 1.0]),
+                colors: [backgroundStartColor, backgroundEndColor, Color.fromARGB(255, 48, 87, 3)],
+                ),
           ),
           child: Column(
             children: [
@@ -186,7 +197,8 @@ class RightSide extends StatelessWidget {
                   ),
                   WindowButtons()
                 ],
-              ))
+              )),
+              ArcadeBoxButtonWidget(),
             ],
           )),
     );
