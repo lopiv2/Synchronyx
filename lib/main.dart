@@ -1,8 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:bitsdojo_window/bitsdojo_window.dart';
 
 void main() {
   runApp(const MyApp());
+  doWhenWindowReady(() {
+    final win = appWindow;
+    const initialSize = Size(800, 600);
+    win.minSize = initialSize;
+    win.size = initialSize;
+    win.alignment = Alignment.center;
+    win.title = "Synchronyx";
+    win.show();
+  });
 }
+
+var sideBarColor = Colors.amber;
+var backgroundStartColor = Colors.amberAccent;
+var backgroundEndColor = Colors.orange;
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -11,6 +25,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner:
+          false, // Esta línea elimina el banner de depuración
       title: 'Flutter Demo',
       theme: ThemeData(
         // This is the theme of your application.
@@ -24,102 +40,165 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+      home: Scaffold(
+        body: MainGrid(),
       ),
-      body: MainGrid(),
     );
   }
-}
-
-Widget containers() {
-  return Row(
-    children: [
-      Expanded(
-          flex: 1,
-          child: Container(
-              height: 600,
-              margin: const EdgeInsets.only(right: 5),
-              color: Colors.green,
-              child: const Text("hola"))), // <- Control the width of each item. See other answers.
-      Expanded(
-          flex: 8,
-          child: Container(
-              height: 600,
-              margin: const EdgeInsets.only(right: 5),
-              color: Colors.red,
-              child: const Text("hola"))),
-      Expanded(
-          flex: 1,
-          child: Container(
-              height: 600,
-              margin: const EdgeInsets.only(right: 5),
-              color: Colors.blue,
-              child: const Text("hola"))),
-    ],
-  );
 }
 
 class MainGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      children: <Widget>[
-        SizedBox(
-          width: 1250, // hard coding child width
-          child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [containers()]),
-        ),
+      children: [
+        LeftSide(),
+        RightSide(),
       ],
     );
+  }
+}
+
+class LeftSide extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 200,
+      child: Container(
+          color: sideBarColor,
+          child: Column(
+            children: [
+              WindowTitleBarBox(
+                child: MoveWindow(),
+              ),
+              //Padding(padding: EdgeInsets.only(top: 10.0)),
+              const Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Column(
+                    children: [
+                      Icon(Icons.favorite, size: 20, color: Colors.red),
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      Text('Synchronyx'),
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      Icon(Icons.menu, size: 20, color: Colors.blue),
+                    ],
+                  ),
+                ],
+              ),
+              const Padding(padding: EdgeInsets.only(top: 20.0)),
+              const Row(
+                children: <Widget>[
+                  SizedBox(width: 10), // give it width
+                  Flexible(
+                      child: TextField(
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.amber,
+                      border:
+                          OutlineInputBorder(), // Aquí establecemos el borde
+                      hintText: 'Search', // Texto de ayuda dentro del TextField
+                      // Otros estilos de la decoración (opcional)
+                      // labelStyle: TextStyle(color: Colors.red),
+                      // hintStyle: TextStyle(color: Colors.grey),
+                    ),
+                  )),
+                ],
+              ),
+              const Padding(padding: EdgeInsets.only(top: 20.0)),
+              DropdownWidget(),
+            ],
+          )),
+    );
+  }
+}
+
+class DropdownWidget extends StatefulWidget {
+  @override
+  DropDownCategories createState() => DropDownCategories();
+}
+
+class DropDownCategories extends State<DropdownWidget> {
+  String currentItem = "";
+  List<String> items = ['Opción 1', 'Opción 2', 'Opción 3', 'Opción 4'];
+
+  @override
+  void initState() {
+    currentItem = items[0];
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.amber,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: DropdownButton(
+        alignment: Alignment.topCenter,
+        borderRadius: BorderRadius.circular(8),
+        dropdownColor: Colors.blueAccent,
+        value: currentItem,
+        onChanged: (String? newValue) {
+          setState(() {
+            currentItem = newValue ?? "";
+          });
+        },
+        items: items.map<DropdownMenuItem<String>>((String value) {
+          return DropdownMenuItem<String>(
+            value: value,
+            alignment: Alignment.center,
+            child: Text(value),
+          );
+        }).toList(),
+      ),
+    );
+  }
+}
+
+class RightSide extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [backgroundStartColor, backgroundEndColor],
+                stops: const [0.0, 1.0]),
+          ),
+          child: Column(
+            children: [
+              WindowTitleBarBox(
+                  child: Row(
+                children: [
+                  Expanded(
+                    child: MoveWindow(),
+                  ),
+                  WindowButtons()
+                ],
+              ))
+            ],
+          )),
+    );
+  }
+}
+
+class WindowButtons extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Row(children: [
+      MinimizeWindowButton(),
+      MaximizeWindowButton(),
+      CloseWindowButton()
+    ]);
   }
 }
