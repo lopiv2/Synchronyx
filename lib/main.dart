@@ -140,6 +140,7 @@ class DropDownCategories extends State<DropdownWidget> {
       decoration: BoxDecoration(
         color: Colors.amber,
         borderRadius: BorderRadius.circular(10),
+        border: Border.all(),
       ),
       child: DropdownButton(
         alignment: Alignment.topCenter,
