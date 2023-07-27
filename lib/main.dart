@@ -5,6 +5,8 @@ import 'widgets/DropDownFilterOrderGames.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:synchronyx/utilities/Constants.dart';
 import 'widgets/GridViewGameCovers.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() {
   runApp(const MyApp());
@@ -28,7 +30,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner:
           false, // Esta línea elimina el banner de depuración
-      title: 'Flutter Demo',
+      title: 'Synchronyx Game Launcher',
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -229,6 +233,7 @@ class RightSide extends StatelessWidget {
               ),
               Column(
                 children: [
+                  Text(AppLocalizations.of(context)!.helloWorld),
                   Text('Synchronyx'),
                 ],
               ),

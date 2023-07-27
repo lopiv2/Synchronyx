@@ -1,5 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
+import 'package:synchronyx/utilities/Constants.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+
+MaterialStateProperty<Color?> myColor = MaterialStateProperty.resolveWith<Color?>(
+  (Set<MaterialState> states) {
+    return Constants.sideBarColor; // Color normal
+  },
+);
 
 class MyMenuBar extends StatelessWidget {
   const MyMenuBar({super.key});
@@ -11,6 +20,9 @@ class MyMenuBar extends StatelessWidget {
       children: <Widget>[
         SizedBox(
           child: MenuBar(
+            style: MenuStyle(
+              backgroundColor: myColor,
+            ),
             children: <Widget>[
               SubmenuButton(
                 menuChildren: <Widget>[
