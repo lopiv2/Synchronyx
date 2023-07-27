@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:synchronyx/widgets/MainTopMenuBar.dart';
 import 'package:synchronyx/widgets/TopMenuBar.dart';
 import 'widgets/ArcadeBoxButton.dart';
 import 'widgets/DropDownFilterOrderGames.dart';
@@ -60,7 +59,7 @@ class MainGrid extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 SizedBox(width: 10), // give it width
-                const PlutoMenuBarDemo(),
+                const MyMenuBar(),
                 Expanded(
                   flex: 2,
                   child: WindowTitleBarBox(
@@ -219,7 +218,6 @@ class RightSide extends StatelessWidget {
       ),
       child: Column(
         children: [
-          const MyMenuBar(),
           //Padding(padding: EdgeInsets.only(top: 10.0)),
           const Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,

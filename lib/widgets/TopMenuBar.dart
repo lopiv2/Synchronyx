@@ -9,7 +9,7 @@ class MyMenuBar extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-        Expanded(
+        SizedBox(
           child: MenuBar(
             children: <Widget>[
               SubmenuButton(
