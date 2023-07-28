@@ -31,7 +31,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner:
           false, // Esta línea elimina el banner de depuración
       title: 'Synchronyx Game Launcher',
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      localizationsDelegates:
+          AppLocalizations.localizationsDelegates, // Cambio aquí
       supportedLocales: AppLocalizations.supportedLocales,
       theme: ThemeData(
         // This is the theme of your application.
@@ -46,52 +47,57 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: Scaffold(
-        body: MainGrid(),
+        body: MainGrid(context: context),
       ),
     );
   }
 }
 
 class MainGrid extends StatelessWidget {
+  final BuildContext context;
+
+  MainGrid({required this.context});
+
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations appLocalizations = AppLocalizations.of(context)!;
     return Container(
-        color: Constants.sideBarColor,
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      color: Constants.sideBarColor,
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              MyMenuBar(appLocalizations: appLocalizations),
+              Expanded(
+                flex: 2,
+                child: WindowTitleBarBox(
+                  child: MoveWindow(),
+                ),
+              ),
+              const Expanded(
+                flex: 1,
+                child: Center(
+                  // Usamos Center para centrar el ArcadeBoxButtonWidget vertical y horizontalmente
+                  child: ArcadeBoxButtonWidget(),
+                ),
+              ),
+              const WindowButtons(),
+            ],
+          ),
+          Expanded(
+            // Utiliza Expanded aquí para que el Column ocupe todo el espacio vertical disponible
+            child: Row(
               children: [
-                SizedBox(width: 10), // give it width
-                const MyMenuBar(),
-                Expanded(
-                  flex: 2,
-                  child: WindowTitleBarBox(
-                    child: MoveWindow(),
-                  ),
-                ),
-                Expanded(
-                  flex: 1,
-                  child: Center(
-                    // Usamos Center para centrar el ArcadeBoxButtonWidget vertical y horizontalmente
-                    child: ArcadeBoxButtonWidget(),
-                  ),
-                ),
-                Expanded(child: WindowButtons(), flex: 0),
+                LeftSide(),
+                CenterSide(),
+                RightSide(appLocalizations: appLocalizations),
               ],
             ),
-            const Expanded(
-              // Utiliza Expanded aquí para que el Column ocupe todo el espacio vertical disponible
-              child: Row(
-                children: [
-                  LeftSide(),
-                  CenterSide(),
-                  RightSide(),
-                ],
-              ),
-            ),
-          ],
-        ));
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -199,7 +205,9 @@ class CenterSide extends StatelessWidget {
 }
 
 class RightSide extends StatelessWidget {
-  const RightSide({super.key});
+  final AppLocalizations appLocalizations;
+
+  const RightSide({Key? key, required this.appLocalizations}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -223,7 +231,7 @@ class RightSide extends StatelessWidget {
       child: Column(
         children: [
           //Padding(padding: EdgeInsets.only(top: 10.0)),
-          const Row(
+          Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Column(
@@ -233,7 +241,7 @@ class RightSide extends StatelessWidget {
               ),
               Column(
                 children: [
-                  Text(AppLocalizations.of(context)!.helloWorld),
+                  Text(appLocalizations.menu),
                   Text('Synchronyx'),
                 ],
               ),
@@ -245,34 +253,32 @@ class RightSide extends StatelessWidget {
             ],
           ),
 
-          const Padding(padding: EdgeInsets.only(top: 20.0)),
+          Padding(padding: EdgeInsets.only(top: 20.0)),
           Container(
             height: 30,
-            child: const Row(
+            child: Row(
               children: <Widget>[
                 SizedBox(width: 10), // give it width
                 Flexible(
-                    child: TextField(
-                  decoration: InputDecoration(
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 10, horizontal: 6),
-                    filled: true,
-                    fillColor: Color.fromARGB(127, 11, 129, 46),
-                    border: OutlineInputBorder(), // Aquí establecemos el borde
-                    hintText: 'Search', // Texto de ayuda dentro del TextField
-                    // Otros estilos de la decoración (opcional)
-                    // labelStyle: TextStyle(color: Colors.red),
-                    // hintStyle: TextStyle(color: Colors.grey),
+                  child: TextField(
+                    decoration: InputDecoration(
+                      contentPadding:
+                          EdgeInsets.symmetric(vertical: 10, horizontal: 6),
+                      filled: true,
+                      fillColor: Color.fromARGB(127, 11, 129, 46),
+                      border: OutlineInputBorder(),
+                      hintText: 'Search',
+                    ),
+                    style: TextStyle(fontSize: 14),
                   ),
-                  style: TextStyle(fontSize: 14),
-                )),
-                SizedBox(width: 10), // give it width
+                ),
+                SizedBox(width: 10),
               ],
             ),
           ),
 
-          const Padding(padding: EdgeInsets.only(top: 20.0)),
-          const DropdownWidget(),
+          Padding(padding: EdgeInsets.only(top: 20.0)),
+          DropdownWidget(),
         ],
       ),
     );

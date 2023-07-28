@@ -3,15 +3,20 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:synchronyx/utilities/Constants.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-MaterialStateProperty<Color?> myColor = MaterialStateProperty.resolveWith<Color?>(
+MaterialStateProperty<Color?> myColor =
+    MaterialStateProperty.resolveWith<Color?>(
   (Set<MaterialState> states) {
     return Constants.sideBarColor; // Color normal
   },
 );
 
 class MyMenuBar extends StatelessWidget {
-  const MyMenuBar({super.key});
+  final AppLocalizations appLocalizations;
+
+  const MyMenuBar({Key? key, required this.appLocalizations}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +57,7 @@ class MyMenuBar extends StatelessWidget {
                     child: const MenuAcceleratorLabel('&File'),
                   ),
                 ],
-                child: const MenuAcceleratorLabel('&File'),
+                child: MenuAcceleratorLabel(appLocalizations.menu),
               ),
               SubmenuButton(
                 menuChildren: <Widget>[
