@@ -14,6 +14,7 @@ class GridViewGameCovers extends StatelessWidget {
     );
   }
 
+
   List<Container> _buildGridTileList(int count) => List.generate(
       count,
       (i) =>
