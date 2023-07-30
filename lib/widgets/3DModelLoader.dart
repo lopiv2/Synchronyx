@@ -13,22 +13,27 @@ class _ModelLoader extends State<ModelLoader>
   late Scene _scene;
   Object? _bunny;
   late AnimationController _controller;
-  double _ambient = 0.1;
-  double _diffuse = 0.8;
-  double _specular = 0.5;
+  double _ambient = 5;
+  double _diffuse = 5;
+  double _specular = 5.5;
   double _shininess = 0.0;
 
   void _onSceneCreated(Scene scene) {
     _scene = scene;
     //scene.camera.position.z = 10;
     scene.camera.zoom = 1;
-    scene.light.position.setFrom(Vector3(0, 10, 10));
+    //scene.light.position.setFrom(Vector3(0, 10, 10));
     scene.light.setColor(Colors.white, _ambient, _diffuse, _specular);
+    loadImageFromAsset('assets/models/flutter.png').then((value) {
+      _bunny?.mesh.texture = value;
+      scene.updateTexture();
+    });
     _bunny = Object(
         position: Vector3(0, 0, 0),
-        scale: Vector3(5.0, 5.0, 5.0),
+        backfaceCulling: false,
+        scale: Vector3(8.0, 8.0, 8.0),
         lighting: true,
-        fileName: 'assets/models/Plank_07.obj');
+        fileName: 'assets/models/cube.obj');
     scene.world.add(_bunny!);
   }
 
@@ -39,7 +44,7 @@ class _ModelLoader extends State<ModelLoader>
         duration: Duration(milliseconds: 30000), vsync: this)
       ..addListener(() {
         if (_bunny != null) {
-          _bunny!.rotation.y = _controller.value * 360;
+          _bunny!.rotation.y = _controller.value * 5000;
           _bunny!.updateTransform();
           _scene.update();
         }
