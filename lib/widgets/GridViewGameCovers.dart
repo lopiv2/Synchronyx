@@ -1,31 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_cube/flutter_cube.dart';
-import '3DModelLoader.dart';
+import 'ImageCoverModel.dart';
 
 class GridViewGameCovers extends StatelessWidget {
   GridViewGameCovers({super.key});
-  late Scene _scene;
-  Object? _bunny;
-  double _ambient = 0.1;
-  double _diffuse = 0.8;
-  double _specular = 0.5;
-  double _shininess = 0.0;
-  late AnimationController _controller;
-
   @override
   Widget build(BuildContext context) {
     return GridView.count(
       crossAxisCount: 4,
       padding: const EdgeInsets.all(4),
-      mainAxisSpacing: 4,
-      crossAxisSpacing: 80,
-      children: _buildGridTileList(10),
+      mainAxisSpacing: 12,
+      crossAxisSpacing: 8,
+      children: _buildGridTileList(20),
     );
   }
 
   List<Container> _buildGridTileList(int count) => List.generate(
         count,
-        (i) => Container(child: ModelLoader()),
+        (i) => Container(
+          child: Transform.scale(
+            scale:
+                2.2, // Ajusta el tamaño de la imagen mostrada (50% en este ejemplo)
+            child: ImageCoverModel(),
+          ),
+        ),
       );
 }
 

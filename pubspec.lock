@@ -192,6 +192,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.8.3"
+  playx_3d_scene:
+    dependency: "direct main"
+    description:
+      name: playx_3d_scene
+      sha256: "3f3f57cb5b53e12bbff4f734f4dac65b1dca212169e77c6e8c1acba3b9711914"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.2"
   plugin_platform_interface:
     dependency: transitive
     description:
@@ -271,4 +279,4 @@ packages:
     version: "3.1.4"
 sdks:
   dart: ">=3.0.0 <4.0.0"
-  flutter: ">=1.22.0"
+  flutter: ">=3.3.0"
