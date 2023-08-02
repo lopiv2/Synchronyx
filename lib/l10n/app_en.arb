@@ -4,5 +4,19 @@
     "description": "The conventional newborn programmer greeting"
   },
   "file": "File",
-  "menu": "Menu"
+  "import": "Import",
+  "importAmazon": "Amazon games...",
+  "importBattle": "Battle.Net games...",
+  "importEA": "Origin games...",
+  "importEpic": "Epic games...",
+  "importGog": "GoG games...",
+  "importItch": "Itch.IO games...",
+  "importOrigin": "Origin games...",
+  "importSteam": "Steam games...",
+  "importUbi": "Juegos Uplay...",
+  "importWindows": "Windows games...",
+  "importXbox": "XBox/Microsoft games...",
+  "menu": "Menu",
+  "properties": "Properties",
+  "tools": "Tools"
 }

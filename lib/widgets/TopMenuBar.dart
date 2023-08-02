@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:synchronyx/icons/custom_icons_icons.dart';
 import 'package:synchronyx/utilities/Constants.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
+import 'package:synchronyx/utilities/GenericFunctions.dart';
 
 MaterialStateProperty<Color?> myColor =
     MaterialStateProperty.resolveWith<Color?>(
@@ -13,7 +14,6 @@ MaterialStateProperty<Color?> myColor =
 
 class MyMenuBar extends StatelessWidget {
   final AppLocalizations appLocalizations;
-
   const MyMenuBar({Key? key, required this.appLocalizations}) : super(key: key);
 
   @override
@@ -49,13 +49,13 @@ class MyMenuBar extends StatelessWidget {
                             applicationVersion: '1.0.0',
                           );
                         },
-                        child: const MenuAcceleratorLabel('&About'),
+                        child: const MenuAcceleratorLabel('&Open'),
                       ),
                     ],
-                    child: const MenuAcceleratorLabel('&File'),
+                    child: MenuAcceleratorLabel('&' + appLocalizations.file),
                   ),
                 ],
-                child: MenuAcceleratorLabel(appLocalizations.menu),
+                child: MenuAcceleratorLabel('&' + appLocalizations.menu),
               ),
               SubmenuButton(
                 menuChildren: <Widget>[
@@ -72,6 +72,8 @@ class MyMenuBar extends StatelessWidget {
                   SubmenuButton(
                     menuChildren: <Widget>[
                       MenuItemButton(
+                        leadingIcon: const Icon(CustomIcons.amazon_games,
+                            color: Colors.orange, size: 20),
                         onPressed: () {
                           showAboutDialog(
                             context: context,
@@ -79,13 +81,128 @@ class MyMenuBar extends StatelessWidget {
                             applicationVersion: '1.0.0',
                           );
                         },
-                        child: const MenuAcceleratorLabel('&About'),
+                        child:
+                            MenuAcceleratorLabel(appLocalizations.importAmazon),
+                      ),
+                      MenuItemButton(
+                        leadingIcon: const Icon(
+                          CustomIcons.battle_net,
+                          color: Colors.blue,
+                        ),
+                        onPressed: () {
+                          showAboutDialog(
+                            context: context,
+                            applicationName: 'MenuBar Sample',
+                            applicationVersion: '1.0.0',
+                          );
+                        },
+                        child:
+                            MenuAcceleratorLabel(appLocalizations.importBattle),
+                      ),
+                      MenuItemButton(
+                        leadingIcon: const Icon(CustomIcons.epicgames),
+                        onPressed: () {
+                          showAboutDialog(
+                            context: context,
+                            applicationName: 'MenuBar Sample',
+                            applicationVersion: '1.0.0',
+                          );
+                        },
+                        child:
+                            MenuAcceleratorLabel(appLocalizations.importEpic),
+                      ),
+                      MenuItemButton(
+                        leadingIcon: const Icon(CustomIcons.gog_dot_com,
+                            color: Color.fromARGB(255, 84, 9, 97)),
+                        onPressed: () {
+                          showAboutDialog(
+                            context: context,
+                            applicationName: 'MenuBar Sample',
+                            applicationVersion: '1.0.0',
+                          );
+                        },
+                        child: MenuAcceleratorLabel(appLocalizations.importGog),
+                      ),
+                      MenuItemButton(
+                        leadingIcon: const Icon(
+                          CustomIcons.itch_dot_io,
+                          color: Colors.redAccent,
+                        ),
+                        onPressed: () {
+                          showAboutDialog(
+                            context: context,
+                            applicationName: 'MenuBar Sample',
+                            applicationVersion: '1.0.0',
+                          );
+                        },
+                        child:
+                            MenuAcceleratorLabel(appLocalizations.importItch),
+                      ),
+                      MenuItemButton(
+                        leadingIcon: const Icon(CustomIcons.origin,
+                            color: Colors.orange),
+                        onPressed: () {
+                          showAboutDialog(
+                            context: context,
+                            applicationName: 'MenuBar Sample',
+                            applicationVersion: '1.0.0',
+                          );
+                        },
+                        child:
+                            MenuAcceleratorLabel(appLocalizations.importOrigin),
+                      ),
+                      MenuItemButton(
+                        leadingIcon: const Icon(CustomIcons.steam,
+                            color: Color.fromARGB(255, 12, 66, 94)),
+                        onPressed: () {
+                          showAboutDialog(
+                            context: context,
+                            applicationName: 'MenuBar Sample',
+                            applicationVersion: '1.0.0',
+                          );
+                        },
+                        child:
+                            MenuAcceleratorLabel(appLocalizations.importSteam),
+                      ),
+                      MenuItemButton(
+                        leadingIcon: const Icon(CustomIcons.ubisoft,
+                            color: Colors.blueAccent),
+                        onPressed: () {
+                          createAndShowWindow();
+                        },
+                        child: MenuAcceleratorLabel(appLocalizations.importUbi),
+                      ),
+                      MenuItemButton(
+                        leadingIcon:
+                            const Icon(CustomIcons.windows, color: Colors.blue),
+                        onPressed: () {
+                          showAboutDialog(
+                            context: context,
+                            applicationName: 'MenuBar Sample',
+                            applicationVersion: '1.0.0',
+                          );
+                        },
+                        child: MenuAcceleratorLabel(
+                            appLocalizations.importWindows),
+                      ),
+                      MenuItemButton(
+                        leadingIcon:
+                            const Icon(CustomIcons.xbox, color: Colors.green),
+                        onPressed: () {
+                          showAboutDialog(
+                            context: context,
+                            applicationName: 'MenuBar Sample',
+                            applicationVersion: '1.0.0',
+                          );
+                        },
+                        child:
+                            MenuAcceleratorLabel(appLocalizations.importXbox),
                       ),
                     ],
-                    child: const MenuAcceleratorLabel('&File'),
+                    child: MenuAcceleratorLabel(appLocalizations.import),
                   ),
                 ],
-                child: const MenuAcceleratorLabel('&File'),
+                child: MenuAcceleratorLabel('&' + appLocalizations.tools),
               ),
             ],
           ),

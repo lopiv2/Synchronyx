@@ -1,5 +1,19 @@
 {
     "helloWorld": "¡Hola Mundo!",
     "file": "Archivo",
-    "menu": "Menu"
+    "import": "Importar",
+    "importAmazon": "Juegos Amazon...",
+    "importBattle": "Juegos Battle.Net...",
+    "importEA": "Juegos Origin...",
+    "importEpic": "Juegos Epic...",
+    "importGog": "Juegos GoG...",
+    "importItch": "Juegos Itch.IO...",
+    "importOrigin": "Juegos Origin...",
+    "importSteam": "Juegos Steam...",
+    "importUbi": "Juegos Uplay...",
+    "importWindows": "Juegos Windows...",
+    "importXbox": "Juegos XBox/Tienda Microsoft...",
+    "menu": "Menu",
+    "properties": "Propiedades",
+    "tools": "Herramientas"
 }

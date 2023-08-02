@@ -137,19 +137,48 @@ class _ImageCoverModel extends State<ImageCoverModel>
                   Positioned.fill(
                     child: Visibility(
                       visible: showAdditionalOverlay,
-                      child: AspectRatio(
-                        aspectRatio: 8.5 /
-                            12, // Relación de aspecto deseada (16:9 en este ejemplo)
+                      child: Transform.scale(
+                        scale:
+                            0.395, // Ajusta el tamaño del botón (50% en este ejemplo)
                         child: Container(
-                          decoration: const BoxDecoration(
-                            image: DecorationImage(
-                              image: AssetImage('assets/images/backcover.png'),
-                              fit: BoxFit.cover,
+                          height: 100, //height of button
+                          width:
+                              3000, // Ancho deseado del botón (puedes ajustarlo según tus necesidades)
+                          child: MaterialButton(
+                            padding: const EdgeInsets.all(8.0),
+                            textColor: Colors.white,
+                            splashColor: Colors.red,
+                            elevation: 8.0,
+                            onPressed: () {
+                              print('Tapped');
+                            },
+                            child: Transform(
+                              transform: Matrix4.identity()
+                                ..setEntry(3, 2,
+                                    0.0018) // Aplicar una perspectiva 3D adicional a la imagen overlay
+                                ..rotateX(
+                                    0) // Rotación en el eje x de la imagen overlay (15 grados si el ratón está sobre el widget, 0 grados si no)
+                                ..rotateY(
+                                    pi), // Rotación en el eje y de la imagen overlay (60 grados si el ratón está sobre el widget, 0 grados si no)
+                              alignment: Alignment.center,
+                              child: AspectRatio(
+                                aspectRatio: 8.5 /
+                                    12, // Relación de aspecto deseada (16:9 en este ejemplo)
+                                child: Container(
+                                  decoration: const BoxDecoration(
+                                    image: DecorationImage(
+                                      image: AssetImage(
+                                          'assets/images/backcover.png'),
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                  child: const Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: SizedBox(),
+                                  ),
+                                ),
+                              ),
                             ),
-                          ),
-                          child: const Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: SizedBox(),
                           ),
                         ),
                       ),

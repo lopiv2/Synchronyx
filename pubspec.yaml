@@ -40,8 +40,8 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   intl: any
-  flutter_cube: ^0.1.1
-  playx_3d_scene: ^0.0.2
+  sqflite: ^2.3.0
+  desktop_multi_window: ^0.2.0
 
 dev_dependencies:
   flutter_test:
@@ -86,15 +86,12 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
+  fonts:
+     - family:  CustomIcons
+       fonts:
+         - asset: fonts/CustomIcons.ttf
   #         style: italic
-  #   - family: Trajan Pro
   #     fonts:
-  #       - asset: fonts/TrajanPro.ttf
   #       - asset: fonts/TrajanPro_Bold.ttf
   #         weight: 700
   #

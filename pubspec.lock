@@ -89,6 +89,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.5"
+  desktop_multi_window:
+    dependency: "direct main"
+    description:
+      name: desktop_multi_window
+      sha256: "29971186ae0790e32b156f127f9c22c5ee77bdb94b14f7cea23f2356d0c76cfc"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.0"
   fake_async:
     dependency: transitive
     description:
@@ -110,14 +118,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_cube:
-    dependency: "direct main"
-    description:
-      name: flutter_cube
-      sha256: "71cf679a251166eb97f86751c56582b09abdbf859485fbf60524948813914c3b"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.1.1"
   flutter_lints:
     dependency: "direct dev"
     description:
@@ -192,14 +192,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.8.3"
-  playx_3d_scene:
-    dependency: "direct main"
-    description:
-      name: playx_3d_scene
-      sha256: "3f3f57cb5b53e12bbff4f734f4dac65b1dca212169e77c6e8c1acba3b9711914"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.0.2"
   plugin_platform_interface:
     dependency: transitive
     description:
@@ -221,6 +213,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.9.1"
+  sqflite:
+    dependency: "direct main"
+    description:
+      name: sqflite
+      sha256: "591f1602816e9c31377d5f008c2d9ef7b8aca8941c3f89cc5fd9d84da0c38a9a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.3.0"
+  sqflite_common:
+    dependency: transitive
+    description:
+      name: sqflite_common
+      sha256: "1b92f368f44b0dee2425bb861cfa17b6f6cf3961f762ff6f941d20b33355660a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.5.0"
   stack_trace:
     dependency: transitive
     description:
@@ -245,6 +253,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.0"
+  synchronized:
+    dependency: transitive
+    description:
+      name: synchronized
+      sha256: "5fcbd27688af6082f5abd611af56ee575342c30e87541d0245f7ff99faa02c60"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.1.0"
   term_glyph:
     dependency: transitive
     description:
