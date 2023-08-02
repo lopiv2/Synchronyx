@@ -16,6 +16,7 @@
   "importUbi": "Juegos Uplay...",
   "importWindows": "Windows games...",
   "importXbox": "XBox/Microsoft games...",
+  "importSteamWindowTitle": "Import games from Steam",
   "menu": "Menu",
   "properties": "Properties",
   "tools": "Tools"

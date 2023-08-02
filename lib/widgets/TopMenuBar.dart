@@ -4,6 +4,7 @@ import 'package:synchronyx/utilities/Constants.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:synchronyx/utilities/GenericFunctions.dart';
+import 'package:synchronyx/widgets/GeneralDialog.dart';
 
 MaterialStateProperty<Color?> myColor =
     MaterialStateProperty.resolveWith<Color?>(
@@ -75,10 +76,17 @@ class MyMenuBar extends StatelessWidget {
                         leadingIcon: const Icon(CustomIcons.amazon_games,
                             color: Colors.orange, size: 20),
                         onPressed: () {
-                          showAboutDialog(
+                          showDialog(
                             context: context,
-                            applicationName: 'MenuBar Sample',
-                            applicationVersion: '1.0.0',
+                            barrierDismissible: false,
+                            builder: (context) {
+                              return MovableDialog(
+                                iconColor: Colors.orange,
+                                titleIcon: CustomIcons.amazon_games,
+                                title: appLocalizations.importSteamWindowTitle,
+                                contentText: appLocalizations.importSteamWindowTitle,
+                              );
+                            },
                           );
                         },
                         child:
@@ -155,10 +163,17 @@ class MyMenuBar extends StatelessWidget {
                         leadingIcon: const Icon(CustomIcons.steam,
                             color: Color.fromARGB(255, 12, 66, 94)),
                         onPressed: () {
-                          showAboutDialog(
+                          showDialog(
                             context: context,
-                            applicationName: 'MenuBar Sample',
-                            applicationVersion: '1.0.0',
+                            barrierDismissible: false,
+                            builder: (context) {
+                              return MovableDialog(
+                                iconColor: Color.fromARGB(255, 12, 66, 94),
+                                titleIcon: CustomIcons.steam,
+                                title: appLocalizations.importSteamWindowTitle,
+                                contentText: appLocalizations.importSteamWindowTitle,
+                              );
+                            },
                           );
                         },
                         child:
@@ -167,9 +182,7 @@ class MyMenuBar extends StatelessWidget {
                       MenuItemButton(
                         leadingIcon: const Icon(CustomIcons.ubisoft,
                             color: Colors.blueAccent),
-                        onPressed: () {
-                          createAndShowWindow();
-                        },
+                        onPressed: () {},
                         child: MenuAcceleratorLabel(appLocalizations.importUbi),
                       ),
                       MenuItemButton(
