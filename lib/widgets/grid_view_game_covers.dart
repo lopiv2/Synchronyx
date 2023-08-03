@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'ImageCoverModel.dart';
+import 'image_cover_model.dart';
 
 class GridViewGameCovers extends StatelessWidget {
   GridViewGameCovers({super.key});

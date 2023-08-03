@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:synchronyx/models/game.dart';
+import 'package:synchronyx/utilities/generic_functions.dart';
 
 class ArcadeBoxButtonWidget extends StatelessWidget {
-  const ArcadeBoxButtonWidget({super.key});
+  ArcadeBoxButtonWidget({super.key});
+
+  final game = Game(
+    id: 0,
+    title: 'Fido',
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -20,6 +27,7 @@ class ArcadeBoxButtonWidget extends StatelessWidget {
               BorderRadius.circular(8.0), // Radio de las esquinas del botón
           onTap: () {
             // Aquí puedes agregar la lógica que desees al hacer clic en el botón.
+            insertGame(game as Game);
             print('Botón personalizado presionado');
           },
           child: Container(

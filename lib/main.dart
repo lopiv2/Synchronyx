@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:synchronyx/widgets/TopMenuBar.dart';
-import 'widgets/ArcadeBoxButton.dart';
-import 'widgets/DropDownFilterOrderGames.dart';
+import 'package:synchronyx/widgets/top_menu_bar.dart';
+import 'widgets/arcade_box_button.dart';
+import 'widgets/drop_down_filter_order_games.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
-import 'package:synchronyx/utilities/Constants.dart';
-import 'widgets/GridViewGameCovers.dart';
+import 'package:synchronyx/utilities/constants.dart';
+import 'widgets/grid_view_game_covers.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -180,8 +180,6 @@ class LeftSide extends StatelessWidget {
     );
   }
 }
-
-
 
 class CenterSide extends StatelessWidget {
   const CenterSide({super.key});

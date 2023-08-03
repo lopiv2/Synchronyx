@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:synchronyx/icons/custom_icons_icons.dart';
-import 'package:synchronyx/utilities/Constants.dart';
+import 'package:synchronyx/utilities/constants.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:synchronyx/utilities/GenericFunctions.dart';
-import 'package:synchronyx/widgets/GeneralDialog.dart';
+import 'package:synchronyx/utilities/generic_functions.dart';
+import 'package:synchronyx/widgets/general_dialog.dart';
 
 MaterialStateProperty<Color?> myColor =
     MaterialStateProperty.resolveWith<Color?>(
@@ -83,8 +83,9 @@ class MyMenuBar extends StatelessWidget {
                               return MovableDialog(
                                 iconColor: Colors.orange,
                                 titleIcon: CustomIcons.amazon_games,
-                                title: appLocalizations.importSteamWindowTitle,
-                                contentText: appLocalizations.importSteamWindowTitle,
+                                title: appLocalizations.importAmazonWindowTitle,
+                                contentText:
+                                    appLocalizations.importAmazonWindowTitle,
                               );
                             },
                           );
@@ -98,10 +99,18 @@ class MyMenuBar extends StatelessWidget {
                           color: Colors.blue,
                         ),
                         onPressed: () {
-                          showAboutDialog(
+                          showDialog(
                             context: context,
-                            applicationName: 'MenuBar Sample',
-                            applicationVersion: '1.0.0',
+                            barrierDismissible: false,
+                            builder: (context) {
+                              return MovableDialog(
+                                iconColor: Colors.blue,
+                                titleIcon: CustomIcons.battle_net,
+                                title: appLocalizations.importBattleWindowTitle,
+                                contentText:
+                                    appLocalizations.importBattleWindowTitle,
+                              );
+                            },
                           );
                         },
                         child:
@@ -110,10 +119,18 @@ class MyMenuBar extends StatelessWidget {
                       MenuItemButton(
                         leadingIcon: const Icon(CustomIcons.epicgames),
                         onPressed: () {
-                          showAboutDialog(
+                          showDialog(
                             context: context,
-                            applicationName: 'MenuBar Sample',
-                            applicationVersion: '1.0.0',
+                            barrierDismissible: false,
+                            builder: (context) {
+                              return MovableDialog(
+                                iconColor: Colors.black,
+                                titleIcon: CustomIcons.epicgames,
+                                title: appLocalizations.importEpicWindowTitle,
+                                contentText:
+                                    appLocalizations.importEpicWindowTitle,
+                              );
+                            },
                           );
                         },
                         child:
@@ -123,10 +140,18 @@ class MyMenuBar extends StatelessWidget {
                         leadingIcon: const Icon(CustomIcons.gog_dot_com,
                             color: Color.fromARGB(255, 84, 9, 97)),
                         onPressed: () {
-                          showAboutDialog(
+                          showDialog(
                             context: context,
-                            applicationName: 'MenuBar Sample',
-                            applicationVersion: '1.0.0',
+                            barrierDismissible: false,
+                            builder: (context) {
+                              return MovableDialog(
+                                iconColor: Color.fromARGB(255, 84, 9, 97),
+                                titleIcon: CustomIcons.gog_dot_com,
+                                title: appLocalizations.importGogWindowTitle,
+                                contentText:
+                                    appLocalizations.importGogWindowTitle,
+                              );
+                            },
                           );
                         },
                         child: MenuAcceleratorLabel(appLocalizations.importGog),
@@ -137,10 +162,18 @@ class MyMenuBar extends StatelessWidget {
                           color: Colors.redAccent,
                         ),
                         onPressed: () {
-                          showAboutDialog(
+                          showDialog(
                             context: context,
-                            applicationName: 'MenuBar Sample',
-                            applicationVersion: '1.0.0',
+                            barrierDismissible: false,
+                            builder: (context) {
+                              return MovableDialog(
+                                iconColor: Colors.redAccent,
+                                titleIcon: CustomIcons.itch_dot_io,
+                                title: appLocalizations.importItchWindowTitle,
+                                contentText:
+                                    appLocalizations.importItchWindowTitle,
+                              );
+                            },
                           );
                         },
                         child:
@@ -150,10 +183,18 @@ class MyMenuBar extends StatelessWidget {
                         leadingIcon: const Icon(CustomIcons.origin,
                             color: Colors.orange),
                         onPressed: () {
-                          showAboutDialog(
+                          showDialog(
                             context: context,
-                            applicationName: 'MenuBar Sample',
-                            applicationVersion: '1.0.0',
+                            barrierDismissible: false,
+                            builder: (context) {
+                              return MovableDialog(
+                                iconColor: Colors.orange,
+                                titleIcon: CustomIcons.origin,
+                                title: appLocalizations.importOriginWindowTitle,
+                                contentText:
+                                    appLocalizations.importOriginWindowTitle,
+                              );
+                            },
                           );
                         },
                         child:
@@ -171,7 +212,8 @@ class MyMenuBar extends StatelessWidget {
                                 iconColor: Color.fromARGB(255, 12, 66, 94),
                                 titleIcon: CustomIcons.steam,
                                 title: appLocalizations.importSteamWindowTitle,
-                                contentText: appLocalizations.importSteamWindowTitle,
+                                contentText:
+                                    appLocalizations.importSteamWindowTitle,
                               );
                             },
                           );
@@ -182,17 +224,40 @@ class MyMenuBar extends StatelessWidget {
                       MenuItemButton(
                         leadingIcon: const Icon(CustomIcons.ubisoft,
                             color: Colors.blueAccent),
-                        onPressed: () {},
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (context) {
+                              return MovableDialog(
+                                iconColor: Colors.blueAccent,
+                                titleIcon: CustomIcons.ubisoft,
+                                title: appLocalizations.importUplayWindowTitle,
+                                contentText:
+                                    appLocalizations.importUplayWindowTitle,
+                              );
+                            },
+                          );
+                        },
                         child: MenuAcceleratorLabel(appLocalizations.importUbi),
                       ),
                       MenuItemButton(
                         leadingIcon:
                             const Icon(CustomIcons.windows, color: Colors.blue),
                         onPressed: () {
-                          showAboutDialog(
+                          showDialog(
                             context: context,
-                            applicationName: 'MenuBar Sample',
-                            applicationVersion: '1.0.0',
+                            barrierDismissible: false,
+                            builder: (context) {
+                              return MovableDialog(
+                                iconColor: Colors.blue,
+                                titleIcon: CustomIcons.windows,
+                                title:
+                                    appLocalizations.importWindowsWindowTitle,
+                                contentText:
+                                    appLocalizations.importWindowsWindowTitle,
+                              );
+                            },
                           );
                         },
                         child: MenuAcceleratorLabel(
@@ -202,10 +267,18 @@ class MyMenuBar extends StatelessWidget {
                         leadingIcon:
                             const Icon(CustomIcons.xbox, color: Colors.green),
                         onPressed: () {
-                          showAboutDialog(
+                          showDialog(
                             context: context,
-                            applicationName: 'MenuBar Sample',
-                            applicationVersion: '1.0.0',
+                            barrierDismissible: false,
+                            builder: (context) {
+                              return MovableDialog(
+                                iconColor: Color.fromARGB(255, 98, 219, 102),
+                                titleIcon: CustomIcons.xbox,
+                                title: appLocalizations.importXboxWindowTitle,
+                                contentText:
+                                    appLocalizations.importXboxWindowTitle,
+                              );
+                            },
                           );
                         },
                         child:

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:synchronyx/icons/custom_icons_icons.dart';
-import 'package:synchronyx/utilities/Constants.dart';
+import 'package:synchronyx/utilities/constants.dart';
 
 class MovableDialog extends StatefulWidget {
   final IconData titleIcon;
@@ -62,7 +62,8 @@ class _MovableDialogState extends State<MovableDialog> {
                   padding: const EdgeInsets.only(right: 20.0),
                   child: Icon(
                     widget.titleIcon,
-                    color: widget.iconColor, // Usamos el color del icono que pasamos como argumento
+                    color: widget
+                        .iconColor, // Usamos el color del icono que pasamos como argumento
                   ),
                 ),
                 title: Text(
