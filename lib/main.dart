@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:synchronyx/utilities/generic_functions.dart';
 import 'package:synchronyx/widgets/top_menu_bar.dart';
 import 'widgets/arcade_box_button.dart';
 import 'widgets/drop_down_filter_order_games.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:synchronyx/utilities/constants.dart';
 import 'widgets/grid_view_game_covers.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-void main() {
+void main() async {
   runApp(const MyApp());
   doWhenWindowReady(() {
     final win = appWindow;
@@ -19,6 +19,7 @@ void main() {
     win.title = "Synchronyx";
     win.show();
   });
+  Constants.database = await createAndOpenDB();
 }
 
 class MyApp extends StatelessWidget {

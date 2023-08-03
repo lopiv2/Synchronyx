@@ -23,18 +23,19 @@ class Game {
   Game({
     required this.id,
     required this.title,
+    required this.description,
   });
 
   Map<String, dynamic> toMap() {
     return {
       'id': id,
       'title': title,
-      'age': description,
+      'description': description,
     };
   }
 
   @override
   String toString() {
-    return 'Game{id: $id, title: $title, age: $description}';
+    return 'Game{id: $id, title: $title, description: $description}';
   }
 }
