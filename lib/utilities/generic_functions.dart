@@ -5,7 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-import 'package:synchronyx/utilities/Constants.dart';
+import 'package:synchronyx/utilities/constants.dart';
+import 'package:synchronyx/widgets/arcade_box_button.dart';
 import '../models/game.dart';
 
 Future<Database?> createAndOpenDB() async {
@@ -43,14 +44,37 @@ Future<Database?> createAndOpenDB() async {
         // Aquí puedes crear las tablas utilizando la función db.execute
         // Por ejemplo, para crear la tabla de juegos, puedes hacer lo siguiente:
         await db.execute(
-          'CREATE TABLE IF NOT EXISTS games(' // Agregamos "IF NOT EXISTS" para evitar errores si la tabla ya existe
+          'CREATE TABLE IF NOT EXISTS games('
           'id INTEGER PRIMARY KEY,'
           'title TEXT,'
-          'description TEXT' // Agregamos la columna "description"
-          // Resto de las columnas de la tabla ...
+          'description TEXT,'
+          'boxColor TEXT,'
+          'coverImage TEXT,'
+          'backImage TEXT,'
+          'platform TEXT,'
+          'genres TEXT,'
+          'maxPlayers INTEGER,'
+          'developer TEXT,'
+          'publisher TEXT,'
+          'region TEXT,'
+          'file TEXT,'
+          'releaseYear INTEGER,'
+          'rating REAL,'
+          'favorite INTEGER,'
+          'playTime INTEGER,'
+          'lastPlayed TEXT,'
+          'tags TEXT'
           ')',
         );
-        //print('Tabla "games" creada correctamente.');
+        // Crear la tabla de apis
+        await db.execute(
+          'CREATE TABLE IF NOT EXISTS apis('
+          'id INTEGER PRIMARY KEY,'
+          'name TEXT,'
+          'url TEXT,'
+          'apiKey TEXT'
+          ')',
+        );
       },
       version: 1,
     );
@@ -62,8 +86,40 @@ Future<Database?> createAndOpenDB() async {
   }
 }
 
-///
-///
+// A method that retrieves all the games from the games table.
+Future<List<Game>> getAllGames() async {
+  // Get a reference to the database.
+  final db = await Constants.database;
+
+  // Query the table for all The Games.
+  final List<Map<String, dynamic>> maps = await db!.query('games');
+
+  // Convert the List<Map<String, dynamic> into a List<Game>.
+  return List.generate(maps.length, (i) {
+    return Game(
+      id: maps[i]['id'],
+      title: maps[i]['title'],
+      description: maps[i]['description'],
+      lastPlayed: maps[i]['lastPlayed'],
+    );
+  });
+}
+
+///Deletes a game from the database
+Future<void> deleteGame(int id) async {
+  // Get a reference to the database.
+  final db = await Constants.database;
+
+  // Remove the Game from the database.
+  await db!.delete(
+    'games',
+    // Use a `where` clause to delete a specific game.
+    where: 'id = ?',
+    // Pass the Game's id as a whereArg to prevent SQL injection.
+    whereArgs: [id],
+  );
+}
+
 ///Inserts a game in database
 Future<void> insertGame(Game game) async {
   //var database = await createAndOpenDB();
@@ -74,5 +130,14 @@ Future<void> insertGame(Game game) async {
   );
 
   // Ahora puedes cerrar la base de datos después de la inserción
+  await Constants.database?.close();
+}
+
+///Update a game in database
+Future<void> updateGame(Game game) async {
+  await Constants.database
+      ?.update('games', game.toMap(), where: 'id = ?', whereArgs: [game.id]);
+
+  // Ahora puedes cerrar la base de datos después de la actualizacion
   await Constants.database?.close();
 }

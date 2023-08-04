@@ -1,29 +1,44 @@
 class Game {
-  int id; // Identificador único del juego
-  String title; // Título del juego
-  late String description; // Descripción o sinopsis del juego
-  late String coverImage; // Ruta o URL de la imagen de portada del juego
-  late String backImage; // Ruta o URL de la imagen de contraportada del juego
-  late String
-      platform; // Plataforma en la que se juega el juego (ejemplo: PC, PlayStation, Xbox, etc.)
-  late List<String>
-      genres; // Géneros del juego (ejemplo: acción, aventura, estrategia, etc.)
-  late int maxPlayers; // Maximo de jugadores
-  late String developer; // Desarrollador del juego
-  late String publisher; // Editor del juego
-  late String region; // Region del juego
-  late String file; // Archivo del juego (Si es un ROM)
-  late int releaseYear; // Año de lanzamiento del juego
-  late double rating; // Valoración o calificación del juego
-  late bool favorite; // Indica si el juego es uno de los favoritos del usuario
-  late int playTime; // Tiempo total de juego registrado para este juego
-  late DateTime lastPlayed; // Fecha y hora del último juego
-  late List<String> tags; // Etiquetas o categorías asociadas al juego
+  int id;
+  String title;
+  String description;
+  String boxColor;
+  String coverImage;
+  String backImage;
+  String platform;
+  List<String> genres;
+  int maxPlayers;
+  String developer;
+  String publisher;
+  String region;
+  String file;
+  int releaseYear;
+  double rating;
+  bool favorite;
+  int playTime;
+  DateTime lastPlayed;
+  List<String> tags;
 
   Game({
     required this.id,
     required this.title,
     required this.description,
+    this.boxColor = '',
+    this.coverImage = '',
+    this.backImage = '',
+    this.platform = '',
+    this.genres = const [],
+    this.maxPlayers = 1,
+    this.developer = '',
+    this.publisher = '',
+    this.region = '',
+    this.file = '',
+    this.releaseYear = 0,
+    this.rating = 0.0,
+    this.favorite = false,
+    this.playTime = 0,
+    required this.lastPlayed,
+    this.tags = const [],
   });
 
   Map<String, dynamic> toMap() {
@@ -31,11 +46,27 @@ class Game {
       'id': id,
       'title': title,
       'description': description,
+      'boxColor': boxColor,
+      'coverImage': coverImage,
+      'backImage': backImage,
+      'platform': platform,
+      'genres': genres,
+      'maxPlayers': maxPlayers,
+      'developer': developer,
+      'publisher': publisher,
+      'region': region,
+      'file': file,
+      'releaseYear': releaseYear,
+      'rating': rating,
+      'favorite': favorite,
+      'playTime': playTime,
+      'lastPlayed': lastPlayed.toLocal(),
+      'tags': tags,
     };
   }
 
   @override
   String toString() {
-    return 'Game{id: $id, title: $title, description: $description}';
+    return 'Game{id: $id, title: $title, description: $description,boxColor: $boxColor, coverImage: $coverImage, backImage: $backImage, platform: $platform, genres: $genres, maxPlayers: $maxPlayers, developer: $developer, publisher: $publisher, region: $region, file: $file, releaseYear: $releaseYear, rating: $rating, favorite: $favorite, playTime: $playTime, lastPlayed: $lastPlayed, tags: $tags}';
   }
 }

@@ -1,8 +1,5 @@
 {
   "helloWorld": "Hello World!",
-  "@helloWorld": {
-    "description": "The conventional newborn programmer greeting"
-  },
   "file": "File",
   "import": "Import",
   "importAmazon": "Amazon games...",
@@ -25,6 +22,22 @@
   "importUplayWindowTitle": "Import games from Uplay",
   "importWindowsWindowTitle": "Import games from Windows",
   "importXboxWindowTitle": "Import games from XBox/Microsoft Store",
+  "amazonWindowAssistant": "Amazon Games Import Wizard",
+  "battleWindowAssistant": "Battle.net games Import Wizard",
+  "epicWindowAssistant": "Epic Games Import Wizard",
+  "gogWindowAssistant": "GoG Games Import Wizard",
+  "itchWindowAssistant": "Itch.IO Games Import Wizard",
+  "originWindowAssistant": "Origin Games Import Wizard",
+  "steamWindowAssistant": "Steam Games Import Wizard",
+  "uplayWindowAssistant": "Uplay Games Import Wizard",
+  "winWindowAssistant": "Windows Games Import Wizard",
+  "xboxWindowAssistant": "XBox/Microsoft Games Import Wizard",
+  "accept": "Accept",
+  "cancel": "Cancel",
+  "ok": "Ok",
+  "next": "Next",
+  "back": "Back",
+  "finish": "Finish",
   "menu": "Menu",
   "properties": "Properties",
   "tools": "Tools"

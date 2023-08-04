@@ -63,7 +63,7 @@ class MainGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     final AppLocalizations appLocalizations = AppLocalizations.of(context)!;
     return Container(
-      color: Constants.sideBarColor,
+      color: Constants.SIDE_BAR_COLOR,
       child: Column(
         children: [
           Row(
@@ -114,13 +114,13 @@ class LeftSide extends StatelessWidget {
           color: const Color.fromARGB(255, 2, 34, 14), // Color del borde
           width: 0.2, // Ancho del borde
         ),
-        gradient: LinearGradient(
+        gradient: const LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            Constants.sideBarColor,
-            const Color.fromARGB(255, 33, 109, 72),
-            const Color.fromARGB(255, 48, 87, 3)
+            Constants.SIDE_BAR_COLOR,
+            Color.fromARGB(255, 33, 109, 72),
+            Color.fromARGB(255, 48, 87, 3)
           ],
         ),
       ),
@@ -163,13 +163,10 @@ class LeftSide extends StatelessWidget {
                     fillColor: Color.fromARGB(127, 11, 129, 46),
                     border: OutlineInputBorder(), // Aquí establecemos el borde
                     hintText: 'Search', // Texto de ayuda dentro del TextField
-                    // Otros estilos de la decoración (opcional)
-                    // labelStyle: TextStyle(color: Colors.red),
-                    // hintStyle: TextStyle(color: Colors.grey),
                   ),
                   style: TextStyle(fontSize: 14),
                 )),
-                SizedBox(width: 10), // give it width
+                SizedBox(width: 10),
               ],
             ),
           ),
@@ -189,14 +186,14 @@ class CenterSide extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
       child: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-                Constants.backgroundStartColor,
-                Constants.backgroundEndColor,
-                const Color.fromARGB(255, 48, 87, 3)
+                Constants.BACKGROUND_START_COLOR,
+                Constants.BACKGROUND_END_COLOR,
+                Color.fromARGB(255, 48, 87, 3)
               ],
             ),
           ),
@@ -219,13 +216,13 @@ class RightSide extends StatelessWidget {
           color: const Color.fromARGB(255, 2, 34, 14), // Color del borde
           width: 0.2, // Ancho del borde
         ),
-        gradient: LinearGradient(
+        gradient: const LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            Constants.sideBarColor,
-            const Color.fromARGB(255, 33, 109, 72),
-            const Color.fromARGB(255, 48, 87, 3)
+            Constants.SIDE_BAR_COLOR,
+            Color.fromARGB(255, 33, 109, 72),
+            Color.fromARGB(255, 48, 87, 3)
           ],
         ),
       ),
@@ -235,7 +232,7 @@ class RightSide extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              Column(
+              const Column(
                 children: [
                   Icon(Icons.favorite, size: 20, color: Colors.red),
                 ],
@@ -243,10 +240,10 @@ class RightSide extends StatelessWidget {
               Column(
                 children: [
                   Text(appLocalizations.menu),
-                  Text('Synchronyx'),
+                  const Text('Synchronyx'),
                 ],
               ),
-              Column(
+              const Column(
                 children: [
                   Icon(Icons.menu, size: 20, color: Colors.blue),
                 ],
@@ -254,7 +251,7 @@ class RightSide extends StatelessWidget {
             ],
           ),
 
-          Padding(padding: EdgeInsets.only(top: 20.0)),
+          const Padding(padding: EdgeInsets.only(top: 20.0)),
           Container(
             height: 30,
             child: Row(
@@ -278,8 +275,8 @@ class RightSide extends StatelessWidget {
             ),
           ),
 
-          Padding(padding: EdgeInsets.only(top: 20.0)),
-          DropdownWidget(),
+          const Padding(padding: EdgeInsets.only(top: 20.0)),
+          const DropdownWidget(),
         ],
       ),
     );

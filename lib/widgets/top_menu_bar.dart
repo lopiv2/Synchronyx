@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:synchronyx/icons/custom_icons_icons.dart';
+import 'package:synchronyx/screens/steam/steam_import_steps.dart';
 import 'package:synchronyx/utilities/constants.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:synchronyx/utilities/generic_functions.dart';
-import 'package:synchronyx/widgets/general_dialog.dart';
+import 'package:synchronyx/widgets/import_dialog.dart';
 
 MaterialStateProperty<Color?> myColor =
     MaterialStateProperty.resolveWith<Color?>(
   (Set<MaterialState> states) {
-    return Constants.sideBarColor; // Color normal
+    return Constants.SIDE_BAR_COLOR; // Color normal
   },
 );
 
@@ -80,12 +81,17 @@ class MyMenuBar extends StatelessWidget {
                             context: context,
                             barrierDismissible: false,
                             builder: (context) {
-                              return MovableDialog(
+                              return ImportDialog(
+                                appLocalizations: appLocalizations,
                                 iconColor: Colors.orange,
                                 titleIcon: CustomIcons.amazon_games,
                                 title: appLocalizations.importAmazonWindowTitle,
-                                contentText:
-                                    appLocalizations.importAmazonWindowTitle,
+                                steps: [
+                                  // Aquí colocas los widgets que representan el contenido de cada paso
+                                  SteamImportSteps.step1(appLocalizations),
+                                  SteamImportSteps.step2(),
+                                  // Add more steps as needed
+                                ],
                               );
                             },
                           );
@@ -103,12 +109,17 @@ class MyMenuBar extends StatelessWidget {
                             context: context,
                             barrierDismissible: false,
                             builder: (context) {
-                              return MovableDialog(
+                              return ImportDialog(
+                                appLocalizations: appLocalizations,
                                 iconColor: Colors.blue,
                                 titleIcon: CustomIcons.battle_net,
                                 title: appLocalizations.importBattleWindowTitle,
-                                contentText:
-                                    appLocalizations.importBattleWindowTitle,
+                                steps: [
+                                  // Aquí colocas los widgets que representan el contenido de cada paso
+                                  SteamImportSteps.step1(appLocalizations),
+                                  SteamImportSteps.step2(),
+                                  // Add more steps as needed
+                                ],
                               );
                             },
                           );
@@ -123,12 +134,17 @@ class MyMenuBar extends StatelessWidget {
                             context: context,
                             barrierDismissible: false,
                             builder: (context) {
-                              return MovableDialog(
+                              return ImportDialog(
+                                appLocalizations: appLocalizations,
                                 iconColor: Colors.black,
                                 titleIcon: CustomIcons.epicgames,
                                 title: appLocalizations.importEpicWindowTitle,
-                                contentText:
-                                    appLocalizations.importEpicWindowTitle,
+                                steps: [
+                                  // Aquí colocas los widgets que representan el contenido de cada paso
+                                  SteamImportSteps.step1(appLocalizations),
+                                  SteamImportSteps.step2(),
+                                  // Add more steps as needed
+                                ],
                               );
                             },
                           );
@@ -144,12 +160,17 @@ class MyMenuBar extends StatelessWidget {
                             context: context,
                             barrierDismissible: false,
                             builder: (context) {
-                              return MovableDialog(
+                              return ImportDialog(
+                                appLocalizations: appLocalizations,
                                 iconColor: Color.fromARGB(255, 84, 9, 97),
                                 titleIcon: CustomIcons.gog_dot_com,
                                 title: appLocalizations.importGogWindowTitle,
-                                contentText:
-                                    appLocalizations.importGogWindowTitle,
+                                steps: [
+                                  // Aquí colocas los widgets que representan el contenido de cada paso
+                                  SteamImportSteps.step1(appLocalizations),
+                                  SteamImportSteps.step2(),
+                                  // Add more steps as needed
+                                ],
                               );
                             },
                           );
@@ -166,12 +187,17 @@ class MyMenuBar extends StatelessWidget {
                             context: context,
                             barrierDismissible: false,
                             builder: (context) {
-                              return MovableDialog(
+                              return ImportDialog(
+                                appLocalizations: appLocalizations,
                                 iconColor: Colors.redAccent,
                                 titleIcon: CustomIcons.itch_dot_io,
                                 title: appLocalizations.importItchWindowTitle,
-                                contentText:
-                                    appLocalizations.importItchWindowTitle,
+                                steps: [
+                                  // Aquí colocas los widgets que representan el contenido de cada paso
+                                  SteamImportSteps.step1(appLocalizations),
+                                  SteamImportSteps.step2(),
+                                  // Add more steps as needed
+                                ],
                               );
                             },
                           );
@@ -187,12 +213,17 @@ class MyMenuBar extends StatelessWidget {
                             context: context,
                             barrierDismissible: false,
                             builder: (context) {
-                              return MovableDialog(
+                              return ImportDialog(
+                                appLocalizations: appLocalizations,
                                 iconColor: Colors.orange,
                                 titleIcon: CustomIcons.origin,
                                 title: appLocalizations.importOriginWindowTitle,
-                                contentText:
-                                    appLocalizations.importOriginWindowTitle,
+                                steps: [
+                                  // Aquí colocas los widgets que representan el contenido de cada paso
+                                  SteamImportSteps.step1(appLocalizations),
+                                  SteamImportSteps.step2(),
+                                  // Add more steps as needed
+                                ],
                               );
                             },
                           );
@@ -208,12 +239,17 @@ class MyMenuBar extends StatelessWidget {
                             context: context,
                             barrierDismissible: false,
                             builder: (context) {
-                              return MovableDialog(
+                              return ImportDialog(
+                                appLocalizations: appLocalizations,
                                 iconColor: Color.fromARGB(255, 12, 66, 94),
                                 titleIcon: CustomIcons.steam,
                                 title: appLocalizations.importSteamWindowTitle,
-                                contentText:
-                                    appLocalizations.importSteamWindowTitle,
+                                steps: [
+                                  // Aquí colocas los widgets que representan el contenido de cada paso
+                                  SteamImportSteps.step1(appLocalizations),
+                                  SteamImportSteps.step2(),
+                                  // Add more steps as needed
+                                ],
                               );
                             },
                           );
@@ -229,12 +265,17 @@ class MyMenuBar extends StatelessWidget {
                             context: context,
                             barrierDismissible: false,
                             builder: (context) {
-                              return MovableDialog(
+                              return ImportDialog(
+                                appLocalizations: appLocalizations,
                                 iconColor: Colors.blueAccent,
                                 titleIcon: CustomIcons.ubisoft,
                                 title: appLocalizations.importUplayWindowTitle,
-                                contentText:
-                                    appLocalizations.importUplayWindowTitle,
+                                steps: [
+                                  // Aquí colocas los widgets que representan el contenido de cada paso
+                                  SteamImportSteps.step1(appLocalizations),
+                                  SteamImportSteps.step2(),
+                                  SteamImportSteps.step3(),
+                                ],
                               );
                             },
                           );
@@ -249,13 +290,18 @@ class MyMenuBar extends StatelessWidget {
                             context: context,
                             barrierDismissible: false,
                             builder: (context) {
-                              return MovableDialog(
+                              return ImportDialog(
+                                appLocalizations: appLocalizations,
                                 iconColor: Colors.blue,
                                 titleIcon: CustomIcons.windows,
                                 title:
                                     appLocalizations.importWindowsWindowTitle,
-                                contentText:
-                                    appLocalizations.importWindowsWindowTitle,
+                                steps: [
+                                  // Aquí colocas los widgets que representan el contenido de cada paso
+                                  SteamImportSteps.step1(appLocalizations),
+                                  SteamImportSteps.step2(),
+                                  // Add more steps as needed
+                                ],
                               );
                             },
                           );
@@ -271,12 +317,17 @@ class MyMenuBar extends StatelessWidget {
                             context: context,
                             barrierDismissible: false,
                             builder: (context) {
-                              return MovableDialog(
+                              return ImportDialog(
+                                appLocalizations: appLocalizations,
                                 iconColor: Color.fromARGB(255, 98, 219, 102),
                                 titleIcon: CustomIcons.xbox,
                                 title: appLocalizations.importXboxWindowTitle,
-                                contentText:
-                                    appLocalizations.importXboxWindowTitle,
+                                steps: [
+                                  // Aquí colocas los widgets que representan el contenido de cada paso
+                                  SteamImportSteps.step1(appLocalizations),
+                                  SteamImportSteps.step2(),
+                                  // Add more steps as needed
+                                ],
                               );
                             },
                           );

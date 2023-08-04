@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:synchronyx/models/game.dart';
 import 'package:synchronyx/utilities/generic_functions.dart';
 
-  var game = Game(
-    id: 0,
-    title: 'Fido',
-    description: 'prueba',
-  );
+var game = Game(
+  id: 0,
+  title: 'Fido',
+  description: 'prueba',
+  lastPlayed: DateTime.now(),
+);
 
 class ArcadeBoxButtonWidget extends StatelessWidget {
   const ArcadeBoxButtonWidget({super.key});
