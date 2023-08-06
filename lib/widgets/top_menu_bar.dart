@@ -16,7 +16,17 @@ MaterialStateProperty<Color?> myColor =
 
 class MyMenuBar extends StatelessWidget {
   final AppLocalizations appLocalizations;
-  const MyMenuBar({Key? key, required this.appLocalizations}) : super(key: key);
+  late PlatformStore store=PlatformStore.Amazon;
+  MyMenuBar({Key? key, required this.appLocalizations}) : super(key: key);
+
+  void _handleLastStepFinish(Map<String, dynamic> data, PlatformStore st) {
+    // Aquí puedes hacer lo que necesites con los datos recopilados en el paso 4
+    // Por ejemplo, imprimirlos en la consola:
+    print('Datos recopilados en el paso x: $data');
+    print('Store: $st ');
+    // O llamar a otra función para procesar los datos
+    // processCollectedData(data);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -88,8 +98,10 @@ class MyMenuBar extends StatelessWidget {
                                 title: appLocalizations.importAmazonWindowTitle,
                                 steps: [
                                   // Aquí colocas los widgets que representan el contenido de cada paso
-                                  SteamImportSteps.step1(appLocalizations),
-                                  SteamImportSteps.step2(),
+                                  SteamImportSteps.step1(
+                                    appLocalizations,
+                                  ),
+                                  //SteamImportSteps.step2(appLocalizations),
                                   // Add more steps as needed
                                 ],
                               );
@@ -117,7 +129,7 @@ class MyMenuBar extends StatelessWidget {
                                 steps: [
                                   // Aquí colocas los widgets que representan el contenido de cada paso
                                   SteamImportSteps.step1(appLocalizations),
-                                  SteamImportSteps.step2(),
+                                  //SteamImportSteps.step2(appLocalizations),
                                   // Add more steps as needed
                                 ],
                               );
@@ -142,7 +154,7 @@ class MyMenuBar extends StatelessWidget {
                                 steps: [
                                   // Aquí colocas los widgets que representan el contenido de cada paso
                                   SteamImportSteps.step1(appLocalizations),
-                                  SteamImportSteps.step2(),
+                                  //SteamImportSteps.step2(appLocalizations),
                                   // Add more steps as needed
                                 ],
                               );
@@ -168,7 +180,7 @@ class MyMenuBar extends StatelessWidget {
                                 steps: [
                                   // Aquí colocas los widgets que representan el contenido de cada paso
                                   SteamImportSteps.step1(appLocalizations),
-                                  SteamImportSteps.step2(),
+                                  //SteamImportSteps.step2(appLocalizations),
                                   // Add more steps as needed
                                 ],
                               );
@@ -195,7 +207,7 @@ class MyMenuBar extends StatelessWidget {
                                 steps: [
                                   // Aquí colocas los widgets que representan el contenido de cada paso
                                   SteamImportSteps.step1(appLocalizations),
-                                  SteamImportSteps.step2(),
+                                  //SteamImportSteps.step2(appLocalizations),
                                   // Add more steps as needed
                                 ],
                               );
@@ -221,7 +233,7 @@ class MyMenuBar extends StatelessWidget {
                                 steps: [
                                   // Aquí colocas los widgets que representan el contenido de cada paso
                                   SteamImportSteps.step1(appLocalizations),
-                                  SteamImportSteps.step2(),
+                                  //SteamImportSteps.step2(appLocalizations),
                                   // Add more steps as needed
                                 ],
                               );
@@ -240,14 +252,19 @@ class MyMenuBar extends StatelessWidget {
                             barrierDismissible: false,
                             builder: (context) {
                               return ImportDialog(
-                                appLocalizations: appLocalizations,
+                                appLocalizations: appLocalizations!,
                                 iconColor: Color.fromARGB(255, 12, 66, 94),
                                 titleIcon: CustomIcons.steam,
                                 title: appLocalizations.importSteamWindowTitle,
                                 steps: [
                                   // Aquí colocas los widgets que representan el contenido de cada paso
                                   SteamImportSteps.step1(appLocalizations),
-                                  SteamImportSteps.step2(),
+                                  SteamImportSteps.step2(appLocalizations),
+                                  SteamImportSteps.step3(appLocalizations),
+                                  SteamImportSteps.step4(
+                                      appLocalizations,
+                                      _handleLastStepFinish,
+                                      store),
                                   // Add more steps as needed
                                 ],
                               );
@@ -273,8 +290,8 @@ class MyMenuBar extends StatelessWidget {
                                 steps: [
                                   // Aquí colocas los widgets que representan el contenido de cada paso
                                   SteamImportSteps.step1(appLocalizations),
-                                  SteamImportSteps.step2(),
-                                  SteamImportSteps.step3(),
+                                  //SteamImportSteps.step2(appLocalizations),
+                                  //SteamImportSteps.step3(appLocalizations),
                                 ],
                               );
                             },
@@ -299,7 +316,7 @@ class MyMenuBar extends StatelessWidget {
                                 steps: [
                                   // Aquí colocas los widgets que representan el contenido de cada paso
                                   SteamImportSteps.step1(appLocalizations),
-                                  SteamImportSteps.step2(),
+                                  //SteamImportSteps.step2(appLocalizations),
                                   // Add more steps as needed
                                 ],
                               );
@@ -325,7 +342,7 @@ class MyMenuBar extends StatelessWidget {
                                 steps: [
                                   // Aquí colocas los widgets que representan el contenido de cada paso
                                   SteamImportSteps.step1(appLocalizations),
-                                  SteamImportSteps.step2(),
+                                  //SteamImportSteps.step2(appLocalizations),
                                   // Add more steps as needed
                                 ],
                               );

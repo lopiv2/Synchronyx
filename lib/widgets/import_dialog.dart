@@ -8,6 +8,7 @@ class ImportDialog extends StatefulWidget {
   final Color iconColor;
   final AppLocalizations appLocalizations; // Agregar este campo
   final List<Widget> steps; // List of widgets that represent the steps
+  final Function(Map<String, dynamic>)? onFinish;
 
   const ImportDialog({
     Key? key,
@@ -15,11 +16,11 @@ class ImportDialog extends StatefulWidget {
     required this.title,
     required this.steps,
     required this.appLocalizations,
+    this.onFinish,
     this.iconColor = Colors.white,
   }) : super(key: key);
 
   @override
-  // ignore: library_private_types_in_public_api
   _ImportDialogState createState() => _ImportDialogState();
 }
 
@@ -146,6 +147,7 @@ class _ImportDialogState extends State<ImportDialog> {
                       if (_currentStep == widget.steps.length - 1)
                         ElevatedButton(
                           onPressed: () {
+                            // Llamar a la función onFinishPressed y pasar el valor de steamIdValue
                             Navigator.of(context).pop();
                           },
                           child: Text(widget.appLocalizations.finish),
@@ -181,7 +183,7 @@ class CustomDialog extends StatelessWidget {
   final Widget child;
   final Offset offset;
 
-  const CustomDialog({super.key, required this.child, required this.offset});
+  const CustomDialog({required this.child, required this.offset});
 
   @override
   Widget build(BuildContext context) {

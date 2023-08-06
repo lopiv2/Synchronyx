@@ -1,48 +1,249 @@
 import 'package:flutter/material.dart';
 import 'package:synchronyx/screens/generic_import_step.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:synchronyx/utilities/constants.dart';
 
-class SteamImportSteps extends StatelessWidget {
-  final Widget content; // Cambiar el tipo a Widget
+typedef OnFinishCallback = void Function(
+    Map<String, dynamic> collectedData, PlatformStore store);
+
+class SteamImportSteps extends StatefulWidget {
+  final Widget content;
   final AppLocalizations? appLocalizations;
+  final Function(String)? onTextFieldSubmitted;
 
-  const SteamImportSteps(
-      {Key? key, required this.content, this.appLocalizations})
-      : super(key: key);
+  static Map<String, dynamic> _collectDataFromControllers() {
+    Map<String, dynamic> collectedData = {};
+
+    for (int i = 0; i < Constants.con.length; i++) {
+      collectedData['step${i + 1}Data'] = Constants.con[i].text;
+    }
+    return collectedData;
+  }
+
+  SteamImportSteps({
+    Key? key,
+    required this.content,
+    this.appLocalizations,
+    this.onTextFieldSubmitted,
+  }) : super(key: key);
 
   factory SteamImportSteps.step1(AppLocalizations appLocalizations) {
     return SteamImportSteps(
       content: GenericImportStep(
-          stepContentText: appLocalizations.steamWindowAssistant),
+        stepContentTitleText: appLocalizations.steamWindowAssistant,
+        stepContentDescriptionText: appLocalizations.steamWindowAssistantStep1,
+      ),
       appLocalizations: appLocalizations,
     );
   }
 
-  factory SteamImportSteps.step2() {
+  factory SteamImportSteps.step2(
+    AppLocalizations appLocalizations,
+  ) {
+    TextEditingController steamIdController;
+    if (Constants.con.isNotEmpty) {
+      // Si hay al menos un controlador en la lista, accede al primero para este paso
+      steamIdController = Constants.con[0];
+    } else {
+      // Si la lista está vacía, crea un nuevo controlador y agrégalo a la lista
+      steamIdController = TextEditingController();
+      Constants.con.add(steamIdController);
+    }
     return SteamImportSteps(
-      content: Center(
-        child: Image.asset(
-          'assets/images/SegaDreamcast.png', // Cambiar la ruta de la imagen según tus necesidades
-          width: 200,
-          height: 200,
+      content: Container(
+        alignment: Alignment.centerLeft,
+        padding: const EdgeInsets.only(left: 40, top: 10, right: 10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              appLocalizations.steamWindowAssistantTitleStep2,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 20),
+            Text("76561198013304798"),
+            const SizedBox(height: 20),
+            Text(
+              appLocalizations.steamWindowAssistantStep2,
+              style: const TextStyle(fontSize: 14),
+            ),
+            const SizedBox(height: 40),
+            Row(
+              children: [
+                const Text(
+                  "http://steamcommunity.com/id/",
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Color.fromARGB(255, 235, 235, 235),
+                  ),
+                ),
+                Expanded(
+                  child: SizedBox(
+                    height: 30,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 8,
+                      ),
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.grey,
+                          width: 1.0,
+                        ),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: TextField(
+                        controller: steamIdController,
+                        enabled: true,
+                        style: TextStyle(color: Colors.white),
+                        onSubmitted: (value) {
+                          // Guardar el valor ingresado en la variable
+                          String steamId = Constants.con[0].text;
+                          // Aquí puedes hacer lo que quieras con el valor ingresado
+                          // Por ejemplo, imprimirlo en la consola:
+                          print('Steam ID: $steamId');
+                        },
+                        // Add properties to the TextField as needed
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
+      appLocalizations: appLocalizations,
     );
   }
 
-  factory SteamImportSteps.step3() {
+  factory SteamImportSteps.step3(AppLocalizations appLocalizations) {
+    TextEditingController steamApiController;
+    if (Constants.con.length >= 2) {
+      // Si hay al menos dos controladores en la lista, accede al segundo para este paso
+      steamApiController = Constants.con[1];
+    } else {
+      // Si no hay suficientes controladores, crea uno nuevo y agrégalo a la lista
+      steamApiController = TextEditingController();
+      Constants.con.add(steamApiController);
+    }
     return SteamImportSteps(
-      content: Center(
-        child: Text(
-          'Step 3 Content',
-          style: TextStyle(fontSize: 18),
+      content: Container(
+        alignment: Alignment.centerLeft,
+        padding: const EdgeInsets.only(left: 40, top: 10, right: 10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              appLocalizations.steamWindowAssistantTitleStep3,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 20),
+            const Text("57FE16708AA112A68828C14A7469D21E"),
+            const SizedBox(height: 20),
+            Text(
+              appLocalizations.steamWindowAssistantStep3,
+              style: const TextStyle(fontSize: 14),
+            ),
+            const SizedBox(height: 40),
+            Row(
+              children: [
+                Text(
+                  appLocalizations.apiKeyText,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: Color.fromARGB(255, 235, 235, 235),
+                  ),
+                ),
+                Expanded(
+                  child: SizedBox(
+                    height: 30,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 8,
+                      ),
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.grey,
+                          width: 1.0,
+                        ),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: TextField(
+                        controller: steamApiController,
+                        style: TextStyle(color: Colors.white),
+                        onSubmitted: (value) {
+                          // Guardar el valor ingresado en la variable
+                          String steamApi = Constants.con[1].text;
+                          // Aquí puedes hacer lo que quieras con el valor ingresado
+                          // Por ejemplo, imprimirlo en la consola:
+                          print('Steam Api: $steamApi');
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
+      appLocalizations: appLocalizations,
+    );
+  }
+
+  factory SteamImportSteps.step4(
+    AppLocalizations appLocalizations,
+    OnFinishCallback onFinish, // Modificado para aceptar el enum
+    PlatformStore selectedPlatform,
+  ) {
+    return SteamImportSteps(
+      content: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // ...
+          ElevatedButton(
+            onPressed: () {
+              Map<String, dynamic> collectedData =
+                  _collectDataFromControllers();
+              // Llamar a la función de callback para entregar los datos recopilados
+              onFinish(collectedData, PlatformStore.Steam);
+              // Cerrar el diálogo después de enviar los datos
+              //Navigator.of(context).pop();
+            },
+            child: Text(appLocalizations.finish),
+          ),
+        ],
+      ),
+      appLocalizations: appLocalizations,
     );
   }
 
   @override
+  _SteamImportStepsState createState() => _SteamImportStepsState();
+}
+
+class _SteamImportStepsState extends State<SteamImportSteps> {
+  @override
+  void initState() {
+    super.initState();
+
+    //widget.steamIdController.addListener(_printLatestValue);
+  }
+
+  @override
+  void dispose() {
+    //widget.steamIdController.dispose();
+    super.dispose();
+  }
+
+  void _printLatestValue() {
+    //print('Second text field: ${widget.steamIdController.text}');
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return content; // Utilizar el widget proporcionado en lugar de mostrar el texto directamente
+    return widget.content;
   }
 }
