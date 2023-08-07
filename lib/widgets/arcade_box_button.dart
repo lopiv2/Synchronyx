@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:synchronyx/models/game.dart';
-import 'package:synchronyx/utilities/generic_functions.dart';
+import 'package:synchronyx/utilities/generic_database_functions.dart';
 
 var game = Game(
   id: 0,

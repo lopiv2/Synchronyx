@@ -5,10 +5,14 @@ import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import '../models/api.dart';
 import 'package:synchronyx/utilities/constants.dart';
 import 'package:synchronyx/widgets/arcade_box_button.dart';
 import '../models/game.dart';
 
+/* -------------------------------------------------------------------------- */
+/*                             DATABASE FUNCTIONS                             */
+/* -------------------------------------------------------------------------- */
 Future<Database?> createAndOpenDB() async {
   if (Platform.isWindows || Platform.isLinux) {
     // Initialize FFI
@@ -45,7 +49,7 @@ Future<Database?> createAndOpenDB() async {
         // Por ejemplo, para crear la tabla de juegos, puedes hacer lo siguiente:
         await db.execute(
           'CREATE TABLE IF NOT EXISTS games('
-          'id INTEGER PRIMARY KEY,'
+          'id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,'
           'title TEXT,'
           'description TEXT,'
           'boxColor TEXT,'
@@ -69,10 +73,11 @@ Future<Database?> createAndOpenDB() async {
         // Crear la tabla de apis
         await db.execute(
           'CREATE TABLE IF NOT EXISTS apis('
-          'id INTEGER PRIMARY KEY,'
+          'id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,'
           'name TEXT,'
           'url TEXT,'
-          'apiKey TEXT'
+          'apiKey TEXT,'
+          'steamId TEXT'
           ')',
         );
       },
@@ -86,7 +91,12 @@ Future<Database?> createAndOpenDB() async {
   }
 }
 
-// A method that retrieves all the games from the games table.
+/* -------------------------------------------------------------------------- */
+/*                                GET FUNCTIONS                               */
+/* -------------------------------------------------------------------------- */
+
+/* ------- A method that retrieves all the games from the games table. ------ */
+
 Future<List<Game>> getAllGames() async {
   // Get a reference to the database.
   final db = await Constants.database;
@@ -105,7 +115,11 @@ Future<List<Game>> getAllGames() async {
   });
 }
 
-///Deletes a game from the database
+/* -------------------------------------------------------------------------- */
+/*                              DELETE FUNCTIONS                              */
+/* -------------------------------------------------------------------------- */
+
+/* ------------------- ///Deletes a game from the database ------------------ */
 Future<void> deleteGame(int id) async {
   // Get a reference to the database.
   final db = await Constants.database;
@@ -120,7 +134,23 @@ Future<void> deleteGame(int id) async {
   );
 }
 
-///Inserts a game in database
+/* -------------------------------------------------------------------------- */
+/*                              INSERT FUNCTIONS                              */
+/* -------------------------------------------------------------------------- */
+
+/* ---------------------- ///Inserts an API in database --------------------- */
+Future<void> insertApi(Api api) async {
+  //var database = await createAndOpenDB();
+  await Constants.database?.insert(
+    'apis',
+    api.toMap(),
+    conflictAlgorithm: ConflictAlgorithm.replace,
+  );
+
+  await Constants.database?.close();
+}
+
+/* ---------------------- ///Inserts a game in database --------------------- */
 Future<void> insertGame(Game game) async {
   //var database = await createAndOpenDB();
   await Constants.database?.insert(
@@ -129,11 +159,14 @@ Future<void> insertGame(Game game) async {
     conflictAlgorithm: ConflictAlgorithm.replace,
   );
 
-  // Ahora puedes cerrar la base de datos después de la inserción
   await Constants.database?.close();
 }
 
-///Update a game in database
+/* -------------------------------------------------------------------------- */
+/*                              UPDATE FUNCTIONS                              */
+/* -------------------------------------------------------------------------- */
+
+/* ---------------------- ///Update a game in database ---------------------- */
 Future<void> updateGame(Game game) async {
   await Constants.database
       ?.update('games', game.toMap(), where: 'id = ?', whereArgs: [game.id]);

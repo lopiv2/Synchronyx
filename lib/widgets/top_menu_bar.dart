@@ -4,8 +4,10 @@ import 'package:synchronyx/screens/steam/steam_import_steps.dart';
 import 'package:synchronyx/utilities/constants.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:synchronyx/utilities/generic_functions.dart';
+import 'package:synchronyx/utilities/generic_database_functions.dart';
+import 'package:synchronyx/utilities/generic_api_functions.dart';
 import 'package:synchronyx/widgets/import_dialog.dart';
+import '../models/api.dart';
 
 MaterialStateProperty<Color?> myColor =
     MaterialStateProperty.resolveWith<Color?>(
@@ -13,17 +15,44 @@ MaterialStateProperty<Color?> myColor =
     return Constants.SIDE_BAR_COLOR; // Color normal
   },
 );
+// Crear una instancia de DioClient
+DioClient dioClient = DioClient();
 
 class MyMenuBar extends StatelessWidget {
   final AppLocalizations appLocalizations;
-  late PlatformStore store=PlatformStore.Amazon;
+  late PlatformStore store = PlatformStore.Amazon;
   MyMenuBar({Key? key, required this.appLocalizations}) : super(key: key);
 
   void _handleLastStepFinish(Map<String, dynamic> data, PlatformStore st) {
     // Aquí puedes hacer lo que necesites con los datos recopilados en el paso 4
     // Por ejemplo, imprimirlos en la consola:
-    print('Datos recopilados en el paso x: $data');
-    print('Store: $st ');
+    //print('Datos recopilados en el paso x: $data');
+    //print('Valor de steamIdController: ${data['steamIdController']}');
+    //print('Store: $st ');
+    switch (st) {
+      case PlatformStore.Steam:
+        var api = Api(
+          name: 'Steam',
+          url:
+              'https://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=',
+          apiKey: '${data['steamApiController']}',
+          steamId: '${data['steamIdController']}',
+        );
+        //insertApi(api);
+        dioClient
+            .getGames(
+                key: '${data['steamApiController']}',
+                steamId: '${data['steamIdController']}')
+            .then((_) {
+          // El método getGames se ha completado exitosamente
+          // Aquí puedes realizar cualquier acción adicional con los datos obtenidos
+        }).catchError((error) {
+          // Ocurrió un error al llamar al método getGames
+          // Aquí puedes manejar el error de acuerdo a tus necesidades
+        });
+        break;
+      default:
+    }
     // O llamar a otra función para procesar los datos
     // processCollectedData(data);
   }
@@ -261,10 +290,8 @@ class MyMenuBar extends StatelessWidget {
                                   SteamImportSteps.step1(appLocalizations),
                                   SteamImportSteps.step2(appLocalizations),
                                   SteamImportSteps.step3(appLocalizations),
-                                  SteamImportSteps.step4(
-                                      appLocalizations,
-                                      _handleLastStepFinish,
-                                      store),
+                                  SteamImportSteps.step4(appLocalizations,
+                                      _handleLastStepFinish, store),
                                   // Add more steps as needed
                                 ],
                               );

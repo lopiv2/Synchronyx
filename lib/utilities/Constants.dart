@@ -25,7 +25,8 @@ class Constants {
   static const SIDE_BAR_COLOR = Color.fromARGB(255, 56, 156, 75);
   static const BACKGROUND_START_COLOR = Color.fromARGB(255, 33, 187, 115);
   static const BACKGROUND_END_COLOR = Color.fromARGB(255, 5, 148, 29);
-  static List<TextEditingController> con = []; //Controladores de datos de los asistentes de importacion
+  static List<Map<String, TextEditingController>> controllerMapList = [];
+ //Controladores de datos de los asistentes de importacion
 
   static Database? database;
 

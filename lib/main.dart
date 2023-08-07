@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:synchronyx/utilities/generic_functions.dart';
+import 'package:synchronyx/utilities/generic_database_functions.dart';
 import 'package:synchronyx/widgets/top_menu_bar.dart';
 import 'widgets/arcade_box_button.dart';
 import 'widgets/drop_down_filter_order_games.dart';

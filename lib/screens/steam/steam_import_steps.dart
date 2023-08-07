@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:synchronyx/models/api.dart';
 import 'package:synchronyx/screens/generic_import_step.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:synchronyx/utilities/constants.dart';
@@ -14,9 +15,17 @@ class SteamImportSteps extends StatefulWidget {
   static Map<String, dynamic> _collectDataFromControllers() {
     Map<String, dynamic> collectedData = {};
 
-    for (int i = 0; i < Constants.con.length; i++) {
-      collectedData['step${i + 1}Data'] = Constants.con[i].text;
+    for (int i = 0; i < Constants.controllerMapList.length; i++) {
+      // Obtener el mapa de controladores correspondiente al paso i
+      Map<String, TextEditingController> controllerMap =
+          Constants.controllerMapList[i];
+
+      // Recorrer las claves (keys) del mapa y obtener los valores de los controladores
+      controllerMap.forEach((key, controller) {
+        collectedData['$key'] = controller.text;
+      });
     }
+
     return collectedData;
   }
 
@@ -37,18 +46,15 @@ class SteamImportSteps extends StatefulWidget {
     );
   }
 
+//STEAM ID
   factory SteamImportSteps.step2(
     AppLocalizations appLocalizations,
   ) {
-    TextEditingController steamIdController;
-    if (Constants.con.isNotEmpty) {
-      // Si hay al menos un controlador en la lista, accede al primero para este paso
-      steamIdController = Constants.con[0];
-    } else {
-      // Si la lista está vacía, crea un nuevo controlador y agrégalo a la lista
-      steamIdController = TextEditingController();
-      Constants.con.add(steamIdController);
-    }
+    TextEditingController steamIdController = TextEditingController();
+    Map<String, TextEditingController> controller1Map = {
+      'steamIdController': steamIdController,
+    };
+    Constants.controllerMapList.add(controller1Map);
     return SteamImportSteps(
       content: Container(
         alignment: Alignment.centerLeft,
@@ -95,13 +101,14 @@ class SteamImportSteps extends StatefulWidget {
                       child: TextField(
                         controller: steamIdController,
                         enabled: true,
+                        enableInteractiveSelection: true,
                         style: TextStyle(color: Colors.white),
                         onSubmitted: (value) {
                           // Guardar el valor ingresado en la variable
-                          String steamId = Constants.con[0].text;
+                          //String steamId = Constants.con[0].text;
                           // Aquí puedes hacer lo que quieras con el valor ingresado
                           // Por ejemplo, imprimirlo en la consola:
-                          print('Steam ID: $steamId');
+                          //print('Steam ID: $steamId');
                         },
                         // Add properties to the TextField as needed
                       ),
@@ -117,16 +124,21 @@ class SteamImportSteps extends StatefulWidget {
     );
   }
 
+//API key
   factory SteamImportSteps.step3(AppLocalizations appLocalizations) {
-    TextEditingController steamApiController;
-    if (Constants.con.length >= 2) {
+    TextEditingController steamApiController = TextEditingController();
+    Map<String, TextEditingController> controller2Map = {
+      'steamApiController': steamApiController,
+    };
+    Constants.controllerMapList.add(controller2Map);
+    /*if (Constants.con.length >= 2) {
       // Si hay al menos dos controladores en la lista, accede al segundo para este paso
       steamApiController = Constants.con[1];
     } else {
       // Si no hay suficientes controladores, crea uno nuevo y agrégalo a la lista
       steamApiController = TextEditingController();
       Constants.con.add(steamApiController);
-    }
+    }*/
     return SteamImportSteps(
       content: Container(
         alignment: Alignment.centerLeft,
@@ -175,10 +187,10 @@ class SteamImportSteps extends StatefulWidget {
                         style: TextStyle(color: Colors.white),
                         onSubmitted: (value) {
                           // Guardar el valor ingresado en la variable
-                          String steamApi = Constants.con[1].text;
+                          //String steamApi = Constants.con[1].text;
                           // Aquí puedes hacer lo que quieras con el valor ingresado
                           // Por ejemplo, imprimirlo en la consola:
-                          print('Steam Api: $steamApi');
+                          //print('Steam Api: $steamApi');
                         },
                       ),
                     ),
