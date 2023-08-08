@@ -115,6 +115,36 @@ Future<List<Game>> getAllGames() async {
   });
 }
 
+Future<Api?> checkApiByName(String name) async {
+  final db = await Constants.database;
+  var apis = await db!.query('apis', where: 'name = ?', whereArgs: [name]);
+  if (apis.isNotEmpty) {
+    // Return the first API found (assuming 'name' is unique in the database)
+    return Api.fromMap(apis.first);
+  } else {
+    return null; // Return null if no matching API is found
+  }
+}
+
+/* ----- A method to check if some Api with "steam" name exists ----- */
+Future<bool> checkIfSteamApiDataExist() async {
+  // Get a reference to the database.
+  final db = await Constants.database;
+
+  // Perform the query in the database.
+  final List<Map<String, dynamic>> maps = await db!.query(
+    'apis',
+    where: 'name = ?',
+    whereArgs: ['steam', 'Steam'],
+  );
+
+  // Close the database after use.
+  await db.close();
+
+  // Check if any api with the name "steam" was found.".
+  return maps.isNotEmpty;
+}
+
 /* -------------------------------------------------------------------------- */
 /*                              DELETE FUNCTIONS                              */
 /* -------------------------------------------------------------------------- */

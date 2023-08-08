@@ -147,7 +147,9 @@ class _ImportDialogState extends State<ImportDialog> {
                       if (_currentStep == widget.steps.length - 1)
                         ElevatedButton(
                           onPressed: () {
-                            // Llamar a la función onFinishPressed y pasar el valor de steamIdValue
+                            // Resets Static vars for avoiding garbage in memory
+                            Constants.foundApiBeforeImport = null;
+                            Constants.controllerMapList=[];
                             Navigator.of(context).pop();
                           },
                           child: Text(widget.appLocalizations.finish),

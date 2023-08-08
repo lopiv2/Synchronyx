@@ -5,6 +5,8 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:sqflite_common/sqlite_api.dart';
 
+import '../models/api.dart';
+
 enum PlatformStore {
   Amazon,
   BattleNet,
@@ -26,6 +28,7 @@ class Constants {
   static const BACKGROUND_START_COLOR = Color.fromARGB(255, 33, 187, 115);
   static const BACKGROUND_END_COLOR = Color.fromARGB(255, 5, 148, 29);
   static List<Map<String, TextEditingController>> controllerMapList = [];
+  static Api? foundApiBeforeImport;
  //Controladores de datos de los asistentes de importacion
 
   static Database? database;

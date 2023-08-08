@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:synchronyx/models/api.dart';
 import 'package:synchronyx/screens/generic_import_step.dart';
+import 'package:synchronyx/utilities/generic_database_functions.dart'
+    as databaseFunctions;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:synchronyx/utilities/constants.dart';
 
@@ -211,22 +213,40 @@ class SteamImportSteps extends StatefulWidget {
     PlatformStore selectedPlatform,
   ) {
     return SteamImportSteps(
-      content: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // ...
-          ElevatedButton(
-            onPressed: () {
-              Map<String, dynamic> collectedData =
-                  _collectDataFromControllers();
-              // Llamar a la función de callback para entregar los datos recopilados
-              onFinish(collectedData, PlatformStore.Steam);
-              // Cerrar el diálogo después de enviar los datos
-              //Navigator.of(context).pop();
-            },
-            child: Text(appLocalizations.finish),
-          ),
-        ],
+      content: Container(
+        alignment: Alignment.centerLeft,
+        padding: const EdgeInsets.only(left: 40, top: 10, right: 10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              appLocalizations.steamWindowAssistantTitleStep4,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              appLocalizations.steamWindowAssistantStep4,
+              style: const TextStyle(fontSize: 14),
+            ),
+            const SizedBox(height: 40),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    Map<String, dynamic> collectedData =
+                        _collectDataFromControllers();
+                    // Llamar a la función de callback para entregar los datos recopilados
+                    onFinish(collectedData, PlatformStore.Steam);
+                    // Cerrar el diálogo después de enviar los datos
+                    //Navigator.of(context).pop();
+                  },
+                  child: Text(appLocalizations.finish),
+                ),
+              ],
+            )
+          ],
+        ),
       ),
       appLocalizations: appLocalizations,
     );
@@ -240,8 +260,15 @@ class _SteamImportStepsState extends State<SteamImportSteps> {
   @override
   void initState() {
     super.initState();
-
+    _loadFoundApi();
     //widget.steamIdController.addListener(_printLatestValue);
+  }
+
+  Future<void> _loadFoundApi() async {
+    final Api? foundApi = await databaseFunctions.checkApiByName("Steam");
+    setState(() {
+      Constants.foundApiBeforeImport = foundApi;
+    });
   }
 
   @override

@@ -35,6 +35,8 @@
     "steamWindowAssistantTitleStep3":"Introduce tu Clave Api de Steam para poder importar todos tus juegos",
     "steamWindowAssistantStep3": "Para poder ver tu Clave API de Steam pulsa en el siguiente link. Si no te has registrado, para obtener una, introduce cualquier nombre en nombre de dominio, acepta los terminos y registrate.",
     "steamWindowAssistantLinkStep3": "https://steamcommunity.com/dev/apikey/",
+    "steamWindowAssistantTitleStep4":"Importar juegos...",
+    "steamWindowAssistantStep4": "Pulsa comenzar para la importación de juegos desde Steam",
     "uplayWindowAssistant": "Asistente de importación de juegos de Uplay",
     "winWindowAssistant": "Asistente de importación de juegos de Windows",
     "xboxWindowAssistant": "Asistente de importación de juegos de XBox/Tienda Microsoft",
