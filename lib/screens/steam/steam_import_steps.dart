@@ -106,11 +106,7 @@ class SteamImportSteps extends StatefulWidget {
                         enableInteractiveSelection: true,
                         style: TextStyle(color: Colors.white),
                         onSubmitted: (value) {
-                          // Guardar el valor ingresado en la variable
-                          //String steamId = Constants.con[0].text;
-                          // Aquí puedes hacer lo que quieras con el valor ingresado
-                          // Por ejemplo, imprimirlo en la consola:
-                          //print('Steam ID: $steamId');
+
                         },
                         // Add properties to the TextField as needed
                       ),

@@ -29,7 +29,7 @@ class _ImageCoverModel extends State<ImageCoverModel>
       if (_animationController.value > 0.5) {
         setState(() {
           showAdditionalOverlay = true;
-          print("hola");
+          //print("hola");
         });
       } else if (_animationController.status == AnimationStatus.dismissed) {
         setState(() {

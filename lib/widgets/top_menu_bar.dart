@@ -57,12 +57,12 @@ class MyMenuBar extends StatelessWidget {
         }
 
         dioClient
-            .getGames(key: '${api.apiKey}', steamId: '${api.steamId}')
+            .getAndImportGames(key: '${api.apiKey}', steamId: '${api.steamId}')
             .then((_) {
-          // El método getGames se ha completado exitosamente
+          // El método getAndImportGames se ha completado exitosamente
           // Aquí puedes realizar cualquier acción adicional con los datos obtenidos
         }).catchError((error) {
-          // Ocurrió un error al llamar al método getGames
+          // Ocurrió un error al llamar al método getAndImportGames
           // Aquí puedes manejar el error de acuerdo a tus necesidades
         });
         break;
@@ -305,11 +305,8 @@ class MyMenuBar extends StatelessWidget {
                                   SteamImportSteps.step1(appLocalizations),
                                   //If no API config is found, all steps
                                   // ignore: unrelated_type_equality_checks
-                                  if (Constants.foundApiBeforeImport==Null)
+                                  if (Constants.foundApiBeforeImport == null)
                                     SteamImportSteps.step2(appLocalizations),
-                                  // ignore: unrelated_type_equality_checks
-                                  if (Constants.foundApiBeforeImport==Null)
-                                    SteamImportSteps.step3(appLocalizations),
                                   SteamImportSteps.step4(appLocalizations,
                                       _handleLastStepFinish, store),
                                   // Add more steps as needed

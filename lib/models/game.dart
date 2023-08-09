@@ -3,8 +3,7 @@ class Game {
   String title;
   String description;
   String boxColor;
-  String coverImage;
-  String backImage;
+  int mediaId;
   String platform;
   List<String> genres;
   int maxPlayers;
@@ -24,8 +23,7 @@ class Game {
     required this.title,
     required this.description,
     this.boxColor = '',
-    this.coverImage = '',
-    this.backImage = '',
+    this.mediaId = 0,
     this.platform = '',
     this.genres = const [],
     this.maxPlayers = 1,
@@ -47,8 +45,7 @@ class Game {
       'title': title,
       'description': description,
       'boxColor': boxColor,
-      'coverImage': coverImage,
-      'backImage': backImage,
+      'mediaId': mediaId,
       'platform': platform,
       'genres': genres,
       'maxPlayers': maxPlayers,
@@ -67,6 +64,6 @@ class Game {
 
   @override
   String toString() {
-    return 'Game{id: $id, title: $title, description: $description,boxColor: $boxColor, coverImage: $coverImage, backImage: $backImage, platform: $platform, genres: $genres, maxPlayers: $maxPlayers, developer: $developer, publisher: $publisher, region: $region, file: $file, releaseYear: $releaseYear, rating: $rating, favorite: $favorite, playTime: $playTime, lastPlayed: $lastPlayed, tags: $tags}';
+    return 'Game{id: $id, title: $title, description: $description,boxColor: $boxColor, mediaId: $mediaId, platform: $platform, genres: $genres, maxPlayers: $maxPlayers, developer: $developer, publisher: $publisher, region: $region, file: $file, releaseYear: $releaseYear, rating: $rating, favorite: $favorite, playTime: $playTime, lastPlayed: $lastPlayed, tags: $tags}';
   }
 }

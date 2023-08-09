@@ -20,6 +20,8 @@ void main() async {
     win.show();
   });
   Constants.database = await createAndOpenDB();
+  Constants.database = await openExistingDatabase();
+  print('${Constants.database}');
 }
 
 class MyApp extends StatelessWidget {

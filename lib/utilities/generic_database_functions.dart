@@ -13,6 +13,21 @@ import '../models/game.dart';
 /* -------------------------------------------------------------------------- */
 /*                             DATABASE FUNCTIONS                             */
 /* -------------------------------------------------------------------------- */
+
+Future<Database?> openExistingDatabase() async {
+  if (Constants.database != null) {
+    return Constants.database;
+  }
+  var databasesPath = await getDatabasesPath();
+  String path = join(databasesPath, 'synchronyx.db');
+  var exists = await databaseExists(path);
+
+  // Abrir la base de datos si aún no está abierta
+  Constants.database = await openDatabase(path);
+
+  return Constants.database;
+}
+
 Future<Database?> createAndOpenDB() async {
   if (Platform.isWindows || Platform.isLinux) {
     // Initialize FFI
@@ -116,13 +131,18 @@ Future<List<Game>> getAllGames() async {
 }
 
 Future<Api?> checkApiByName(String name) async {
-  final db = await Constants.database;
-  var apis = await db!.query('apis', where: 'name = ?', whereArgs: [name]);
-  if (apis.isNotEmpty) {
-    // Return the first API found (assuming 'name' is unique in the database)
-    return Api.fromMap(apis.first);
-  } else {
-    return null; // Return null if no matching API is found
+  print('Base de datos abierta en:${Constants.database}');
+  // Verifica si la base de datos está abierta antes de continuar
+  if (Constants.database != null) {
+    var apis = await Constants.database
+        ?.query('apis', where: 'name = ?', whereArgs: [name]);
+    if (apis!.isNotEmpty) {
+      // Return the first API found (assuming 'name' is unique in the database)
+      //print(apis.first);
+      return Api.fromMap(apis.first);
+    } else {
+      return null; // Return null if no matching API is found
+    }
   }
 }
 
