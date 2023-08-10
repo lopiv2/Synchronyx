@@ -27,7 +27,6 @@ class SteamImportSteps extends StatefulWidget {
         collectedData['$key'] = controller.text;
       });
     }
-
     return collectedData;
   }
 
@@ -105,9 +104,7 @@ class SteamImportSteps extends StatefulWidget {
                         enabled: true,
                         enableInteractiveSelection: true,
                         style: TextStyle(color: Colors.white),
-                        onSubmitted: (value) {
-
-                        },
+                        onSubmitted: (value) {},
                         // Add properties to the TextField as needed
                       ),
                     ),
@@ -279,6 +276,7 @@ class _SteamImportStepsState extends State<SteamImportSteps> {
 
   @override
   Widget build(BuildContext context) {
+    //print(Constants.foundApiBeforeImport);
     return widget.content;
   }
 }

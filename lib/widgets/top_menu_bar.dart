@@ -22,6 +22,7 @@ DioClient dioClient = DioClient();
 class MyMenuBar extends StatelessWidget {
   final AppLocalizations appLocalizations;
   late PlatformStore store = PlatformStore.Amazon;
+
   MyMenuBar({Key? key, required this.appLocalizations}) : super(key: key);
 
   void _handleLastStepFinish(Map<String, dynamic> data, PlatformStore st) {
@@ -39,6 +40,8 @@ class MyMenuBar extends StatelessWidget {
       api.url = Constants.foundApiBeforeImport!.url;
       api.apiKey = Constants.foundApiBeforeImport!.apiKey;
     }
+
+    print(api);
 
     switch (st) {
       case PlatformStore.Steam:
@@ -295,22 +298,45 @@ class MyMenuBar extends StatelessWidget {
                             context: context,
                             barrierDismissible: false,
                             builder: (context) {
-                              return ImportDialog(
-                                appLocalizations: appLocalizations!,
-                                iconColor: Color.fromARGB(255, 12, 66, 94),
-                                titleIcon: CustomIcons.steam,
-                                title: appLocalizations.importSteamWindowTitle,
-                                steps: [
-                                  // Aquí colocas los widgets que representan el contenido de cada paso
-                                  SteamImportSteps.step1(appLocalizations),
-                                  //If no API config is found, all steps
-                                  // ignore: unrelated_type_equality_checks
-                                  if (Constants.foundApiBeforeImport == null)
-                                    SteamImportSteps.step2(appLocalizations),
-                                  SteamImportSteps.step4(appLocalizations,
-                                      _handleLastStepFinish, store),
-                                  // Add more steps as needed
-                                ],
+                              return FutureBuilder<Api?>(
+                                future:
+                                    databaseFunctions.checkApiByName("Steam"),
+                                builder: (context, snapshot) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    // Muestra un indicador de carga si estás esperando la respuesta
+                                    return CircularProgressIndicator();
+                                  } else {
+                                    // Verifica si Constants.foundApiBeforeImport es nulo o no
+                                    bool apiExists = snapshot.data != null;
+
+                                    List<Widget> steps = [
+                                      SteamImportSteps.step1(appLocalizations),
+                                    ];
+
+                                    if (!apiExists) {
+                                      steps.add(SteamImportSteps.step2(
+                                          appLocalizations));
+                                      steps.add(SteamImportSteps.step3(
+                                          appLocalizations));
+                                    }
+
+                                    steps.add(SteamImportSteps.step4(
+                                        appLocalizations,
+                                        _handleLastStepFinish,
+                                        store));
+
+                                    return ImportDialog(
+                                      appLocalizations: appLocalizations!,
+                                      iconColor:
+                                          Color.fromARGB(255, 12, 66, 94),
+                                      titleIcon: CustomIcons.steam,
+                                      title: appLocalizations
+                                          .importSteamWindowTitle,
+                                      steps: steps,
+                                    );
+                                  }
+                                },
                               );
                             },
                           );

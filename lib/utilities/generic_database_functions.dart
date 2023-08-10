@@ -131,7 +131,7 @@ Future<List<Game>> getAllGames() async {
 }
 
 Future<Api?> checkApiByName(String name) async {
-  print('Base de datos abierta en:${Constants.database}');
+  //print('Base de datos abierta en:${Constants.database}');
   // Verifica si la base de datos está abierta antes de continuar
   if (Constants.database != null) {
     var apis = await Constants.database
@@ -159,7 +159,7 @@ Future<bool> checkIfSteamApiDataExist() async {
   );
 
   // Close the database after use.
-  await db.close();
+  //await db.close();
 
   // Check if any api with the name "steam" was found.".
   return maps.isNotEmpty;

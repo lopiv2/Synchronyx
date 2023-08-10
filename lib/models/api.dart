@@ -25,7 +25,7 @@ class Api {
 
   @override
   String toString() {
-    return 'Game{id: $id, name: $name, url: $url,apiKey: $apiKey, steamId: $steamId}';
+    return 'Api{id: $id, name: $name, url: $url,apiKey: $apiKey, steamId: $steamId}';
   }
 
   static Api fromMap(Map<String, dynamic> map) {
