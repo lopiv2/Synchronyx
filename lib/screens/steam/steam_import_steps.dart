@@ -126,14 +126,6 @@ class SteamImportSteps extends StatefulWidget {
       'steamApiController': steamApiController,
     };
     Constants.controllerMapList.add(controller2Map);
-    /*if (Constants.con.length >= 2) {
-      // Si hay al menos dos controladores en la lista, accede al segundo para este paso
-      steamApiController = Constants.con[1];
-    } else {
-      // Si no hay suficientes controladores, crea uno nuevo y agrégalo a la lista
-      steamApiController = TextEditingController();
-      Constants.con.add(steamApiController);
-    }*/
     return SteamImportSteps(
       content: Container(
         alignment: Alignment.centerLeft,

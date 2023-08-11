@@ -22,7 +22,7 @@ Future<Database?> openExistingDatabase() async {
   String path = join(databasesPath, 'synchronyx.db');
   var exists = await databaseExists(path);
 
-  // Abrir la base de datos si aún no está abierta
+  // Open database if not already open
   Constants.database = await openDatabase(path);
 
   return Constants.database;
@@ -57,19 +57,17 @@ Future<Database?> createAndOpenDB() async {
     Constants.database = await openDatabase(
       path,
       onConfigure: (db) {
-        // Aquí puedes realizar cualquier configuración adicional de la base de datos antes de que se abra
+        // Here you can perform any additional database configuration before it is opened.
       },
       onCreate: (db, version) async {
-        // Aquí puedes crear las tablas utilizando la función db.execute
-        // Por ejemplo, para crear la tabla de juegos, puedes hacer lo siguiente:
+        // Create the games table
         await db.execute(
           'CREATE TABLE IF NOT EXISTS games('
           'id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,'
           'title TEXT,'
           'description TEXT,'
           'boxColor TEXT,'
-          'coverImage TEXT,'
-          'backImage TEXT,'
+          'mediaId INTEGER,'
           'platform TEXT,'
           'genres TEXT,'
           'maxPlayers INTEGER,'
@@ -85,7 +83,7 @@ Future<Database?> createAndOpenDB() async {
           'tags TEXT'
           ')',
         );
-        // Crear la tabla de apis
+        // Create the apis table
         await db.execute(
           'CREATE TABLE IF NOT EXISTS apis('
           'id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,'
@@ -93,6 +91,18 @@ Future<Database?> createAndOpenDB() async {
           'url TEXT,'
           'apiKey TEXT,'
           'steamId TEXT'
+          ')',
+        );
+        // Create the Medias table
+        await db.execute(
+          'CREATE TABLE IF NOT EXISTS medias('
+          'id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,'
+          'gameId INTEGER,'
+          'coverImageUrl TEXT,'
+          'backImageUrl TEXT,'
+          'diskImageUrl TEXT,'
+          'videoUrl TEXT,'
+          'iconUrl TEXT'
           ')',
         );
       },
@@ -125,14 +135,14 @@ Future<List<Game>> getAllGames() async {
       id: maps[i]['id'],
       title: maps[i]['title'],
       description: maps[i]['description'],
-      lastPlayed: maps[i]['lastPlayed'],
+      //lastPlayed: maps[i]['lastPlayed'],
     );
   });
 }
 
 Future<Api?> checkApiByName(String name) async {
   //print('Base de datos abierta en:${Constants.database}');
-  // Verifica si la base de datos está abierta antes de continuar
+  // Verify if the database is open before continuing
   if (Constants.database != null) {
     var apis = await Constants.database
         ?.query('apis', where: 'name = ?', whereArgs: [name]);
@@ -197,7 +207,7 @@ Future<void> insertApi(Api api) async {
     conflictAlgorithm: ConflictAlgorithm.replace,
   );
 
-  await Constants.database?.close();
+  //await Constants.database?.close();
 }
 
 /* ---------------------- ///Inserts a game in database --------------------- */
@@ -209,7 +219,7 @@ Future<void> insertGame(Game game) async {
     conflictAlgorithm: ConflictAlgorithm.replace,
   );
 
-  await Constants.database?.close();
+  //await Constants.database?.close();
 }
 
 /* -------------------------------------------------------------------------- */
@@ -221,6 +231,6 @@ Future<void> updateGame(Game game) async {
   await Constants.database
       ?.update('games', game.toMap(), where: 'id = ?', whereArgs: [game.id]);
 
-  // Ahora puedes cerrar la base de datos después de la actualizacion
-  await Constants.database?.close();
+  // Now you can close the database after the update.
+  //await Constants.database?.close();
 }

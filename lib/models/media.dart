@@ -8,7 +8,7 @@ class Media {
   String iconUrl;
 
   Media({
-    required this.id,
+    this.id = 0,
     required this.gameId,
     this.coverImageUrl = '',
     this.backImageUrl = '',

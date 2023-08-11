@@ -21,7 +21,7 @@ void main() async {
   });
   Constants.database = await createAndOpenDB();
   Constants.database = await openExistingDatabase();
-  print('${Constants.database}');
+  //print('${Constants.database}');
 }
 
 class MyApp extends StatelessWidget {

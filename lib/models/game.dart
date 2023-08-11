@@ -15,13 +15,13 @@ class Game {
   double rating;
   bool favorite;
   int playTime;
-  DateTime lastPlayed;
+  DateTime lastPlayed = DateTime.now();
   List<String> tags;
 
   Game({
-    required this.id,
+    this.id = 0,
     required this.title,
-    required this.description,
+    this.description = '',
     this.boxColor = '',
     this.mediaId = 0,
     this.platform = '',
@@ -35,7 +35,7 @@ class Game {
     this.rating = 0.0,
     this.favorite = false,
     this.playTime = 0,
-    required this.lastPlayed,
+    //this.lastPlayed=,
     this.tags = const [],
   });
 

@@ -41,7 +41,7 @@ class MyMenuBar extends StatelessWidget {
       api.apiKey = Constants.foundApiBeforeImport!.apiKey;
     }
 
-    print(api);
+    //print(api);
 
     switch (st) {
       case PlatformStore.Steam:
@@ -58,14 +58,14 @@ class MyMenuBar extends StatelessWidget {
           api.steamId = '${data['steamIdController']}';
           databaseFunctions.insertApi(api);
         }
-
         dioClient
-            .getAndImportGames(key: '${api.apiKey}', steamId: '${api.steamId}')
+            .getAndImportSteamGames(
+                key: '${api.apiKey}', steamId: '${api.steamId}')
             .then((_) {
-          // El método getAndImportGames se ha completado exitosamente
+          // El método getAndImportSteamGames se ha completado exitosamente
           // Aquí puedes realizar cualquier acción adicional con los datos obtenidos
         }).catchError((error) {
-          // Ocurrió un error al llamar al método getAndImportGames
+          // Ocurrió un error al llamar al método getAndImportSteamGames
           // Aquí puedes manejar el error de acuerdo a tus necesidades
         });
         break;
