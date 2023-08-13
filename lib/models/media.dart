@@ -1,6 +1,6 @@
 class Media {
   int id;
-  int gameId;
+  String name;
   String coverImageUrl;
   String backImageUrl;
   String diskImageUrl;
@@ -9,7 +9,7 @@ class Media {
 
   Media({
     this.id = 0,
-    required this.gameId,
+    this.name = '',
     this.coverImageUrl = '',
     this.backImageUrl = '',
     this.diskImageUrl = '',
@@ -20,7 +20,7 @@ class Media {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'gameId': gameId,
+      'name': name,
       'coverImageUrl': coverImageUrl,
       'backImageUrl': backImageUrl,
       'diskImageUrl': diskImageUrl,
@@ -31,6 +31,18 @@ class Media {
 
   @override
   String toString() {
-    return 'Media{id: $id, gameId: $gameId, coverImageUrl: $coverImageUrl,backImageUrl: $backImageUrl, diskImageUrl: $diskImageUrl, videoUrl: $videoUrl, iconUrl: $iconUrl}';
+    return 'Media{id: $id, name: $name, coverImageUrl: $coverImageUrl,backImageUrl: $backImageUrl, diskImageUrl: $diskImageUrl, videoUrl: $videoUrl, iconUrl: $iconUrl}';
+  }
+
+  static Media fromMap(Map<String, dynamic> map) {
+    return Media(
+      id: map['id'] ?? 0,
+      name: map['name'] ?? '',
+      coverImageUrl: map['coverImageUrl'],
+      backImageUrl: map['backImageUrl'] ?? '',
+      diskImageUrl: map['diskImageUrl'] ?? '',
+      videoUrl: map['videoUrl'] ?? '',
+      iconUrl: map['iconUrl'] ?? '',
+    );
   }
 }

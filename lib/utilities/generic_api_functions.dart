@@ -36,19 +36,25 @@ class DioClient {
     List<dynamic> gamesList = responseData['response']['games'];
 
     for (var game in gamesList) {
+      //print(game);
       int appId = game['appid'];
       String name = game['name'];
       int playtime = game['playtime_forever'];
+      String icon=game['img_icon_url'];
+      String iconUrl= 'http://media.steampowered.com/steamcommunity/public/images/apps/$appId/$icon.jpg';
 
-      print('$game');
+      //print(iconUrl);
+      var mediaInsert=Media(iconUrl: iconUrl ,name: name);
+      await databaseFunctions.insertMedia(mediaInsert);
+      Media? mediaInfo=await databaseFunctions.getMediaByName(name);
 
-      /*print('Game ID: $appId');
-      print('Game Name: $name');
-      print('Playtime: $playtime minutes');
-      print('---');*/
+      //print(mediaInfo!.id);
       //var mediaInsert=new Media(coverImageUrl: ,backImageUrl: ,diskImageUrl: ,videoUrl: ,iconUrl: )
-      var gameInsert = new Game(title: name, playTime: playtime);
-      //databaseFunctions.insertGame(gameInsert);
+      List<String> tag=List.empty(growable: true);
+      tag.add("prueba");
+      tag.add("adios");
+      var gameInsert = Game(title: name, playTime: playtime, mediaId: mediaInfo!.id, tags: tag.join(','));
+      await databaseFunctions.insertGame(gameInsert);
       break;
     }
   }

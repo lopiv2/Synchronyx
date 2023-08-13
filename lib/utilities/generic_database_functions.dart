@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:synchronyx/models/media.dart';
 import '../models/api.dart';
 import 'package:synchronyx/utilities/constants.dart';
 import 'package:synchronyx/widgets/arcade_box_button.dart';
@@ -97,7 +98,7 @@ Future<Database?> createAndOpenDB() async {
         await db.execute(
           'CREATE TABLE IF NOT EXISTS medias('
           'id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,'
-          'gameId INTEGER,'
+          'name TEXT,'
           'coverImageUrl TEXT,'
           'backImageUrl TEXT,'
           'diskImageUrl TEXT,'
@@ -121,7 +122,6 @@ Future<Database?> createAndOpenDB() async {
 /* -------------------------------------------------------------------------- */
 
 /* ------- A method that retrieves all the games from the games table. ------ */
-
 Future<List<Game>> getAllGames() async {
   // Get a reference to the database.
   final db = await Constants.database;
@@ -134,12 +134,15 @@ Future<List<Game>> getAllGames() async {
     return Game(
       id: maps[i]['id'],
       title: maps[i]['title'],
+      mediaId: maps[i]['mediaId'],
       description: maps[i]['description'],
       //lastPlayed: maps[i]['lastPlayed'],
     );
   });
-}
+} 
 
+
+/* ---------------------------- Check Api by name --------------------------- */
 Future<Api?> checkApiByName(String name) async {
   //print('Base de datos abierta en:${Constants.database}');
   // Verify if the database is open before continuing
@@ -156,23 +159,38 @@ Future<Api?> checkApiByName(String name) async {
   }
 }
 
-/* ----- A method to check if some Api with "steam" name exists ----- */
-Future<bool> checkIfSteamApiDataExist() async {
-  // Get a reference to the database.
-  final db = await Constants.database;
+/* ----------- Gets media record from database with name parameter ---------- */
+Future<Media?> getMediaByName(String name) async {
+  //print('Base de datos abierta en:${Constants.database}');
+  // Verify if the database is open before continuing
+  if (Constants.database != null) {
+    var media = await Constants.database
+        ?.query('medias', where: 'name = ?', whereArgs: [name]);
+    if (media!.isNotEmpty) {
+      // Return the first API found (assuming 'name' is unique in the database)
+      //print(apis.first);
+      return Media.fromMap(media.first);
+    } else {
+      return null; // Return null if no matching API is found
+    }
+  }
+}
 
-  // Perform the query in the database.
-  final List<Map<String, dynamic>> maps = await db!.query(
-    'apis',
-    where: 'name = ?',
-    whereArgs: ['steam', 'Steam'],
-  );
-
-  // Close the database after use.
-  //await db.close();
-
-  // Check if any api with the name "steam" was found.".
-  return maps.isNotEmpty;
+/* ----------- Gets media record from database with id parameter ---------- */
+Future<Media?> getMediaById(int id) async {
+  //print('Base de datos abierta en:${Constants.database}');
+  // Verify if the database is open before continuing
+  if (Constants.database != null) {
+    var media = await Constants.database
+        ?.query('medias', where: 'id = ?', whereArgs: [id]);
+    if (media!.isNotEmpty) {
+      // Return the first API found (assuming 'name' is unique in the database)
+      //print(apis.first);
+      return Media.fromMap(media.first);
+    } else {
+      return null; // Return null if no matching API is found
+    }
+  }
 }
 
 /* -------------------------------------------------------------------------- */
@@ -210,12 +228,22 @@ Future<void> insertApi(Api api) async {
   //await Constants.database?.close();
 }
 
-/* ---------------------- ///Inserts a game in database --------------------- */
+/* ---------------------- Inserts a game in database --------------------- */
 Future<void> insertGame(Game game) async {
-  //var database = await createAndOpenDB();
+  print(game);
   await Constants.database?.insert(
     'games',
     game.toMap(),
+    conflictAlgorithm: ConflictAlgorithm.replace,
+  );
+}
+
+/* ------------------------ Inserts media in database ----------------------- */
+Future<void> insertMedia(Media media) async {
+  //var database = await createAndOpenDB();
+  await Constants.database?.insert(
+    'medias',
+    media.toMap(),
     conflictAlgorithm: ConflictAlgorithm.replace,
   );
 

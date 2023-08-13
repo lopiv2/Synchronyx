@@ -5,7 +5,7 @@ class Game {
   String boxColor;
   int mediaId;
   String platform;
-  List<String> genres;
+  String genres; //List of genres joined by commas
   int maxPlayers;
   String developer;
   String publisher;
@@ -13,10 +13,10 @@ class Game {
   String file;
   int releaseYear;
   double rating;
-  bool favorite;
+  int favorite; //boolean
   int playTime;
-  DateTime lastPlayed = DateTime.now();
-  List<String> tags;
+  DateTime? lastPlayed = DateTime.now();
+  String tags; //List of tags joined by commas also
 
   Game({
     this.id = 0,
@@ -25,7 +25,7 @@ class Game {
     this.boxColor = '',
     this.mediaId = 0,
     this.platform = '',
-    this.genres = const [],
+    this.genres = '',
     this.maxPlayers = 1,
     this.developer = '',
     this.publisher = '',
@@ -33,10 +33,10 @@ class Game {
     this.file = '',
     this.releaseYear = 0,
     this.rating = 0.0,
-    this.favorite = false,
+    this.favorite = 0,
     this.playTime = 0,
-    //this.lastPlayed=,
-    this.tags = const [],
+    this.lastPlayed,
+    this.tags = '',
   });
 
   Map<String, dynamic> toMap() {
@@ -57,7 +57,7 @@ class Game {
       'rating': rating,
       'favorite': favorite,
       'playTime': playTime,
-      'lastPlayed': lastPlayed.toLocal(),
+      'lastPlayed': lastPlayed?.toLocal(),
       'tags': tags,
     };
   }
