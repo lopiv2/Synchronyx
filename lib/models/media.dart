@@ -6,6 +6,7 @@ class Media {
   String diskImageUrl;
   String videoUrl;
   String iconUrl;
+  String logoUrl;
 
   Media({
     this.id = 0,
@@ -15,6 +16,7 @@ class Media {
     this.diskImageUrl = '',
     this.videoUrl = '',
     this.iconUrl = '',
+    this.logoUrl = '',
   });
 
   Map<String, dynamic> toMap() {
@@ -26,12 +28,13 @@ class Media {
       'diskImageUrl': diskImageUrl,
       'videoUrl': videoUrl,
       'iconUrl': iconUrl,
+      'logoUrl': logoUrl,
     };
   }
 
   @override
   String toString() {
-    return 'Media{id: $id, name: $name, coverImageUrl: $coverImageUrl,backImageUrl: $backImageUrl, diskImageUrl: $diskImageUrl, videoUrl: $videoUrl, iconUrl: $iconUrl}';
+    return 'Media{id: $id, name: $name, coverImageUrl: $coverImageUrl,backImageUrl: $backImageUrl, diskImageUrl: $diskImageUrl, videoUrl: $videoUrl, iconUrl: $iconUrl, logoUrl: $logoUrl}';
   }
 
   static Media fromMap(Map<String, dynamic> map) {
@@ -43,6 +46,7 @@ class Media {
       diskImageUrl: map['diskImageUrl'] ?? '',
       videoUrl: map['videoUrl'] ?? '',
       iconUrl: map['iconUrl'] ?? '',
+      logoUrl: map['logoUrl'] ?? '',
     );
   }
 }

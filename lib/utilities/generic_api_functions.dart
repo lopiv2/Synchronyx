@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:synchronyx/models/media.dart';
@@ -12,6 +13,8 @@ import 'package:synchronyx/utilities/constants.dart';
 import '../models/game.dart';
 import 'package:synchronyx/utilities/generic_database_functions.dart'
     as databaseFunctions;
+
+import 'generic_functions.dart';
 
 /* -------------------------------------------------------------------------- */
 /*                                API Functions                               */
@@ -23,6 +26,8 @@ class DioClient {
       'https://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=';
 
   final _giantBombApiUrl = 'http://www.giantbomb.com/api/search/?api_key=';
+
+  final _steamGridDBApiUrl = 'https://www.steamgriddb.com/api/v2/';
 
 /* ----------------------------- Get Steam Games ---------------------------- */
   Future<void> getAndImportSteamGames(
@@ -40,24 +45,47 @@ class DioClient {
       int appId = game['appid'];
       String name = game['name'];
       int playtime = game['playtime_forever'];
-      String icon=game['img_icon_url'];
-      String iconUrl= 'http://media.steampowered.com/steamcommunity/public/images/apps/$appId/$icon.jpg';
-
-      //print(iconUrl);
-      var mediaInsert=Media(iconUrl: iconUrl ,name: name);
+      String icon = game['img_icon_url'];
+      String iconUrl =
+          'http://media.steampowered.com/steamcommunity/public/images/apps/$appId/$icon.jpg';
+      //We import by default from SteamGridDB, for the moment, the following images
+      String imageFrontUrl =
+          await getAndImportSteamGridDBMediaBySteamIdAndPlatform(
+              key: 'fa61b6d47dfe3b6ab65a516b1f8bd0a3',
+              steamId: '$appId',
+              platform: 'steam');
+      List<String> parts = imageFrontUrl.split('/');
+      String lastPartFile = parts.last;
+      String imageName = '${generateRandomAlphanumeric()}_$lastPartFile';
+      String imageFolder = '\\Synchronyx\\media\\frontCovers\\';
+      downloadAndSaveImage(imageFrontUrl, imageName, imageFolder);
+      Directory appDocumentsDirectory =
+          await getApplicationDocumentsDirectory();
+      String finalImageFolder =
+          '${appDocumentsDirectory.path}$imageFolder$imageName';
+      //print(finalImageFolder);
+      var mediaInsert =
+          Media(iconUrl: iconUrl, name: name, coverImageUrl: finalImageFolder);
       await databaseFunctions.insertMedia(mediaInsert);
-      Media? mediaInfo=await databaseFunctions.getMediaByName(name);
+      Media? mediaInfo = await databaseFunctions.getMediaByName(name);
 
-      //print(mediaInfo!.id);
-      //var mediaInsert=new Media(coverImageUrl: ,backImageUrl: ,diskImageUrl: ,videoUrl: ,iconUrl: )
-      List<String> tag=List.empty(growable: true);
+      List<String> tag = List.empty(growable: true);
       tag.add("prueba");
       tag.add("adios");
-      var gameInsert = Game(title: name, playTime: playtime, mediaId: mediaInfo!.id, tags: tag.join(','));
+      var gameInsert = Game(
+          title: name,
+          playTime: playtime,
+          mediaId: mediaInfo!.id,
+          tags: tag.join(','));
       await databaseFunctions.insertGame(gameInsert);
+
       break;
     }
   }
+
+  /* -------------------------------------------------------------------------- */
+  /*                             Scrappers for Media                            */
+  /* -------------------------------------------------------------------------- */
 
   /* --------------------------- Get GiantBomb Media -------------------------- */
   Future<void> getAndImportGiantBombMedia(
@@ -78,7 +106,7 @@ class DioClient {
       int playtime = game['playtime_forever'];
       String iconUrl = game['img_icon_url'];
 
-      print('$game');
+      //print('$game');
 
       /*print('Game ID: $appId');
       print('Game Name: $name');
@@ -89,5 +117,38 @@ class DioClient {
       //databaseFunctions.insertGame(gameInsert);
       break;
     }
+  }
+
+  /* ----------------------------- Get SteamGridDB Media by Steam App Id and Platform ---------------------------- */
+  Future<String> getAndImportSteamGridDBMediaBySteamIdAndPlatform(
+      {required String key,
+      required String steamId,
+      required String platform}) async {
+    // Definir los encabezados que deseas enviar
+    Map<String, dynamic> headers = {
+      'Authorization': 'Bearer $key',
+      'Content-Type': 'application/json',
+    };
+    Response userData = await _dio.get(
+        _steamGridDBApiUrl + 'grids/$platform/$steamId',
+        options: Options(headers: headers));
+    String jsonData = jsonEncode(userData.data);
+    //print('Game Data: $jsonData');
+
+    Map<String, dynamic> responseData = userData.data;
+    // Obtener la lista "data"
+    List<dynamic> dataList = responseData['data'];
+
+    if (dataList.isNotEmpty) {
+      // Obtener el primer elemento de la lista
+      Map<String, dynamic> firstData = dataList[0];
+
+      // Obtener el valor del campo "url"
+      String imageUrl = firstData['url'];
+
+      //Returns the value of the first image obtained.
+      return imageUrl;
+    }
+    return '';
   }
 }

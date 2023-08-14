@@ -1,8 +1,16 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'dart:math';
 
+import '../models/game.dart';
+import '../models/media.dart';
+
 class ImageCoverModel extends StatefulWidget {
-  const ImageCoverModel();
+  final Game game;
+  final Media gameMedia;
+
+  const ImageCoverModel({required this.game, required this.gameMedia});
 
   @override
   _ImageCoverModel createState() => _ImageCoverModel();
@@ -47,6 +55,15 @@ class _ImageCoverModel extends State<ImageCoverModel>
 
   @override
   Widget build(BuildContext context) {
+    ImageProvider<Object> imageWidgetFront;
+    print(widget.gameMedia.coverImageUrl);
+    if (widget.gameMedia.coverImageUrl != null &&
+        widget.gameMedia.coverImageUrl.isNotEmpty) {
+      imageWidgetFront = FileImage(File(widget.gameMedia.coverImageUrl));
+    } else {
+      imageWidgetFront = const AssetImage('assets/images/noImage.png');
+    }
+
     return MouseRegion(
       onEnter: (_) {
         setState(() {
@@ -116,11 +133,9 @@ class _ImageCoverModel extends State<ImageCoverModel>
                               aspectRatio: 8.5 /
                                   12, // Relación de aspecto deseada (16:9 en este ejemplo)
                               child: Container(
-                                decoration: const BoxDecoration(
+                                decoration: BoxDecoration(
                                   image: DecorationImage(
-                                    image: AssetImage(
-                                        'assets/images/frontcover.png'),
-                                    fit: BoxFit.cover,
+                                    image: imageWidgetFront,
                                   ),
                                 ),
                                 child: const Padding(

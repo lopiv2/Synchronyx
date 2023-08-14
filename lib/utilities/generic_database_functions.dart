@@ -90,8 +90,7 @@ Future<Database?> createAndOpenDB() async {
           'id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,'
           'name TEXT,'
           'url TEXT,'
-          'apiKey TEXT,'
-          'steamId TEXT'
+          'metadataJson TEXT'
           ')',
         );
         // Create the Medias table
@@ -103,7 +102,8 @@ Future<Database?> createAndOpenDB() async {
           'backImageUrl TEXT,'
           'diskImageUrl TEXT,'
           'videoUrl TEXT,'
-          'iconUrl TEXT'
+          'iconUrl TEXT,'
+          'logoUrl TEXT'
           ')',
         );
       },
@@ -125,9 +125,12 @@ Future<Database?> createAndOpenDB() async {
 Future<List<Game>> getAllGames() async {
   // Get a reference to the database.
   final db = await Constants.database;
+  List<Map<String, dynamic>> maps = List.empty(growable: true);
 
-  // Query the table for all The Games.
-  final List<Map<String, dynamic>> maps = await db!.query('games');
+  if (db != null) {
+// Query the table for all The Games.
+    maps = await db!.query('games');
+  }
 
   // Convert the List<Map<String, dynamic> into a List<Game>.
   return List.generate(maps.length, (i) {
@@ -139,8 +142,7 @@ Future<List<Game>> getAllGames() async {
       //lastPlayed: maps[i]['lastPlayed'],
     );
   });
-} 
-
+}
 
 /* ---------------------------- Check Api by name --------------------------- */
 Future<Api?> checkApiByName(String name) async {
@@ -254,10 +256,19 @@ Future<void> insertMedia(Media media) async {
 /*                              UPDATE FUNCTIONS                              */
 /* -------------------------------------------------------------------------- */
 
-/* ---------------------- ///Update a game in database ---------------------- */
-Future<void> updateGame(Game game) async {
+/* ---------------------- ///Update a game in database by ID ---------------- */
+Future<void> updateGameById(Game game) async {
   await Constants.database
       ?.update('games', game.toMap(), where: 'id = ?', whereArgs: [game.id]);
+
+  // Now you can close the database after the update.
+  //await Constants.database?.close();
+}
+
+/* ---------------------- ///Update a game in database by ID ---------------- */
+Future<void> updateGameByName(Game game) async {
+  await Constants.database?.update('games', game.toMap(),
+      where: 'title = ?', whereArgs: [game.title]);
 
   // Now you can close the database after the update.
   //await Constants.database?.close();

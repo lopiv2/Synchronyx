@@ -1,16 +1,16 @@
+import 'dart:convert';
+
 class Api {
   int id;
   String name;
   String? url;
-  String apiKey;
-  String steamId;
+  String metadataJson; // Field for storing metadata in JSON format
 
   Api({
     this.id = 0,
     required this.name,
     this.url,
-    this.apiKey = '',
-    this.steamId = '',
+    this.metadataJson = '', // Empty metadata initialization
   });
 
   Map<String, dynamic> toMap() {
@@ -18,14 +18,13 @@ class Api {
       'id': id,
       'name': name,
       'url': url,
-      'apiKey': apiKey,
-      'steamId': steamId,
+      'metadataJson': metadataJson, // Store metadata in JSON format
     };
   }
 
   @override
   String toString() {
-    return 'Api{id: $id, name: $name, url: $url,apiKey: $apiKey, steamId: $steamId}';
+    return 'Api{id: $id, name: $name, url: $url, metadataJson: $metadataJson}';
   }
 
   static Api fromMap(Map<String, dynamic> map) {
@@ -33,8 +32,18 @@ class Api {
       id: map['id'] ?? 0,
       name: map['name'] ?? '',
       url: map['url'],
-      apiKey: map['apiKey'] ?? '',
-      steamId: map['steamId'] ?? '',
+      metadataJson:
+          map['metadataJson'] ?? '', // Retrieve metadata in JSON format
     );
+  }
+
+  /* -------- Method for establishing metadata from a map -------- */
+  void setMetadata(Map<String, dynamic> metadata) {
+    metadataJson = json.encode(metadata);
+  }
+
+  /* ------------- Method for obtaining the metadata as a map ------------- */
+  Map<String, dynamic> getMetadata() {
+    return json.decode(metadataJson);
   }
 }

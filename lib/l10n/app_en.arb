@@ -50,5 +50,6 @@
   "finish": "Finish",
   "menu": "Menu",
   "properties": "Properties",
-  "tools": "Tools"
+  "tools": "Tools",
+  "settings": "Settings"
 }

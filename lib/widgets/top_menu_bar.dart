@@ -8,6 +8,7 @@ import 'package:synchronyx/utilities/generic_database_functions.dart'
     as databaseFunctions;
 import 'package:synchronyx/utilities/generic_api_functions.dart';
 import 'package:synchronyx/widgets/import_dialog.dart';
+import 'package:synchronyx/widgets/settings_dialog.dart';
 import '../models/api.dart';
 
 MaterialStateProperty<Color?> myColor =
@@ -26,41 +27,41 @@ class MyMenuBar extends StatelessWidget {
   MyMenuBar({Key? key, required this.appLocalizations}) : super(key: key);
 
   void _handleLastStepFinish(Map<String, dynamic> data, PlatformStore st) {
-    //print('Datos recopilados en el paso x: $data');
-    //print('Valor de steamIdController: ${data['steamIdController']}');
-    //print('Store: $st ');
     var api = Api(
       name: '',
       url: '',
-      apiKey: '',
     );
+    dynamic apiKeyValue = null;
     //If the api found is not null, I simply import the games with the data from the DB.
     if (Constants.foundApiBeforeImport != null) {
       api.name = Constants.foundApiBeforeImport!.name;
       api.url = Constants.foundApiBeforeImport!.url;
-      api.apiKey = Constants.foundApiBeforeImport!.apiKey;
+      apiKeyValue = Constants.foundApiBeforeImport!.getMetadata()['apiKey'];
     }
-
-    //print(api);
-
     switch (st) {
       case PlatformStore.Steam:
+        dynamic steamIdValue = null;
         //If data is null, it means that the api data already exists.
         if (data.isEmpty) {
           //Only adds the SteamID case for Steam Platform
-          api.steamId = Constants.foundApiBeforeImport!.steamId;
+          steamIdValue =
+              Constants.foundApiBeforeImport!.getMetadata()['steamId'];
         } //If not, create api data from zero
         else {
           api.name = 'Steam';
           api.url =
               'https://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=';
-          api.apiKey = '${data['steamApiController']}';
-          api.steamId = '${data['steamIdController']}';
+          Map<String, dynamic> metadata = {
+            'apiKey': '${data['steamApiController']}',
+            'steamId': '${data['steamIdController']}',
+          };
+          api.setMetadata(metadata);
+          steamIdValue = '${data['steamIdController']}';
+          apiKeyValue = '${data['steamApiController']}';
           databaseFunctions.insertApi(api);
         }
         dioClient
-            .getAndImportSteamGames(
-                key: '${api.apiKey}', steamId: '${api.steamId}')
+            .getAndImportSteamGames(key: apiKeyValue, steamId: steamIdValue)
             .then((_) {
           // El método getAndImportSteamGames se ha completado exitosamente
           // Aquí puedes realizar cualquier acción adicional con los datos obtenidos
@@ -129,6 +130,8 @@ class MyMenuBar extends StatelessWidget {
                     child: const MenuAcceleratorLabel('&About'),
                   ),
                   SubmenuButton(
+                    leadingIcon: Icon(Icons.swap_vertical_circle_rounded,
+                        size: 20, color: Colors.blue),
                     menuChildren: <Widget>[
                       MenuItemButton(
                         leadingIcon: const Icon(CustomIcons.amazon_games,
@@ -424,6 +427,25 @@ class MyMenuBar extends StatelessWidget {
                       ),
                     ],
                     child: MenuAcceleratorLabel(appLocalizations.import),
+                  ),
+                  MenuItemButton(
+                    leadingIcon: Icon(Icons.settings, size: 20),
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (context) {
+                          return SettingsDialog(
+                            appLocalizations: appLocalizations,
+                            iconColor: Colors.white,
+                            titleIcon: Icons.settings,
+                            title: appLocalizations.settings,
+                          );
+                        },
+                      );
+                    },
+                    child:
+                        MenuAcceleratorLabel('&' + appLocalizations.settings),
                   ),
                 ],
                 child: MenuAcceleratorLabel('&' + appLocalizations.tools),

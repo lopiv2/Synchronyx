@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/game.dart';
+import '../models/media.dart';
 import 'image_cover_model.dart';
 import 'package:synchronyx/utilities/generic_database_functions.dart'
     as databaseFunctions;
@@ -13,6 +14,7 @@ class GridViewGameCovers extends StatelessWidget {
       future: databaseFunctions.getAllGames(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
+          print(snapshot.connectionState);
           return CircularProgressIndicator(); // Displays a charging indicator while waiting
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
@@ -33,13 +35,24 @@ class GridViewGameCovers extends StatelessWidget {
   }
 
   List<Container> _buildGridTileList(List<Game> listOfGames) {
-    return listOfGames.map((game) {
-      return Container(
-        child: Transform.scale(
-          scale: 2.2,
-          child: ImageCoverModel(), // Debes proporcionar la imagen aquí
-        ),
-      );
-    }).toList();
+    List<Container> containers = [];
+
+    for (Game game in listOfGames) {
+      databaseFunctions.getMediaById(game.id).then((gameMedia) {
+        containers.add(
+          Container(
+            child: Transform.scale(
+              scale: 2.2,
+              child: ImageCoverModel(
+                game: game,
+                gameMedia: gameMedia!,
+              ),
+            ),
+          ),
+        );
+      });
+    }
+
+    return containers;
   }
 }

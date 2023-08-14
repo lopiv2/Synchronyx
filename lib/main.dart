@@ -9,6 +9,7 @@ import 'widgets/grid_view_game_covers.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
   doWhenWindowReady(() {
     final win = appWindow;
