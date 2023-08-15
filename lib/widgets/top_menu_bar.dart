@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:synchronyx/icons/custom_icons_icons.dart';
 import 'package:synchronyx/screens/steam/steam_import_steps.dart';
 import 'package:synchronyx/utilities/constants.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:synchronyx/utilities/generic_database_functions.dart'
     as databaseFunctions;
@@ -20,6 +19,7 @@ MaterialStateProperty<Color?> myColor =
 // Crear una instancia de DioClient
 DioClient dioClient = DioClient();
 
+// ignore: must_be_immutable
 class MyMenuBar extends StatelessWidget {
   final AppLocalizations appLocalizations;
   late PlatformStore store = PlatformStore.Amazon;
@@ -330,7 +330,7 @@ class MyMenuBar extends StatelessWidget {
                                         store));
 
                                     return ImportDialog(
-                                      appLocalizations: appLocalizations!,
+                                      appLocalizations: appLocalizations,
                                       iconColor:
                                           Color.fromARGB(255, 12, 66, 94),
                                       titleIcon: CustomIcons.steam,

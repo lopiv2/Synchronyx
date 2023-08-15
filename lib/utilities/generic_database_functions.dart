@@ -3,12 +3,10 @@ import 'dart:io';
 
 import 'package:flutter/services.dart';
 import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:synchronyx/models/media.dart';
 import '../models/api.dart';
 import 'package:synchronyx/utilities/constants.dart';
-import 'package:synchronyx/widgets/arcade_box_button.dart';
 import '../models/game.dart';
 
 /* -------------------------------------------------------------------------- */
@@ -17,6 +15,7 @@ import '../models/game.dart';
 
 Future<Database?> openExistingDatabase() async {
   if (Constants.database != null) {
+    print("existe");
     return Constants.database;
   }
   var databasesPath = await getDatabasesPath();
@@ -40,21 +39,20 @@ Future<Database?> createAndOpenDB() async {
   String path = join(databasesPath, 'synchronyx.db');
   var exists = await databaseExists(path);
 
-  if (!exists) {
-    try {
-      await Directory(dirname(path)).create(recursive: true);
-    } catch (_) {}
-
-    var data = await rootBundle.load(join('assets/database/', 'synchronyx.db'));
-    List<int> bytes = data.buffer.asUint8List(
-      data.offsetInBytes,
-      data.lengthInBytes,
-    );
-
-    await File(path).writeAsBytes(bytes, flush: true);
-  }
-
   try {
+    if (!exists) {
+      await Directory(dirname(path)).create(recursive: true);
+
+      var data =
+          await rootBundle.load(join('assets/database/', 'synchronyx.db'));
+      List<int> bytes = data.buffer.asUint8List(
+        data.offsetInBytes,
+        data.lengthInBytes,
+      );
+
+      await File(path).writeAsBytes(bytes, flush: true);
+    }
+
     Constants.database = await openDatabase(
       path,
       onConfigure: (db) {
@@ -109,7 +107,6 @@ Future<Database?> createAndOpenDB() async {
       },
       version: 1,
     );
-
     return Constants.database;
   } catch (e) {
     print('Error al abrir la base de datos: $e');
@@ -125,10 +122,11 @@ Future<Database?> createAndOpenDB() async {
 Future<List<Game>> getAllGames() async {
   // Get a reference to the database.
   final db = await Constants.database;
+
   List<Map<String, dynamic>> maps = List.empty(growable: true);
 
   if (db != null) {
-// Query the table for all The Games.
+    // Query the table for all The Games.
     maps = await db!.query('games');
   }
 
@@ -180,14 +178,13 @@ Future<Media?> getMediaByName(String name) async {
 
 /* ----------- Gets media record from database with id parameter ---------- */
 Future<Media?> getMediaById(int id) async {
-  //print('Base de datos abierta en:${Constants.database}');
+  
   // Verify if the database is open before continuing
   if (Constants.database != null) {
+    
     var media = await Constants.database
         ?.query('medias', where: 'id = ?', whereArgs: [id]);
     if (media!.isNotEmpty) {
-      // Return the first API found (assuming 'name' is unique in the database)
-      //print(apis.first);
       return Media.fromMap(media.first);
     } else {
       return null; // Return null if no matching API is found
@@ -232,7 +229,6 @@ Future<void> insertApi(Api api) async {
 
 /* ---------------------- Inserts a game in database --------------------- */
 Future<void> insertGame(Game game) async {
-  print(game);
   await Constants.database?.insert(
     'games',
     game.toMap(),

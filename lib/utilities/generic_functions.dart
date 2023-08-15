@@ -1,20 +1,42 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:convert';
 import 'dart:math';
 
-import 'package:http/http.dart' as http;
-import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
-import 'package:path/path.dart';
+import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
-import 'package:sqflite/sqflite.dart';
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-import 'package:synchronyx/models/media.dart';
-import 'package:synchronyx/utilities/constants.dart';
-import '../models/game.dart';
-import 'package:synchronyx/utilities/generic_database_functions.dart'
-    as databaseFunctions;
+
+/* ------------------------- Delete a file per name ------------------------- */
+Future<void> deleteFile(String fileName) async {
+  try {
+    final file = File(fileName);
+    if (await file.exists()) {
+      await file.delete();
+      //print('Archivo $fileName eliminado correctamente.');
+    } else {
+      print('El archivo $fileName no existe.');
+    }
+  } catch (e) {
+    print('Error al eliminar el archivo: $e');
+  }
+}
+
+/* ----------------------- Check if asset loads or not ---------------------- */
+Future<void> checkAssetLoading(String assetPath) async {
+  //const assetPath = 'assets/image.png'; // Reemplaza con la ruta de tu asset
+
+  try {
+    // Intenta cargar el asset utilizando el método rootBundle.load
+    final ByteData data = await rootBundle.load(assetPath);
+    if (data.buffer.asUint8List().isEmpty) {
+      print('El asset no se cargó correctamente.');
+    } else {
+      print('El asset se cargó correctamente.');
+    }
+  } catch (error) {
+    print('Error al cargar el asset: $error');
+  }
+}
 
 /* ------ Download and Save Image from URL, custom filename and folder ------ */
 Future<void> downloadAndSaveImage(
@@ -33,7 +55,7 @@ Future<void> downloadAndSaveImage(
 
       final file = File('${imageFolder.path}$fileName');
       await file.writeAsBytes(response.bodyBytes);
-      print('Imagen guardada en: ${file.path}');
+      //print('Imagen guardada en: ${file.path}');
     } else {
       print('Error al descargar la imagen: ${response.statusCode}');
     }

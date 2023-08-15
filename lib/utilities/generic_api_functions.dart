@@ -3,17 +3,13 @@ import 'dart:io';
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/services.dart';
-import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:sqflite/sqflite.dart';
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:synchronyx/models/media.dart';
 import 'package:synchronyx/utilities/constants.dart';
 import '../models/game.dart';
 import 'package:synchronyx/utilities/generic_database_functions.dart'
+    // ignore: library_prefixes
     as databaseFunctions;
-
 import 'generic_functions.dart';
 
 /* -------------------------------------------------------------------------- */
@@ -58,6 +54,9 @@ class DioClient {
       String lastPartFile = parts.last;
       String imageName = '${generateRandomAlphanumeric()}_$lastPartFile';
       String imageFolder = '\\Synchronyx\\media\\frontCovers\\';
+      Media? mediaInfo = await databaseFunctions.getMediaByName(name);
+      //Delete file before download a new one
+      deleteFile(mediaInfo!.coverImageUrl);
       downloadAndSaveImage(imageFrontUrl, imageName, imageFolder);
       Directory appDocumentsDirectory =
           await getApplicationDocumentsDirectory();
@@ -67,14 +66,13 @@ class DioClient {
       var mediaInsert =
           Media(iconUrl: iconUrl, name: name, coverImageUrl: finalImageFolder);
       await databaseFunctions.insertMedia(mediaInsert);
-      Media? mediaInfo = await databaseFunctions.getMediaByName(name);
-
       List<String> tag = List.empty(growable: true);
       tag.add("prueba");
       tag.add("adios");
       var gameInsert = Game(
           title: name,
           playTime: playtime,
+          platform: Platforms.Windows.value,
           mediaId: mediaInfo!.id,
           tags: tag.join(','));
       await databaseFunctions.insertGame(gameInsert);

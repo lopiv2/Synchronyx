@@ -10,7 +10,7 @@ class ImageCoverModel extends StatefulWidget {
   final Game game;
   final Media gameMedia;
 
-  const ImageCoverModel({required this.game, required this.gameMedia});
+  const ImageCoverModel({super.key, required this.game, required this.gameMedia});
 
   @override
   _ImageCoverModel createState() => _ImageCoverModel();
@@ -37,7 +37,6 @@ class _ImageCoverModel extends State<ImageCoverModel>
       if (_animationController.value > 0.5) {
         setState(() {
           showAdditionalOverlay = true;
-          //print("hola");
         });
       } else if (_animationController.status == AnimationStatus.dismissed) {
         setState(() {
@@ -56,9 +55,7 @@ class _ImageCoverModel extends State<ImageCoverModel>
   @override
   Widget build(BuildContext context) {
     ImageProvider<Object> imageWidgetFront;
-    print(widget.gameMedia.coverImageUrl);
-    if (widget.gameMedia.coverImageUrl != null &&
-        widget.gameMedia.coverImageUrl.isNotEmpty) {
+    if (widget.gameMedia.coverImageUrl.isNotEmpty) {
       imageWidgetFront = FileImage(File(widget.gameMedia.coverImageUrl));
     } else {
       imageWidgetFront = const AssetImage('assets/images/noImage.png');

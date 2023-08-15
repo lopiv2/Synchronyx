@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:synchronyx/utilities/generic_database_functions.dart';
+import 'package:synchronyx/widgets/platform_tree_view.dart';
 import 'package:synchronyx/widgets/top_menu_bar.dart';
 import 'widgets/arcade_box_button.dart';
 import 'widgets/drop_down_filter_order_games.dart';
@@ -20,9 +22,8 @@ void main() async {
     win.title = "Synchronyx";
     win.show();
   });
-  Constants.database = await createAndOpenDB();
-  Constants.database = await openExistingDatabase();
-  //print('${Constants.database}');
+  //Constants.database = await createAndOpenDB();
+  //Constants.database = await openExistingDatabase();
 }
 
 class MyApp extends StatelessWidget {
@@ -60,11 +61,11 @@ class MyApp extends StatelessWidget {
 class MainGrid extends StatelessWidget {
   final BuildContext context;
 
-  MainGrid({required this.context});
+  const MainGrid({super.key, required this.context});
 
   @override
   Widget build(BuildContext context) {
-    final AppLocalizations appLocalizations = AppLocalizations.of(context)!;
+    final AppLocalizations appLocalizations = AppLocalizations.of(context);
     return Container(
       color: Constants.SIDE_BAR_COLOR,
       child: Column(
@@ -93,8 +94,8 @@ class MainGrid extends StatelessWidget {
             // Utiliza Expanded aquí para que el Column ocupe todo el espacio vertical disponible
             child: Row(
               children: [
-                LeftSide(),
-                CenterSide(),
+                LeftSide(appLocalizations: appLocalizations),
+                const CenterSide(),
                 RightSide(appLocalizations: appLocalizations),
               ],
             ),
@@ -106,51 +107,30 @@ class MainGrid extends StatelessWidget {
 }
 
 class LeftSide extends StatelessWidget {
-  const LeftSide({super.key});
+  final AppLocalizations appLocalizations;
+  const LeftSide({super.key, required this.appLocalizations});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: MediaQuery.of(context).size.width * 0.18,
-      decoration: BoxDecoration(
-        border: Border.all(
-          color: const Color.fromARGB(255, 2, 34, 14), // Color del borde
-          width: 0.2, // Ancho del borde
-        ),
-        gradient: const LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Constants.SIDE_BAR_COLOR,
-            Color.fromARGB(255, 33, 109, 72),
-            Color.fromARGB(255, 48, 87, 3)
-          ],
-        ),
-      ),
-      child: Column(
-        children: [
-          //Padding(padding: EdgeInsets.only(top: 10.0)),
-          const Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Column(
-                children: [
-                  Icon(Icons.favorite, size: 20, color: Colors.red),
-                ],
-              ),
-              Column(
-                children: [
-                  Text('Synchronyx'),
-                ],
-              ),
-              Column(
-                children: [
-                  Icon(Icons.menu, size: 20, color: Colors.blue),
-                ],
-              ),
+        width: MediaQuery.of(context).size.width * 0.18,
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: const Color.fromARGB(255, 2, 34, 14), // Color del borde
+            width: 0.2, // Ancho del borde
+          ),
+          gradient: const LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Constants.SIDE_BAR_COLOR,
+              Color.fromARGB(255, 33, 109, 72),
+              Color.fromARGB(255, 48, 87, 3)
             ],
           ),
-
+        ),
+        child: Column(children: [
+          //Padding(padding: EdgeInsets.only(top: 10.0)),
           const Padding(padding: EdgeInsets.only(top: 20.0)),
           Container(
             height: 30,
@@ -176,9 +156,8 @@ class LeftSide extends StatelessWidget {
 
           const Padding(padding: EdgeInsets.only(top: 20.0)),
           const DropdownWidget(),
-        ],
-      ),
-    );
+          Expanded(child: PlatformTreeView(appLocalizations: appLocalizations)),
+        ]));
   }
 }
 
@@ -187,20 +166,35 @@ class CenterSide extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Constants.BACKGROUND_START_COLOR,
-                Constants.BACKGROUND_END_COLOR,
-                Color.fromARGB(255, 48, 87, 3)
-              ],
+    return FutureBuilder<Database?>(
+      future: createAndOpenDB(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return CircularProgressIndicator();
+        } else if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        } else if (snapshot.data == null) {
+          return Text('La base de datos no se inicializó correctamente.');
+        } else {
+          Constants.database = snapshot.data;
+          return Expanded(
+            child: Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Constants.BACKGROUND_START_COLOR,
+                    Constants.BACKGROUND_END_COLOR,
+                    Color.fromARGB(255, 48, 87, 3)
+                  ],
+                ),
+              ),
+              child: const GridViewGameCovers(),
             ),
-          ),
-          child: GridViewGameCovers()),
+          );
+        }
+      },
     );
   }
 }
@@ -257,7 +251,7 @@ class RightSide extends StatelessWidget {
           const Padding(padding: EdgeInsets.only(top: 20.0)),
           Container(
             height: 30,
-            child: Row(
+            child: const Row(
               children: <Widget>[
                 SizedBox(width: 10), // give it width
                 Flexible(
@@ -277,7 +271,6 @@ class RightSide extends StatelessWidget {
               ],
             ),
           ),
-
           const Padding(padding: EdgeInsets.only(top: 20.0)),
           const DropdownWidget(),
         ],

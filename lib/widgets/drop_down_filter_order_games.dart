@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../utilities/constants.dart';
+
 class DropdownWidget extends StatefulWidget {
   const DropdownWidget({super.key});
 
@@ -9,7 +11,13 @@ class DropdownWidget extends StatefulWidget {
 
 class DropDownCategories extends State<DropdownWidget> {
   String currentItem = "";
-  List<String> items = ['Opción 1', 'Opción 2', 'Opción 3', 'Opción 4'];
+  /*List<String> items = SearchParametersDropDown.values
+      .map((e) => e.toString().split('.').last)
+      .toList();*/
+  List<String> items = SearchParametersDropDown.values
+      .map((e) => e.value)
+      .where((value) => value.isNotEmpty)
+      .toList();
 
   @override
   void initState() {
@@ -30,9 +38,10 @@ class DropDownCategories extends State<DropdownWidget> {
           border: Border.all(),
         ),
         child: DropdownButton(
+          menuMaxHeight: 200,
           underline: Container(),
-          style: TextStyle(
-              fontSize: 14, color: const Color.fromARGB(255, 36, 29, 29)),
+          style: const TextStyle(
+              fontSize: 16, color: Color.fromARGB(255, 36, 29, 29)),
           isExpanded:
               true, // Hace que el DropdownButton ocupe todo el ancho disponible
           alignment: Alignment.topCenter,

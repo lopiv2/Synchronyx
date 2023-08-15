@@ -20,6 +20,73 @@ enum PlatformStore {
   Xbox,
 }
 
+enum SearchParametersDropDown {
+  AddDate,
+  Developer,
+  Favorite,
+  Genre,
+  Installed,
+  Lastplayed,
+  LaunchDate,
+  MaxPlayers,
+  Platform,
+  Playtime,
+  Publisher,
+  Rating,
+  Region,
+}
+
+extension SearchParametersExtension on SearchParametersDropDown {
+  String get value {
+    switch (this) {
+      case SearchParametersDropDown.Platform:
+        return "Platform";
+      case SearchParametersDropDown.MaxPlayers:
+        return "Max Players";
+      default:
+        return "";
+    }
+  }
+}
+
+enum Platforms {
+  Dreamcast,
+  DS,
+  Gameboy,
+  Gamecube,
+  Gamegear,
+  Linux,
+  Mac,
+  MAME,
+  Mastersystem,
+  Megadrive,
+  Neogeo,
+  NES,
+  Nintendo64,
+  PS1,
+  PS2,
+  PS3,
+  PSP,
+  SNES,
+  Wii,
+  WIIU,
+  Windows,
+  Xbox,
+}
+
+extension PlatformExtension on Platforms {
+  String get value {
+    switch (this) {
+      case Platforms.Windows:
+        return "windows";
+      case Platforms.DS:
+        return "ds";
+      default:
+        return "";
+    }
+  }
+}
+
 class Constants {
   static const String APP_NAME = "Synchronyx";
   static const int MAX_ITEMS = 10;
