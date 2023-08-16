@@ -37,13 +37,15 @@ class PlatformTreeTile extends StatelessWidget {
         // respects the text direction of `Directionality.maybeOf(context)`
         // and defaults to left-to-right.
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(4, 8, 8, 8),
+          padding: const EdgeInsets.fromLTRB(0, 8, 8, 8),
           child: Row(
             children: [
               // Add a widget to indicate the expansion state of this node.
               // See also: ExpandIcon.
               CustomFolderButton(
-                icon: Image.asset('assets/icons/default_icon.png'),
+                //icon: entry.node.icon,
+                //iconSize: 80,
+                padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
                 closedIcon: const Icon(
                   Icons.arrow_right,
                 ),
@@ -52,7 +54,7 @@ class PlatformTreeTile extends StatelessWidget {
                 ),
                 isOpen: entry.hasChildren ? entry.isExpanded : null,
                 onPressed: entry.hasChildren ? onTap : null,
-              ),
+              ), // Add spacing between icons
               entry.node.icon,
               Text(entry.node.title),
             ],

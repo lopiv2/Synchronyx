@@ -51,7 +51,14 @@ class CustomFolderButton extends StatelessWidget {
   const CustomFolderButton({
     super.key,
     this.isOpen = true,
-    required this.icon,
+    this.icon = const Image(
+      image: AssetImage("assets/icons/default_icon.png"),
+      width: 24,
+      height: 24,
+      color: null,
+      //fit: BoxFit.scaleDown,
+      //alignment: Alignment.center,
+    ),
     this.openedIcon = const Icon(Icons.folder_open),
     this.closedIcon = const Icon(Icons.folder),
     this.iconSize,
@@ -84,7 +91,7 @@ class CustomFolderButton extends StatelessWidget {
   /// The icon to show when [isOpen] is set to `null`.
   ///
   /// Defaults to `Icon(Icons.article)`.
-  final Image icon;
+  final Widget icon;
 
   /// The icon to show when [isOpen] is set to `true`.
   ///

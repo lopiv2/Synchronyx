@@ -1,4 +1,7 @@
 {
+  "addDate": "Date added",
+  "developer": "Developer",
+  "favorite": "Favorite",
   "accept": "Accept",
   "all": "All",
   "amazonWindowAssistant": "Amazon Games Import Wizard",

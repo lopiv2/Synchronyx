@@ -22,52 +22,55 @@ class _PlatformTreeViewState extends State<PlatformTreeView> {
     super.initState();
     roots = <Platforms>[
       Platforms(
-        title: widget.appLocalizations.all,
-        icon:
-            Image.asset('assets/icons/allPlatforms.png', width: 40, height: 40),
-      ),
+          title: widget.appLocalizations.all,
+          icon: const Image(
+            image: AssetImage("assets/icons/allPlatforms.png"),
+            width: 44,
+            height: 44,
+            color: null,
+            //fit: BoxFit.scaleDown,
+            //alignment: Alignment.center,
+          )),
       Platforms(
         title: widget.appLocalizations.computers,
-        icon:
-            Image.asset('assets/icons/allPlatforms.png', width: 1, height: 1),
+        icon: const Image(
+          image: AssetImage("assets/icons/Amstrad CPC.png"),
+          width: 34,
+          height: 34,
+          color: null,
+          //fit: BoxFit.scaleDown,
+          //alignment: Alignment.center,
+        ),
         children: <Platforms>[
           Platforms(
             title: 'Node 1.1',
-            icon: Image.asset('assets/icons/default_icon.png'),
             children: <Platforms>[
               Platforms(
                 title: 'Node 1.1.1',
-                icon: Image.asset('assets/icons/default_icon.png'),
               ),
               Platforms(
                 title: 'Node 1.1.2',
-                icon: Image.asset('assets/icons/default_icon.png'),
               ),
             ],
           ),
           Platforms(
             title: 'Node 1.2',
-            icon: Image.asset('assets/icons/default_icon.png'),
           ),
         ],
       ),
       Platforms(
         title: 'Root 2',
-        icon: Image.asset('assets/icons/default_icon.png'),
         children: <Platforms>[
           Platforms(
             title: 'Node 2.1',
-            icon: Image.asset('assets/icons/default_icon.png'),
             children: <Platforms>[
               Platforms(
                 title: 'Node 2.1.1',
-                icon: Image.asset('assets/icons/default_icon.png'),
               ),
             ],
           ),
           Platforms(
             title: 'Node 2.2',
-            icon: Image.asset('assets/icons/default_icon.png'),
           )
         ],
       ),

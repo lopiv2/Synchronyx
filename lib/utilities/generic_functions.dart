@@ -1,10 +1,13 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:math';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
+
+import 'Constants.dart';
 
 /* ------------------------- Delete a file per name ------------------------- */
 Future<void> deleteFile(String fileName) async {
@@ -76,4 +79,34 @@ String generateRandomAlphanumeric() {
   }
 
   return randomString;
+}
+
+String getTranslatedValue(
+    SearchParametersDropDown parameter, BuildContext context) {
+  switch (parameter) {
+    case SearchParametersDropDown.AddDate:
+      return AppLocalizations.of(context)?.addDate ?? 'AddDate';
+    case SearchParametersDropDown.Developer:
+      return AppLocalizations.of(context)?.developer ?? 'Max Players';
+    case SearchParametersDropDown.Favorite:
+      return AppLocalizations.of(context)?.favorite ?? 'Favorite';
+    default:
+      return '';
+  }
+}
+
+String getTranslatedValueFromKey(String key, BuildContext context) {
+  final keyWithoutPrefix =
+      key.split('.').last; // Esto quita el prefijo del enum
+  switch (keyWithoutPrefix) {
+    case 'AddDate':
+      return AppLocalizations.of(context)?.addDate ?? 'AddDate';
+    case 'Developer':
+      return AppLocalizations.of(context)?.developer ?? 'Max Players';
+    case 'Favorite':
+      return AppLocalizations.of(context)?.favorite ?? 'Favorite';
+    // Agrega los casos restantes para los otros valores del enum
+    default:
+      return '';
+  }
 }

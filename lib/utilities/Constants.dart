@@ -4,7 +4,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:sqflite_common/sqlite_api.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../models/api.dart';
 
 enum PlatformStore {
@@ -39,10 +39,33 @@ enum SearchParametersDropDown {
 extension SearchParametersExtension on SearchParametersDropDown {
   String get value {
     switch (this) {
-      case SearchParametersDropDown.Platform:
-        return "Platform";
+      case SearchParametersDropDown.AddDate:
+        //return localizations?.addDate ?? 'AddDate';
+        return "AddDate";
+      case SearchParametersDropDown.Developer:
+        return "Max Players";
+      case SearchParametersDropDown.Favorite:
+        return "Favorite";
+      case SearchParametersDropDown.Genre:
+        return "Genre";
+      case SearchParametersDropDown.Installed:
+        return "Installed";
+      case SearchParametersDropDown.Lastplayed:
+        return "Last played";
+      case SearchParametersDropDown.LaunchDate:
+        return "Launch Date";
       case SearchParametersDropDown.MaxPlayers:
         return "Max Players";
+      case SearchParametersDropDown.Platform:
+        return "Platform";
+      case SearchParametersDropDown.Playtime:
+        return "Playtime";
+      case SearchParametersDropDown.Publisher:
+        return "Publisher";
+      case SearchParametersDropDown.Rating:
+        return "Rating";
+      case SearchParametersDropDown.Region:
+        return "Region";
       default:
         return "";
     }
@@ -96,7 +119,7 @@ class Constants {
   static const BACKGROUND_END_COLOR = Color.fromARGB(255, 5, 148, 29);
   static List<Map<String, TextEditingController>> controllerMapList = [];
   static Api? foundApiBeforeImport;
- //Controladores de datos de los asistentes de importacion
+  //Controladores de datos de los asistentes de importacion
 
   static Database? database;
 
