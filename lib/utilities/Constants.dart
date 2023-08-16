@@ -22,6 +22,7 @@ enum PlatformStore {
 
 enum SearchParametersDropDown {
   AddDate,
+  CategoryPlatform,
   Developer,
   Favorite,
   Genre,
@@ -36,36 +37,74 @@ enum SearchParametersDropDown {
   Region,
 }
 
-extension SearchParametersExtension on SearchParametersDropDown {
-  String get value {
+extension SearchParametersValueExtension on SearchParametersDropDown {
+  String get caseValue {
     switch (this) {
       case SearchParametersDropDown.AddDate:
-        //return localizations?.addDate ?? 'AddDate';
-        return "AddDate";
+        return "addDate";
+      case SearchParametersDropDown.CategoryPlatform:
+        return "categoryPlatform";
       case SearchParametersDropDown.Developer:
-        return "Max Players";
+        return "developer";
       case SearchParametersDropDown.Favorite:
-        return "Favorite";
+        return "favorite";
       case SearchParametersDropDown.Genre:
-        return "Genre";
+        return "genre";
       case SearchParametersDropDown.Installed:
-        return "Installed";
+        return "installed";
       case SearchParametersDropDown.Lastplayed:
-        return "Last played";
+        return "lastPlayed";
       case SearchParametersDropDown.LaunchDate:
-        return "Launch Date";
+        return "launchDate";
       case SearchParametersDropDown.MaxPlayers:
-        return "Max Players";
+        return "maxPlayers";
       case SearchParametersDropDown.Platform:
-        return "Platform";
+        return "platform";
       case SearchParametersDropDown.Playtime:
-        return "Playtime";
+        return "playTime";
       case SearchParametersDropDown.Publisher:
-        return "Publisher";
+        return "publisher";
       case SearchParametersDropDown.Rating:
-        return "Rating";
+        return "rating";
       case SearchParametersDropDown.Region:
-        return "Region";
+        return "region";
+      default:
+        return "";
+    }
+  }
+}
+
+extension SearchParametersExtension on SearchParametersDropDown {
+  String getLocalizedString(BuildContext context) {
+    switch (this) {
+      case SearchParametersDropDown.AddDate:
+        return AppLocalizations.of(context).addDate;
+      case SearchParametersDropDown.CategoryPlatform:
+        return AppLocalizations.of(context).categoryPlatform;
+      case SearchParametersDropDown.Developer:
+        return AppLocalizations.of(context).developer;
+      case SearchParametersDropDown.Favorite:
+        return AppLocalizations.of(context).favorite;
+      case SearchParametersDropDown.Genre:
+        return AppLocalizations.of(context).genre;
+      case SearchParametersDropDown.Installed:
+        return AppLocalizations.of(context).installed;
+      case SearchParametersDropDown.Lastplayed:
+        return AppLocalizations.of(context).lastPlayed;
+      case SearchParametersDropDown.LaunchDate:
+        return AppLocalizations.of(context).launchDate;
+      case SearchParametersDropDown.MaxPlayers:
+        return AppLocalizations.of(context).maxPlayers;
+      case SearchParametersDropDown.Platform:
+        return AppLocalizations.of(context).platform;
+      case SearchParametersDropDown.Playtime:
+        return AppLocalizations.of(context).playTime;
+      case SearchParametersDropDown.Publisher:
+        return AppLocalizations.of(context).publisher;
+      case SearchParametersDropDown.Rating:
+        return AppLocalizations.of(context).rating;
+      case SearchParametersDropDown.Region:
+        return AppLocalizations.of(context).region;
       default:
         return "";
     }
@@ -101,9 +140,9 @@ extension PlatformExtension on Platforms {
   String get value {
     switch (this) {
       case Platforms.Windows:
-        return "windows";
+        return "Windows";
       case Platforms.DS:
-        return "ds";
+        return "Nintendo DS";
       default:
         return "";
     }

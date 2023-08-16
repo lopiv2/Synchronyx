@@ -32,31 +32,35 @@ class PlatformTreeTile extends StatelessWidget {
         // add decorations to the indentation of tree nodes.
         // This could also be provided through a DefaultTreeIndentGuide
         // inherited widget placed above the tree view.
-        guide: const IndentGuide.connectingLines(indent: 35),
+        guide: const IndentGuide.connectingLines(indent: 25),
         // The widget to render next to the indentation. TreeIndentation
         // respects the text direction of `Directionality.maybeOf(context)`
         // and defaults to left-to-right.
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(0, 8, 8, 8),
+          padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
             children: [
               // Add a widget to indicate the expansion state of this node.
               // See also: ExpandIcon.
-              CustomFolderButton(
-                //icon: entry.node.icon,
-                //iconSize: 80,
-                padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                closedIcon: const Icon(
-                  Icons.arrow_right,
-                ),
-                openedIcon: const Icon(
-                  Icons.arrow_drop_down,
-                ),
-                isOpen: entry.hasChildren ? entry.isExpanded : null,
-                onPressed: entry.hasChildren ? onTap : null,
-              ), // Add spacing between icons
-              entry.node.icon,
-              Text(entry.node.title),
+              Expanded(
+                  flex: 1,
+                  child: CustomFolderButton(
+                    hoverColor: Colors.blue,
+                    icon: entry.node.icon,
+                    title: Text(entry.node.title),
+                    //iconSize: 80,
+                    padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                    closedIcon: const Icon(
+                      Icons.arrow_right,
+                    ),
+                    openedIcon: const Icon(
+                      Icons.arrow_drop_down,
+                    ),
+                    isOpen: entry.hasChildren ? entry.isExpanded : null,
+                    onPressed: entry.hasChildren ? onTap : null,
+                  )), // Add spacing between icons
             ],
           ),
         ),

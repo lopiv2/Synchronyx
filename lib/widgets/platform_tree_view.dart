@@ -25,11 +25,9 @@ class _PlatformTreeViewState extends State<PlatformTreeView> {
           title: widget.appLocalizations.all,
           icon: const Image(
             image: AssetImage("assets/icons/allPlatforms.png"),
-            width: 44,
-            height: 44,
+            width: 34,
+            height: 34,
             color: null,
-            //fit: BoxFit.scaleDown,
-            //alignment: Alignment.center,
           )),
       Platforms(
         title: widget.appLocalizations.computers,
@@ -38,23 +36,34 @@ class _PlatformTreeViewState extends State<PlatformTreeView> {
           width: 34,
           height: 34,
           color: null,
-          //fit: BoxFit.scaleDown,
-          //alignment: Alignment.center,
         ),
         children: <Platforms>[
           Platforms(
-            title: 'Node 1.1',
-            children: <Platforms>[
-              Platforms(
-                title: 'Node 1.1.1',
-              ),
-              Platforms(
-                title: 'Node 1.1.2',
-              ),
-            ],
+            title: 'Windows',
+            icon: const Image(
+              image: AssetImage("assets/icons/windows.png"),
+              width: 34,
+              height: 34,
+              color: null,
+            ),
           ),
           Platforms(
-            title: 'Node 1.2',
+            title: 'Linux',
+            icon: const Image(
+              image: AssetImage("assets/icons/linux.png"),
+              width: 34,
+              height: 34,
+              color: null,
+            ),
+          ),
+          Platforms(
+            title: 'Mac',
+            icon: const Image(
+              image: AssetImage("assets/icons/mac.png"),
+              width: 34,
+              height: 34,
+              color: null,
+            ),
           ),
         ],
       ),

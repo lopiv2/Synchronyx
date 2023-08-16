@@ -50,6 +50,7 @@ class CustomFolderButton extends StatelessWidget {
   /// Creates a [CustomFolderButton].
   const CustomFolderButton({
     super.key,
+    this.title = const Text(""),
     this.isOpen = true,
     this.icon = const Image(
       image: AssetImage("assets/icons/default_icon.png"),
@@ -84,6 +85,8 @@ class CustomFolderButton extends StatelessWidget {
     this.curve = Curves.linear,
     this.transitionBuilder = defaultCustomFolderButtonTransitionBuilder,
   });
+
+  final Widget title;
 
   /// Defines which of [icon], [openedIcon] and [closedIcon] is currently shown.
   final bool? isOpen;
@@ -330,14 +333,31 @@ class CustomFolderButton extends StatelessWidget {
   final AnimatedSwitcherTransitionBuilder transitionBuilder;
 
   Widget get _effectiveIcon {
-    switch (isOpen) {
-      case true:
-        return openedIcon;
-      case false:
-        return closedIcon;
-      case null:
-      default:
-        return icon;
+    if (isOpen == true && icon != null) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          openedIcon,
+          icon,
+          title,
+        ],
+      );
+    } else {
+      if (isOpen == false && icon != null) {
+        return Row(
+          children: [
+            closedIcon,
+            icon,
+            title,
+          ],
+        );
+      } else {
+        return Row(children: [
+          SizedBox(width: 20),
+          icon,
+          title,
+        ]);
+      }
     }
   }
 

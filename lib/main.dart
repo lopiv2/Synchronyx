@@ -106,9 +106,17 @@ class MainGrid extends StatelessWidget {
   }
 }
 
-class LeftSide extends StatelessWidget {
+class LeftSide extends StatefulWidget {
   final AppLocalizations appLocalizations;
-  const LeftSide({super.key, required this.appLocalizations});
+
+  LeftSide({Key? key, required this.appLocalizations}) : super(key: key);
+
+  @override
+  _LeftSideState createState() => _LeftSideState();
+}
+
+class _LeftSideState extends State<LeftSide> {
+  SearchParametersDropDown? selectedValue;
 
   @override
   Widget build(BuildContext context) {
@@ -155,9 +163,31 @@ class LeftSide extends StatelessWidget {
           ),
 
           const Padding(padding: EdgeInsets.only(top: 20.0)),
-          const DropdownWidget(),
-          Expanded(child: PlatformTreeView(appLocalizations: appLocalizations)),
+          DropdownWidget(
+            onChanged: (newValue) {
+              setState(() {
+                selectedValue = newValue;
+              });
+            },
+          ),
+          Expanded(
+            child: _buildWidgetBasedOnSelectedValue(),
+          ),
         ]));
+  }
+
+  Widget _buildWidgetBasedOnSelectedValue() {
+    switch (selectedValue?.caseValue) {
+      case 'categoryPlatform':
+        return PlatformTreeView(appLocalizations: widget.appLocalizations);
+      case 'OtherCase1':
+        return Text("otro"); // Cambia YourWidget1 por el widget deseado
+      case 'OtherCase2':
+        return Text("otro2"); // Cambia YourWidget2 por el widget deseado
+      // Agrega más casos según tus necesidades
+      default:
+        return Text("otrodefaul"); // Cambia YourDefaultWidget por el widget predeterminado
+    }
   }
 }
 
@@ -272,7 +302,7 @@ class RightSide extends StatelessWidget {
             ),
           ),
           const Padding(padding: EdgeInsets.only(top: 20.0)),
-          const DropdownWidget(),
+          DropdownWidget(),
         ],
       ),
     );

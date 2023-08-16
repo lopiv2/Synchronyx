@@ -3,21 +3,18 @@ import 'package:flutter/material.dart';
 import '../utilities/constants.dart';
 
 class DropdownWidget extends StatefulWidget {
-  const DropdownWidget({super.key});
+  final ValueChanged<SearchParametersDropDown?>? onChanged;
+
+  DropdownWidget({Key? key, this.onChanged}) : super(key: key);
 
   @override
   DropDownCategories createState() => DropDownCategories();
 }
 
 class DropDownCategories extends State<DropdownWidget> {
-  String currentItem = "";
-  /*List<String> items = SearchParametersDropDown.values
-      .map((e) => e.toString().split('.').last)
-      .toList();*/
-  List<String> items = SearchParametersDropDown.values
-      .map((e) => e.value)
-      .where((value) => value.isNotEmpty)
-      .toList();
+  SearchParametersDropDown? currentItem;
+
+  List<SearchParametersDropDown> items = SearchParametersDropDown.values;
 
   @override
   void initState() {
@@ -37,7 +34,7 @@ class DropDownCategories extends State<DropdownWidget> {
           borderRadius: BorderRadius.circular(2),
           border: Border.all(),
         ),
-        child: DropdownButton(
+        child: DropdownButton<SearchParametersDropDown>(
           menuMaxHeight: 200,
           underline: Container(),
           style: const TextStyle(
@@ -48,18 +45,23 @@ class DropDownCategories extends State<DropdownWidget> {
           borderRadius: BorderRadius.circular(8),
           dropdownColor: const Color.fromARGB(255, 45, 114, 72),
           value: currentItem,
-          onChanged: (String? newValue) {
+          onChanged: (SearchParametersDropDown? newValue) {
             setState(() {
-              currentItem = newValue ?? "";
+              currentItem = newValue;
+              widget.onChanged?.call(newValue);
             });
           },
-          items: items.map<DropdownMenuItem<String>>((String value) {
-            return DropdownMenuItem<String>(
-              value: value,
-              alignment: Alignment.topLeft,
-              child: Text(value),
-            );
-          }).toList(),
+          items: items.map<DropdownMenuItem<SearchParametersDropDown>>(
+            (SearchParametersDropDown value) {
+              return DropdownMenuItem<SearchParametersDropDown>(
+                value: value,
+                child: Text(
+                  value.getLocalizedString(context),
+                ),
+              );
+            },
+          ).toList()..sort((a, b) =>
+          a.child.toString().compareTo(b.child.toString())),
         ),
       ),
     );
