@@ -353,7 +353,7 @@ class CustomFolderButton extends StatelessWidget {
         );
       } else {
         return Row(children: [
-          SizedBox(width: 20),
+          SizedBox(width: 25),
           icon,
           title,
         ]);

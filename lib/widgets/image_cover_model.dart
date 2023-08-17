@@ -1,8 +1,10 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:synchronyx/utilities/Constants.dart';
 import 'dart:math';
-
+import 'package:synchronyx/utilities/generic_api_functions.dart';
+import 'package:synchronyx/utilities/generic_database_functions.dart';
 import '../models/game.dart';
 import '../models/media.dart';
 
@@ -10,7 +12,8 @@ class ImageCoverModel extends StatefulWidget {
   final Game game;
   final Media gameMedia;
 
-  const ImageCoverModel({super.key, required this.game, required this.gameMedia});
+  const ImageCoverModel(
+      {super.key, required this.game, required this.gameMedia});
 
   @override
   _ImageCoverModel createState() => _ImageCoverModel();
@@ -19,6 +22,7 @@ class ImageCoverModel extends StatefulWidget {
 class _ImageCoverModel extends State<ImageCoverModel>
     with SingleTickerProviderStateMixin {
   bool isMouseOver = false;
+  DioClient dioClient = DioClient();
   late AnimationController _animationController;
   double rotationAngleY = 0.0;
 
@@ -44,6 +48,11 @@ class _ImageCoverModel extends State<ImageCoverModel>
         });
       }
     });
+  }
+
+  void createGameFromTitle(String title) {
+    Constants.selectedGame = Game(
+        title: title, description: "description", lastPlayed: DateTime.now());
   }
 
   @override
@@ -76,9 +85,7 @@ class _ImageCoverModel extends State<ImageCoverModel>
         });
       },
       child: GestureDetector(
-        onTap: () {
-          print('Tapped');
-        },
+        onTap: () {},
         child: AnimatedBuilder(
           animation: _animationController,
           builder: (context, child) {
@@ -162,7 +169,18 @@ class _ImageCoverModel extends State<ImageCoverModel>
                             splashColor: Colors.red,
                             elevation: 8.0,
                             onPressed: () {
-                              print('Tapped');
+                              createGameFromTitle(
+                                  "The Secret of Monkey Island Trailer");
+                              /*dioClient
+                                  .searchVideos(
+                                      'The Secret of Monkey Island Trailer')
+                                  .then((_) {
+                                // El método getAndImportSteamGames se ha completado exitosamente
+                                // Aquí puedes realizar cualquier acción adicional con los datos obtenidos
+                              }).catchError((error) {
+                                // Ocurrió un error al llamar al método getAndImportSteamGames
+                                // Aquí puedes manejar el error de acuerdo a tus necesidades
+                              });*/
                             },
                             child: Transform(
                               transform: Matrix4.identity()

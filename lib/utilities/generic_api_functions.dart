@@ -7,6 +7,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:synchronyx/models/media.dart';
 import 'package:synchronyx/utilities/constants.dart';
 import '../models/game.dart';
+import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 import 'package:synchronyx/utilities/generic_database_functions.dart'
     // ignore: library_prefixes
     as databaseFunctions;
@@ -24,6 +25,8 @@ class DioClient {
   final _giantBombApiUrl = 'http://www.giantbomb.com/api/search/?api_key=';
 
   final _steamGridDBApiUrl = 'https://www.steamgriddb.com/api/v2/';
+
+  var IgdbAccessToken;
 
 /* ----------------------------- Get Steam Games ---------------------------- */
   Future<void> getAndImportSteamGames(
@@ -148,5 +151,51 @@ class DioClient {
       return imageUrl;
     }
     return '';
+  }
+
+  Future<void> searchVideos(String query) async {
+    var youtube = YoutubeExplode();
+    var searchResult = await youtube.search(query);
+
+    for (var video in searchResult) {
+      print('Title: ${video.title}');
+      print('URL: ${video.url}');
+      print('Channel: ${video.author}');
+      print('Duration: ${video.duration}');
+      print('Views: ${video.engagement.viewCount}');
+      print('');
+    }
+
+    youtube.close();
+  }
+
+  /* --------------- Downloads a videogame trailer from Youtube --------------- */
+
+  /* ----------------------------- Get IGDB Media by Steam App Id and Platform ---------------------------- */
+  /* ------------------------ Not working by the moment ----------------------- */
+  Future<void> getAndImportIgdbMedia() async {
+    // Definir los encabezados que deseas enviar
+    // Client Secret: 00mkxqxbe6xfrjpqd9q5trciud4na5
+    // ID Client: ozpvq0wx470vnfptk4pgrxx91vanzg
+    final urlAut = 'https://id.twitch.tv/oauth2/token';
+    try {
+      // Datos que deseas enviar en el cuerpo de la solicitud
+      final queryParameters = {
+        'client_id': 'ozpvq0wx470vnfptk4pgrxx91vanzg',
+        'client_secret': '00mkxqxbe6xfrjpqd9q5trciud4na5',
+        'grant_type': 'client_credentials',
+      };
+
+      // Realiza la solicitud POST
+      final response =
+          await _dio.post(urlAut, queryParameters: queryParameters);
+
+      // Maneja la respuesta aquí
+      print('Response status: ${response.statusCode}');
+      print('Response data: ${response.data}');
+    } catch (error) {
+      // Maneja los errores aquí
+      print('Error: $error');
+    }
   }
 }

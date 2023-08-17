@@ -66,4 +66,27 @@ class Game {
   String toString() {
     return 'Game{id: $id, title: $title, description: $description,boxColor: $boxColor, mediaId: $mediaId, platform: $platform, genres: $genres, maxPlayers: $maxPlayers, developer: $developer, publisher: $publisher, region: $region, file: $file, releaseYear: $releaseYear, rating: $rating, favorite: $favorite, playTime: $playTime, lastPlayed: $lastPlayed, tags: $tags}';
   }
+
+  static Game fromMap(Map<String, dynamic> map) {
+    return Game(
+      id: map['id'] ?? 0,
+      title: map['title'] ?? '',
+      description: map['description'],
+      boxColor: map['boxColor'] ?? '',
+      mediaId: map['mediaId'] ?? '',
+      platform: map['platform'] ?? '',
+      genres: map['genres'] ?? '',
+      maxPlayers: map['maxPlayers'] ?? '',
+      developer: map['developer'] ?? '',
+      publisher: map['publisher'] ?? '',
+      region: map['region'] ?? '',
+      file: map['file'] ?? '',
+      releaseYear: map['releaseYear'] ?? '',
+      rating: map['rating'] ?? '',
+      favorite: map['favorite'] ?? '',
+      playTime: map['playTime'] ?? '',
+      lastPlayed: map['lastPlayed'] ?? '',
+      tags: map['tags'] ?? '',
+    );
+  }
 }

@@ -5,6 +5,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:sqflite_common/sqlite_api.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:synchronyx/models/game.dart';
 import '../models/api.dart';
 
 enum PlatformStore {
@@ -158,9 +159,6 @@ class Constants {
   static const BACKGROUND_END_COLOR = Color.fromARGB(255, 5, 148, 29);
   static List<Map<String, TextEditingController>> controllerMapList = [];
   static Api? foundApiBeforeImport;
-  //Controladores de datos de los asistentes de importacion
-
+  static Game? selectedGame;
   static Database? database;
-
-  // Puedes agregar más variables estáticas aquí...
 }

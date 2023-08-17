@@ -159,6 +159,23 @@ Future<Api?> checkApiByName(String name) async {
   }
 }
 
+/* ----------- Gets game from database with title parameter ---------- */
+Future<Game?> getGameByTitle(String name) async {
+  //print('Base de datos abierta en:${Constants.database}');
+  // Verify if the database is open before continuing
+  if (Constants.database != null) {
+    var game = await Constants.database
+        ?.query('games', where: 'title = ?', whereArgs: [name]);
+    if (game!.isNotEmpty) {
+      // Return the first API found (assuming 'name' is unique in the database)
+      //print(apis.first);
+      return Game.fromMap(game.first);
+    } else {
+      return null; // Return null if no matching API is found
+    }
+  }
+}
+
 /* ----------- Gets media record from database with name parameter ---------- */
 Future<Media?> getMediaByName(String name) async {
   //print('Base de datos abierta en:${Constants.database}');
@@ -178,10 +195,8 @@ Future<Media?> getMediaByName(String name) async {
 
 /* ----------- Gets media record from database with id parameter ---------- */
 Future<Media?> getMediaById(int id) async {
-  
   // Verify if the database is open before continuing
   if (Constants.database != null) {
-    
     var media = await Constants.database
         ?.query('medias', where: 'id = ?', whereArgs: [id]);
     if (media!.isNotEmpty) {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:synchronyx/utilities/generic_database_functions.dart';
+import 'package:synchronyx/widgets/game_info_panel.dart';
 import 'package:synchronyx/widgets/platform_tree_view.dart';
 import 'package:synchronyx/widgets/top_menu_bar.dart';
 import 'widgets/arcade_box_button.dart';
@@ -186,7 +187,8 @@ class _LeftSideState extends State<LeftSide> {
         return Text("otro2"); // Cambia YourWidget2 por el widget deseado
       // Agrega más casos según tus necesidades
       default:
-        return Text("otrodefaul"); // Cambia YourDefaultWidget por el widget predeterminado
+        return Text(
+            "otrodefaul"); // Cambia YourDefaultWidget por el widget predeterminado
     }
   }
 }
@@ -229,83 +231,50 @@ class CenterSide extends StatelessWidget {
   }
 }
 
-class RightSide extends StatelessWidget {
+class RightSide extends StatefulWidget {
   final AppLocalizations appLocalizations;
+  RightSide({Key? key, required this.appLocalizations}) : super(key: key);
 
-  const RightSide({Key? key, required this.appLocalizations}) : super(key: key);
+  @override
+  State<RightSide> createState() => _MyWidgetState();
+}
 
+class _MyWidgetState extends State<RightSide> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: MediaQuery.of(context).size.width * 0.28,
-      decoration: BoxDecoration(
-        border: Border.all(
-          color: const Color.fromARGB(255, 2, 34, 14), // Color del borde
-          width: 0.2, // Ancho del borde
-        ),
-        gradient: const LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Constants.SIDE_BAR_COLOR,
-            Color.fromARGB(255, 33, 109, 72),
-            Color.fromARGB(255, 48, 87, 3)
-          ],
-        ),
-      ),
-      child: Column(
-        children: [
-          //Padding(padding: EdgeInsets.only(top: 10.0)),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              const Column(
-                children: [
-                  Icon(Icons.favorite, size: 20, color: Colors.red),
-                ],
-              ),
-              Column(
-                children: [
-                  Text(appLocalizations.menu),
-                  const Text('Synchronyx'),
-                ],
-              ),
-              const Column(
-                children: [
-                  Icon(Icons.menu, size: 20, color: Colors.blue),
-                ],
-              ),
+        width: MediaQuery.of(context).size.width * 0.28,
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: const Color.fromARGB(255, 2, 34, 14), // Color del borde
+            width: 0.2, // Ancho del borde
+          ),
+          gradient: const LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Constants.SIDE_BAR_COLOR,
+              Color.fromARGB(255, 33, 109, 72),
+              Color.fromARGB(255, 48, 87, 3)
             ],
           ),
+        ),
+        child: showGameInfoPanel());
+    ;
+  }
 
-          const Padding(padding: EdgeInsets.only(top: 20.0)),
-          Container(
-            height: 30,
-            child: const Row(
-              children: <Widget>[
-                SizedBox(width: 10), // give it width
-                Flexible(
-                  child: TextField(
-                    decoration: InputDecoration(
-                      contentPadding:
-                          EdgeInsets.symmetric(vertical: 10, horizontal: 6),
-                      filled: true,
-                      fillColor: Color.fromARGB(127, 11, 129, 46),
-                      border: OutlineInputBorder(),
-                      hintText: 'Search',
-                    ),
-                    style: TextStyle(fontSize: 14),
-                  ),
-                ),
-                SizedBox(width: 10),
-              ],
-            ),
-          ),
-          const Padding(padding: EdgeInsets.only(top: 20.0)),
-          DropdownWidget(),
-        ],
-      ),
-    );
+  Widget showGameInfoPanel() {
+    print(Constants.selectedGame);
+    if (Constants.selectedGame != null) {
+      print("holasss");
+      return GameInfoPanel();
+    } else {
+      return Text("nada");
+    }
+  }
+
+  void _updateSelectedGame() {
+    setState(() {}); // Indica al widget que debe reconstruirse
   }
 }
 
