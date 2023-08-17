@@ -65,9 +65,13 @@ class DioClient {
           await getApplicationDocumentsDirectory();
       String finalImageFolder =
           '${appDocumentsDirectory.path}$imageFolder$imageName';
-      //print(finalImageFolder);
-      var mediaInsert =
-          Media(iconUrl: iconUrl, name: name, coverImageUrl: finalImageFolder);
+      //Get video for Media insert
+      String videoUrl = await searchVideosAndReturnUrl('$name trailer');
+      var mediaInsert = Media(
+          iconUrl: iconUrl,
+          name: name,
+          coverImageUrl: finalImageFolder,
+          videoUrl: videoUrl);
       await databaseFunctions.insertMedia(mediaInsert);
       List<String> tag = List.empty(growable: true);
       tag.add("prueba");
@@ -153,20 +157,24 @@ class DioClient {
     return '';
   }
 
-  Future<void> searchVideos(String query) async {
+  Future<String> searchVideosAndReturnUrl(String query) async {
     var youtube = YoutubeExplode();
     var searchResult = await youtube.search(query);
-
+    String urlVideo = "";
     for (var video in searchResult) {
       print('Title: ${video.title}');
       print('URL: ${video.url}');
+      urlVideo = video.url;
       print('Channel: ${video.author}');
       print('Duration: ${video.duration}');
       print('Views: ${video.engagement.viewCount}');
       print('');
+      //Para que solo devuelva el primer resultado
+      break;
     }
 
     youtube.close();
+    return urlVideo;
   }
 
   /* --------------- Downloads a videogame trailer from Youtube --------------- */

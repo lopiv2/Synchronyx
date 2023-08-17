@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart' as provider;
 import 'package:sqflite/sqflite.dart';
+import 'package:synchronyx/providers/app_state.dart';
 import 'package:synchronyx/utilities/generic_database_functions.dart';
 import 'package:synchronyx/widgets/game_info_panel.dart';
 import 'package:synchronyx/widgets/platform_tree_view.dart';
@@ -23,8 +25,6 @@ void main() async {
     win.title = "Synchronyx";
     win.show();
   });
-  //Constants.database = await createAndOpenDB();
-  //Constants.database = await openExistingDatabase();
 }
 
 class MyApp extends StatelessWidget {
@@ -33,29 +33,31 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner:
-          false, // Esta línea elimina el banner de depuración
-      title: 'Synchronyx Game Launcher',
-      localizationsDelegates:
-          AppLocalizations.localizationsDelegates, // Cambio aquí
-      supportedLocales: AppLocalizations.supportedLocales,
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-      ),
-      home: Scaffold(
-        body: MainGrid(context: context),
-      ),
-    );
+    return provider.ChangeNotifierProvider(
+        create: (context) => AppState(),
+        child: MaterialApp(
+          debugShowCheckedModeBanner:
+              false, // Esta línea elimina el banner de depuración
+          title: 'Synchronyx Game Launcher',
+          localizationsDelegates:
+              AppLocalizations.localizationsDelegates, // Cambio aquí
+          supportedLocales: AppLocalizations.supportedLocales,
+          theme: ThemeData(
+            // This is the theme of your application.
+            //
+            // Try running your application with "flutter run". You'll see the
+            // application has a blue toolbar. Then, without quitting the app, try
+            // changing the primarySwatch below to Colors.green and then invoke
+            // "hot reload" (press "r" in the console where you ran "flutter run",
+            // or simply save your changes to "hot reload" in a Flutter IDE).
+            // Notice that the counter didn't reset back to zero; the application
+            // is not restarted.
+            primarySwatch: Colors.blue,
+          ),
+          home: Scaffold(
+            body: MainGrid(context: context),
+          ),
+        ));
   }
 }
 
@@ -243,38 +245,32 @@ class _MyWidgetState extends State<RightSide> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        width: MediaQuery.of(context).size.width * 0.28,
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: const Color.fromARGB(255, 2, 34, 14), // Color del borde
-            width: 0.2, // Ancho del borde
-          ),
-          gradient: const LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Constants.SIDE_BAR_COLOR,
-              Color.fromARGB(255, 33, 109, 72),
-              Color.fromARGB(255, 48, 87, 3)
-            ],
-          ),
+      width: MediaQuery.of(context).size.width * 0.28,
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: const Color.fromARGB(255, 2, 34, 14), // Color del borde
+          width: 0.2, // Ancho del borde
         ),
-        child: showGameInfoPanel());
-    ;
-  }
-
-  Widget showGameInfoPanel() {
-    print(Constants.selectedGame);
-    if (Constants.selectedGame != null) {
-      print("holasss");
-      return GameInfoPanel();
-    } else {
-      return Text("nada");
-    }
-  }
-
-  void _updateSelectedGame() {
-    setState(() {}); // Indica al widget que debe reconstruirse
+        gradient: const LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Constants.SIDE_BAR_COLOR,
+            Color.fromARGB(255, 33, 109, 72),
+            Color.fromARGB(255, 48, 87, 3)
+          ],
+        ),
+      ),
+      child: provider.Consumer<AppState>(
+        builder: (context, appState, child) {
+          if (appState.selectedGame != null) {
+            return GameInfoPanel();
+          } else {
+            return Text("nada");
+          }
+        },
+      ),
+    );
   }
 }
 

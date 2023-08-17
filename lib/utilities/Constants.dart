@@ -7,6 +7,7 @@ import 'package:sqflite_common/sqlite_api.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:synchronyx/models/game.dart';
 import '../models/api.dart';
+import '../models/gameMedia_response.dart';
 
 enum PlatformStore {
   Amazon,
@@ -158,7 +159,7 @@ class Constants {
   static const BACKGROUND_START_COLOR = Color.fromARGB(255, 33, 187, 115);
   static const BACKGROUND_END_COLOR = Color.fromARGB(255, 5, 148, 29);
   static List<Map<String, TextEditingController>> controllerMapList = [];
+  static List<GameMediaResponse> gamesInGrid=[];
   static Api? foundApiBeforeImport;
-  static Game? selectedGame;
   static Database? database;
 }

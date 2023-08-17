@@ -1,19 +1,26 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:synchronyx/utilities/Constants.dart';
 import 'dart:math';
 import 'package:synchronyx/utilities/generic_api_functions.dart';
 import 'package:synchronyx/utilities/generic_database_functions.dart';
 import '../models/game.dart';
+import '../models/gameMedia_response.dart';
 import '../models/media.dart';
+import '../providers/app_state.dart';
 
 class ImageCoverModel extends StatefulWidget {
   final Game game;
   final Media gameMedia;
+  final Function(int) onGameClick; // Nuevo parámetro
 
   const ImageCoverModel(
-      {super.key, required this.game, required this.gameMedia});
+      {super.key,
+      required this.game,
+      required this.gameMedia,
+      required this.onGameClick});
 
   @override
   _ImageCoverModel createState() => _ImageCoverModel();
@@ -50,9 +57,10 @@ class _ImageCoverModel extends State<ImageCoverModel>
     });
   }
 
-  void createGameFromTitle(String title) {
-    Constants.selectedGame = Game(
-        title: title, description: "description", lastPlayed: DateTime.now());
+  void createGameFromTitle(GameMediaResponse game) {
+    final appState = Provider.of<AppState>(context, listen: false);
+    appState.updateSelectedGame(game);
+    //print(appState.selectedGame?.media.videoUrl);
   }
 
   @override
@@ -169,8 +177,12 @@ class _ImageCoverModel extends State<ImageCoverModel>
                             splashColor: Colors.red,
                             elevation: 8.0,
                             onPressed: () {
-                              createGameFromTitle(
-                                  "The Secret of Monkey Island Trailer");
+                              widget.onGameClick(widget.game.id);
+                              GameMediaResponse gameMediaResponse =
+                                  GameMediaResponse.fromGameAndMedia(
+                                      widget.game, widget.gameMedia);
+                              //print(widget.game.id);
+                              createGameFromTitle(gameMediaResponse);
                               /*dioClient
                                   .searchVideos(
                                       'The Secret of Monkey Island Trailer')

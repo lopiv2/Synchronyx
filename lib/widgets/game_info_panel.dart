@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:synchronyx/models/game.dart';
-import 'package:video_player/video_player.dart';
+
+import '../providers/app_state.dart';
 
 class GameInfoPanel extends StatefulWidget {
   const GameInfoPanel({super.key});
@@ -10,49 +12,75 @@ class GameInfoPanel extends StatefulWidget {
 }
 
 class _GameInfoPanelState extends State<GameInfoPanel> {
+
+  late String url = "";
+
   @override
   Widget build(BuildContext context) {
-    late VideoPlayerController _controller;
-    return Column(
-      children: [
-        Container(
-          height: MediaQuery.of(context).size.height * 0.3,
-          color: Colors.black,
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            IconButton(
-              onPressed: () {
-                print('Botón 1');
-              },
-              icon: Icon(Icons.shopping_cart),
-              color: Colors.white,
-            ),
-            IconButton(
-              onPressed: () {
-                print('Botón 2');
-              },
-              icon: Icon(Icons.threesixty),
-              color: Colors.white,
-            ),
-            IconButton(
-              onPressed: () {
-                print('Botón 3');
-              },
-              icon: Icon(Icons.star),
-              color: Colors.white,
-            ),
-            IconButton(
-              onPressed: () {
-                print('Botón 4');
-              },
-              icon: Icon(Icons.play_arrow),
-              color: Colors.white,
-            ),
-          ],
-        ),
-      ],
-    );
+    final appState = Provider.of<AppState>(context);
+
+    if (appState.selectedGame?.media.videoUrl != null) {
+      url = appState.selectedGame!.media.videoUrl;
+      return Column(
+        children: [
+          Container(
+            height: MediaQuery.of(context).size.height * 0.3,
+            color: Colors.black,
+            //child: WinVideoPlayer(controller),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              IconButton(
+                onPressed: () {
+                  reload();
+                },
+                icon: Icon(Icons.shopping_cart),
+                color: Colors.white,
+              ),
+              IconButton(
+                onPressed: () {
+                  print('Botón 2');
+                },
+                icon: Icon(Icons.threesixty),
+                color: Colors.white,
+              ),
+              IconButton(
+                onPressed: () {
+                  print('Botón 3');
+                },
+                icon: Icon(Icons.star),
+                color: Colors.white,
+              ),
+              IconButton(
+                onPressed: () {
+                  print('Botón 4');
+                },
+                icon: Icon(Icons.play_arrow),
+                color: Colors.white,
+              ),
+            ],
+          ),
+        ],
+      );
+    } else {
+      return Text("nada");
+    }
+  }
+
+  void reload() {
+    //controller?.dispose();
+    if (url != null) {}
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    //reload();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 }

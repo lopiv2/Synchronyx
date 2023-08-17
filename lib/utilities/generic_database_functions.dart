@@ -140,6 +140,7 @@ Future<List<Game>> getAllGames() async {
       //lastPlayed: maps[i]['lastPlayed'],
     );
   });
+  
 }
 
 /* ---------------------------- Check Api by name --------------------------- */
