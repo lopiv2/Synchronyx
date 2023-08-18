@@ -183,16 +183,6 @@ class _ImageCoverModel extends State<ImageCoverModel>
                                       widget.game, widget.gameMedia);
                               //print(widget.game.id);
                               createGameFromTitle(gameMediaResponse);
-                              /*dioClient
-                                  .searchVideos(
-                                      'The Secret of Monkey Island Trailer')
-                                  .then((_) {
-                                // El método getAndImportSteamGames se ha completado exitosamente
-                                // Aquí puedes realizar cualquier acción adicional con los datos obtenidos
-                              }).catchError((error) {
-                                // Ocurrió un error al llamar al método getAndImportSteamGames
-                                // Aquí puedes manejar el error de acuerdo a tus necesidades
-                              });*/
                             },
                             child: Transform(
                               transform: Matrix4.identity()

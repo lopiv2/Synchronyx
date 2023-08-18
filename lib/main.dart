@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart' as provider;
+import 'package:provider/provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:synchronyx/providers/app_state.dart';
 import 'package:synchronyx/utilities/generic_database_functions.dart';
@@ -224,7 +225,11 @@ class CenterSide extends StatelessWidget {
                   ],
                 ),
               ),
-              child: const GridViewGameCovers(),
+              child: Consumer<AppState>(
+                builder: (context, appState, child) {
+                  return GridViewGameCovers(); // Actualiza automáticamente cuando cambia shouldRefreshGridView
+                },
+              ),
             ),
           );
         }

@@ -114,40 +114,191 @@ extension SearchParametersExtension on SearchParametersDropDown {
 }
 
 enum Platforms {
-  Dreamcast,
-  DS,
-  Gameboy,
-  Gamecube,
-  Gamegear,
-  Linux,
-  Mac,
-  MAME,
-  Mastersystem,
-  Megadrive,
-  Neogeo,
-  NES,
-  Nintendo64,
-  PS1,
-  PS2,
-  PS3,
-  PSP,
-  SNES,
-  Wii,
-  WIIU,
-  Windows,
-  Xbox,
-}
+  Dreamcast(
+      Image(
+        image: AssetImage("assets/icons/dreamcast.png"),
+        width: 34,
+        height: 34,
+        color: null,
+      ),
+      "Dreamcast"),
+  DS(
+      Image(
+        image: AssetImage("assets/icons/ds.png"),
+        width: 34,
+        height: 34,
+        color: null,
+      ),
+      "DS"),
+  Gameboy(
+      Image(
+        image: AssetImage("assets/icons/gameboy.png"),
+        width: 34,
+        height: 34,
+        color: null,
+      ),
+      "Gameboy"),
+  Gamecube(
+      Image(
+        image: AssetImage("assets/icons/gamecube.png"),
+        width: 34,
+        height: 34,
+        color: null,
+      ),
+      "Gamecube"),
+  Gamegear(
+      Image(
+        image: AssetImage("assets/icons/gamegear.png"),
+        width: 34,
+        height: 34,
+        color: null,
+      ),
+      "Gamegear"),
+  Linux(
+      Image(
+        image: AssetImage("assets/icons/linux.png"),
+        width: 34,
+        height: 34,
+        color: null,
+      ),
+      "Linux"),
+  Mac(
+      Image(
+        image: AssetImage("assets/icons/mac.png"),
+        width: 34,
+        height: 34,
+        color: null,
+      ),
+      "Mac"),
+  MAME(
+      Image(
+        image: AssetImage("assets/icons/mame.png"),
+        width: 34,
+        height: 34,
+        color: null,
+      ),
+      "MAME"),
+  Mastersystem(
+      Image(
+        image: AssetImage("assets/icons/mastersystem.png"),
+        width: 34,
+        height: 34,
+        color: null,
+      ),
+      "Mastersystem"),
+  Megadrive(
+      Image(
+        image: AssetImage("assets/icons/megadrive.png"),
+        width: 34,
+        height: 34,
+        color: null,
+      ),
+      "Megadrive"),
+  Neogeo(
+      Image(
+        image: AssetImage("assets/icons/neogeo.png"),
+        width: 34,
+        height: 34,
+        color: null,
+      ),
+      "Neogeo"),
+  NES(
+      Image(
+        image: AssetImage("assets/icons/nes.png"),
+        width: 34,
+        height: 34,
+        color: null,
+      ),
+      "NES"),
+  Nintendo64(
+      Image(
+        image: AssetImage("assets/icons/nintendo64.png"),
+        width: 34,
+        height: 34,
+        color: null,
+      ),
+      "Nintendo64"),
+  PS1(
+      Image(
+        image: AssetImage("assets/icons/ps1.png"),
+        width: 34,
+        height: 34,
+        color: null,
+      ),
+      "PS1"),
+  PS2(
+      Image(
+        image: AssetImage("assets/icons/ps2.png"),
+        width: 34,
+        height: 34,
+        color: null,
+      ),
+      "PS2"),
+  PS3(
+      Image(
+        image: AssetImage("assets/icons/ps3.png"),
+        width: 34,
+        height: 34,
+        color: null,
+      ),
+      "PS3"),
+  PSP(
+      Image(
+        image: AssetImage("assets/icons/psp.png"),
+        width: 34,
+        height: 34,
+        color: null,
+      ),
+      "PSP"),
+  SNES(
+      Image(
+        image: AssetImage("assets/icons/snes.png"),
+        width: 34,
+        height: 34,
+        color: null,
+      ),
+      "SNES"),
+  Wii(
+      Image(
+        image: AssetImage("assets/icons/wii.png"),
+        width: 34,
+        height: 34,
+        color: null,
+      ),
+      "Wii"),
+  WIIU(
+      Image(
+        image: AssetImage("assets/icons/wiiu.png"),
+        width: 34,
+        height: 34,
+        color: null,
+      ),
+      "WIIU"),
+  Windows(
+      Image(
+        image: AssetImage("assets/icons/windows.png"),
+        width: 34,
+        height: 34,
+        color: null,
+      ),
+      "Windows"),
+  Xbox(
+      Image(
+        image: AssetImage("assets/icons/xbox.png"),
+        width: 34,
+        height: 34,
+        color: null,
+      ),
+      "Xbox");
 
-extension PlatformExtension on Platforms {
-  String get value {
-    switch (this) {
-      case Platforms.Windows:
-        return "Windows";
-      case Platforms.DS:
-        return "Nintendo DS";
-      default:
-        return "";
-    }
+  final Image image;
+  final String name;
+  const Platforms(this.image, this.name);
+
+  @override
+  String toString() {
+    super.toString();
+    return "Color name is: $name";
   }
 }
 
@@ -159,7 +310,6 @@ class Constants {
   static const BACKGROUND_START_COLOR = Color.fromARGB(255, 33, 187, 115);
   static const BACKGROUND_END_COLOR = Color.fromARGB(255, 5, 148, 29);
   static List<Map<String, TextEditingController>> controllerMapList = [];
-  static List<GameMediaResponse> gamesInGrid=[];
   static Api? foundApiBeforeImport;
   static Database? database;
 }

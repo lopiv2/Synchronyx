@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:synchronyx/providers/app_state.dart';
 import 'package:synchronyx/utilities/constants.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:synchronyx/utilities/generic_database_functions.dart'
+    as databaseFunctions;
 
 class ImportDialog extends StatefulWidget {
   final IconData titleIcon;
@@ -147,9 +151,12 @@ class _ImportDialogState extends State<ImportDialog> {
                       if (_currentStep == widget.steps.length - 1)
                         ElevatedButton(
                           onPressed: () {
+                            //Refresh games
+                            Provider.of<AppState>(context, listen: false)
+                                .refreshGridView();
                             // Resets Static vars for avoiding garbage in memory
                             Constants.foundApiBeforeImport = null;
-                            Constants.controllerMapList=[];
+                            Constants.controllerMapList = [];
                             Navigator.of(context).pop();
                           },
                           child: Text(widget.appLocalizations.finish),

@@ -5,6 +5,8 @@ class Media {
   String backImageUrl;
   String diskImageUrl;
   String videoUrl;
+  String marqueeUrl;
+  String screenshots;
   String iconUrl;
   String logoUrl;
 
@@ -15,6 +17,8 @@ class Media {
     this.backImageUrl = '',
     this.diskImageUrl = '',
     this.videoUrl = '',
+    this.marqueeUrl = '',
+    this.screenshots = '',
     this.iconUrl = '',
     this.logoUrl = '',
   });
@@ -27,6 +31,8 @@ class Media {
       'backImageUrl': backImageUrl,
       'diskImageUrl': diskImageUrl,
       'videoUrl': videoUrl,
+      'marqueeUrl': marqueeUrl,
+      'screenshots': screenshots,
       'iconUrl': iconUrl,
       'logoUrl': logoUrl,
     };
@@ -34,7 +40,7 @@ class Media {
 
   @override
   String toString() {
-    return 'Media{id: $id, name: $name, coverImageUrl: $coverImageUrl,backImageUrl: $backImageUrl, diskImageUrl: $diskImageUrl, videoUrl: $videoUrl, iconUrl: $iconUrl, logoUrl: $logoUrl}';
+    return 'Media{id: $id, name: $name, coverImageUrl: $coverImageUrl,backImageUrl: $backImageUrl, diskImageUrl: $diskImageUrl, videoUrl: $videoUrl, marqueeUrl: $marqueeUrl,screenshots: $screenshots, iconUrl: $iconUrl, logoUrl: $logoUrl}';
   }
 
   static Media fromMap(Map<String, dynamic> map) {
@@ -45,6 +51,8 @@ class Media {
       backImageUrl: map['backImageUrl'] ?? '',
       diskImageUrl: map['diskImageUrl'] ?? '',
       videoUrl: map['videoUrl'] ?? '',
+      marqueeUrl: map['marqueeUrl'] ?? '',
+      screenshots: map['screenshots'] ?? '',
       iconUrl: map['iconUrl'] ?? '',
       logoUrl: map['logoUrl'] ?? '',
     );

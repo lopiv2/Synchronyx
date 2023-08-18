@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:synchronyx/providers/app_state.dart';
 import 'package:synchronyx/utilities/constants.dart';
 import '../models/game.dart';
 import '../models/gameMedia_response.dart';
@@ -7,12 +9,16 @@ import 'image_cover_model.dart';
 import 'package:synchronyx/utilities/generic_database_functions.dart'
     as databaseFunctions;
 
-class GridViewGameCovers extends StatelessWidget {
+class GridViewGameCovers extends StatefulWidget {
   const GridViewGameCovers({Key? key}) : super(key: key);
 
   @override
+  State<GridViewGameCovers> createState() => _GridViewGameCoversState();
+}
+
+class _GridViewGameCoversState extends State<GridViewGameCovers> {
+  @override
   Widget build(BuildContext context) {
-    //print(Constants.database);
     return FutureBuilder<List<Game>>(
       future: databaseFunctions.getAllGames(),
       builder: (context, snapshot) {
@@ -54,13 +60,14 @@ class GridViewGameCovers extends StatelessWidget {
   }
 
   Future<List<Container>> _buildGridTileList(List<Game> listOfGames) async {
+    final appState = Provider.of<AppState>(context, listen: false);
     List<Container> containers = [];
     for (Game game in listOfGames) {
       Media? gameMedia = await databaseFunctions.getMediaById(game.id);
       if (gameMedia != null) {
         GameMediaResponse gameMediaResponse =
             GameMediaResponse.fromGameAndMedia(game, gameMedia);
-        Constants.gamesInGrid.add(gameMediaResponse);
+        appState.gamesInGrid.add(gameMediaResponse);
         containers.add(
           Container(
             child: Transform.scale(

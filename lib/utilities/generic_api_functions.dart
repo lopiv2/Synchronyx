@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
-
+import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:synchronyx/models/media.dart';
@@ -17,7 +17,7 @@ import 'generic_functions.dart';
 /*                                API Functions                               */
 /* -------------------------------------------------------------------------- */
 class DioClient {
-  final Dio _dio = Dio();
+  final Dio _dio = Dio(BaseOptions(followRedirects: true));
 
   final _steamApiUrl =
       'https://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=';
@@ -40,19 +40,19 @@ class DioClient {
     List<dynamic> gamesList = responseData['response']['games'];
 
     for (var game in gamesList) {
-      //print(game);
       int appId = game['appid'];
       String name = game['name'];
       int playtime = game['playtime_forever'];
       String icon = game['img_icon_url'];
       String iconUrl =
           'http://media.steampowered.com/steamcommunity/public/images/apps/$appId/$icon.jpg';
-      //We import by default from SteamGridDB, for the moment, the following images
+      //We import by default from SteamGridDB, cover image
       String imageFrontUrl =
           await getAndImportSteamGridDBMediaBySteamIdAndPlatform(
               key: 'fa61b6d47dfe3b6ab65a516b1f8bd0a3',
               steamId: '$appId',
               platform: 'steam');
+
       List<String> parts = imageFrontUrl.split('/');
       String lastPartFile = parts.last;
       String imageName = '${generateRandomAlphanumeric()}_$lastPartFile';
@@ -65,12 +65,31 @@ class DioClient {
           await getApplicationDocumentsDirectory();
       String finalImageFolder =
           '${appDocumentsDirectory.path}$imageFolder$imageName';
+
+      //We import by default from SteamGridDB, marquee image
+      String marqueeFrontUrl =
+          await getAndImportSteamGridDBHeroesBySteamIdAndPlatform(
+              key: 'fa61b6d47dfe3b6ab65a516b1f8bd0a3',
+              steamId: '$appId',
+              platform: 'steam');
+      List<String> marqueeParts = marqueeFrontUrl.split('/');
+      String lastPartMarqueeFile = marqueeParts.last;
+      String marqueeName =
+          '${generateRandomAlphanumeric()}_$lastPartMarqueeFile';
+      String marqueeFolder = '\\Synchronyx\\media\\marquees\\';
+      //Delete file before download a new one
+      deleteFile(mediaInfo!.marqueeUrl);
+      downloadAndSaveImage(marqueeFrontUrl, marqueeName, marqueeFolder);
+      String finalmarqueeFolder =
+          '${appDocumentsDirectory.path}$marqueeFolder$marqueeName';
+
       //Get video for Media insert
       String videoUrl = await searchVideosAndReturnUrl('$name trailer');
       var mediaInsert = Media(
           iconUrl: iconUrl,
           name: name,
           coverImageUrl: finalImageFolder,
+          marqueeUrl: finalmarqueeFolder,
           videoUrl: videoUrl);
       await databaseFunctions.insertMedia(mediaInsert);
       List<String> tag = List.empty(growable: true);
@@ -79,11 +98,10 @@ class DioClient {
       var gameInsert = Game(
           title: name,
           playTime: playtime,
-          platform: Platforms.Windows.value,
+          platform: Platforms.Windows.name,
           mediaId: mediaInfo!.id,
           tags: tag.join(','));
       await databaseFunctions.insertGame(gameInsert);
-
       break;
     }
   }
@@ -150,6 +168,39 @@ class DioClient {
 
       // Obtener el valor del campo "url"
       String imageUrl = firstData['url'];
+
+      //Returns the value of the first image obtained.
+      return imageUrl;
+    }
+    return '';
+  }
+
+  /* ----------------------------- Get SteamGridDB Heroes (Marquees) by Steam App Id and Platform ---------------------------- */
+  Future<String> getAndImportSteamGridDBHeroesBySteamIdAndPlatform(
+      {required String key,
+      required String steamId,
+      required String platform}) async {
+    // Definir los encabezados que deseas enviar
+    Map<String, dynamic> headers = {
+      'Authorization': 'Bearer $key',
+      'Content-Type': 'application/json',
+    };
+    Response userData = await _dio.get(
+        _steamGridDBApiUrl + 'heroes/$platform/$steamId',
+        options: Options(headers: headers));
+    String jsonData = jsonEncode(userData.data);
+    //print('Game Data: $jsonData');
+
+    Map<String, dynamic> responseData = userData.data;
+    // Obtener la lista "data"
+    List<dynamic> dataList = responseData['data'];
+
+    if (dataList.isNotEmpty) {
+      // Obtener el primer elemento de la lista
+      Map<String, dynamic> firstData = dataList[0];
+
+      // Obtener el valor del campo "url"
+      String imageUrl = firstData['thumb'];
 
       //Returns the value of the first image obtained.
       return imageUrl;

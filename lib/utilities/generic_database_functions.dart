@@ -100,6 +100,8 @@ Future<Database?> createAndOpenDB() async {
           'backImageUrl TEXT,'
           'diskImageUrl TEXT,'
           'videoUrl TEXT,'
+          'marqueeUrl TEXT,'
+          'screenshots TEXT,'
           'iconUrl TEXT,'
           'logoUrl TEXT'
           ')',
@@ -140,7 +142,6 @@ Future<List<Game>> getAllGames() async {
       //lastPlayed: maps[i]['lastPlayed'],
     );
   });
-  
 }
 
 /* ---------------------------- Check Api by name --------------------------- */

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:synchronyx/models/game.dart';
@@ -12,7 +14,6 @@ class GameInfoPanel extends StatefulWidget {
 }
 
 class _GameInfoPanelState extends State<GameInfoPanel> {
-
   late String url = "";
 
   @override
@@ -21,13 +22,25 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
 
     if (appState.selectedGame?.media.videoUrl != null) {
       url = appState.selectedGame!.media.videoUrl;
+      ImageProvider<Object> imageWidgetMarquee;
+      imageWidgetMarquee =
+          FileImage(File(appState.selectedGame!.media.marqueeUrl));
       return Column(
         children: [
           Container(
-            height: MediaQuery.of(context).size.height * 0.3,
-            color: Colors.black,
-            //child: WinVideoPlayer(controller),
-          ),
+              height: MediaQuery.of(context).size.height * 0.3,
+              color: Colors.white,
+              child: appState.selectedGame?.media.videoUrl != ""
+                  ? Text("Video holder")
+                  : Container(
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: imageWidgetMarquee,
+                        ),
+                      ),
+                    )
+              //child: WinVideoPlayer(controller),
+              ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -43,6 +56,13 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
                   print('Botón 2');
                 },
                 icon: Icon(Icons.threesixty),
+                color: Colors.white,
+              ),
+              IconButton(
+                onPressed: () {
+                  print('Botón 3');
+                },
+                icon: Icon(Icons.settings),
                 color: Colors.white,
               ),
               IconButton(
