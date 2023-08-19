@@ -26,6 +26,8 @@ class DioClient {
 
   final _steamGridDBApiUrl = 'https://www.steamgriddb.com/api/v2/';
 
+  final _rawgApiUrl = 'https://api.rawg.io/api/games';
+
   var IgdbAccessToken;
 
 /* ----------------------------- Get Steam Games ---------------------------- */
@@ -52,19 +54,9 @@ class DioClient {
               key: 'fa61b6d47dfe3b6ab65a516b1f8bd0a3',
               steamId: '$appId',
               platform: 'steam');
-
-      List<String> parts = imageFrontUrl.split('/');
-      String lastPartFile = parts.last;
-      String imageName = '${generateRandomAlphanumeric()}_$lastPartFile';
-      String imageFolder = '\\Synchronyx\\media\\frontCovers\\';
-      Media? mediaInfo = await databaseFunctions.getMediaByName(name);
-      //Delete file before download a new one
-      deleteFile(mediaInfo!.coverImageUrl);
-      downloadAndSaveImage(imageFrontUrl, imageName, imageFolder);
-      Directory appDocumentsDirectory =
-          await getApplicationDocumentsDirectory();
+      Media? mediaInfo;
       String finalImageFolder =
-          '${appDocumentsDirectory.path}$imageFolder$imageName';
+          await processMediaFiles(imageFrontUrl, "cover", name, mediaInfo);
 
       //We import by default from SteamGridDB, marquee image
       String marqueeFrontUrl =
@@ -72,16 +64,14 @@ class DioClient {
               key: 'fa61b6d47dfe3b6ab65a516b1f8bd0a3',
               steamId: '$appId',
               platform: 'steam');
-      List<String> marqueeParts = marqueeFrontUrl.split('/');
-      String lastPartMarqueeFile = marqueeParts.last;
-      String marqueeName =
-          '${generateRandomAlphanumeric()}_$lastPartMarqueeFile';
-      String marqueeFolder = '\\Synchronyx\\media\\marquees\\';
-      //Delete file before download a new one
-      deleteFile(mediaInfo!.marqueeUrl);
-      downloadAndSaveImage(marqueeFrontUrl, marqueeName, marqueeFolder);
       String finalmarqueeFolder =
-          '${appDocumentsDirectory.path}$marqueeFolder$marqueeName';
+          await processMediaFiles(marqueeFrontUrl, "marquee", name, mediaInfo);
+
+      //Import Background from RAWG
+      String backgroundUrl = await getAndImportRawgMedia(
+          key: '68239c29cb2c49f2acfddf9703077032', title: name);
+      String finalbackgroundFolder =
+          await processMediaFiles(backgroundUrl, "background", name, mediaInfo);
 
       //Get video for Media insert
       String videoUrl = await searchVideosAndReturnUrl('$name trailer');
@@ -90,6 +80,7 @@ class DioClient {
           name: name,
           coverImageUrl: finalImageFolder,
           marqueeUrl: finalmarqueeFolder,
+          backgroundImageUrl: finalbackgroundFolder,
           videoUrl: videoUrl);
       await databaseFunctions.insertMedia(mediaInsert);
       List<String> tag = List.empty(growable: true);
@@ -104,6 +95,37 @@ class DioClient {
       await databaseFunctions.insertGame(gameInsert);
       break;
     }
+  }
+
+  Future<String> processMediaFiles(
+      String img, String mediaType, String name, mediaInfo) async {
+    List<String> parts = img.split('/');
+    String lastPartFile = parts.last;
+    String imageName = '${generateRandomAlphanumeric()}_$lastPartFile';
+    String imageFolder = "";
+    mediaInfo = await databaseFunctions.getMediaByName(name);
+    switch (mediaType) {
+      case "cover":
+        imageFolder = '\\Synchronyx\\media\\frontCovers\\';
+        //Delete file before download a new one
+        deleteFile(mediaInfo!.coverImageUrl);
+        break;
+      case "marquee":
+        imageFolder = '\\Synchronyx\\media\\marquees\\';
+        //Delete file before download a new one
+        deleteFile(mediaInfo!.marqueeUrl);
+        break;
+      case "background":
+        imageFolder = '\\Synchronyx\\media\\backgrounds\\';
+        //Delete file before download a new one
+        deleteFile(mediaInfo!.backgroundImageUrl);
+        break;
+    }
+    downloadAndSaveImage(img, imageName, imageFolder);
+    Directory appDocumentsDirectory = await getApplicationDocumentsDirectory();
+    String finalImageFolder =
+        '${appDocumentsDirectory.path}$imageFolder$imageName';
+    return finalImageFolder;
   }
 
   /* -------------------------------------------------------------------------- */
@@ -208,6 +230,27 @@ class DioClient {
     return '';
   }
 
+  /* ----------------------------- Get RAWG Media by Steam App Id and Platform ---------------------------- */
+  /* ------------------------ Not working by the moment ----------------------- */
+  Future<String> getAndImportRawgMedia(
+      {required String key, required String title}) async {
+    String sluggedTitle = createSlug(title);
+    Response userData = await _dio.get('$_rawgApiUrl/$sluggedTitle?key=$key');
+
+    Map<String, dynamic> responseData = userData.data;
+
+    // Verificar si el campo "background_image" existe en la respuesta
+    if (responseData.containsKey('background_image')) {
+      // Obtener el valor del campo "background_image"
+      String imageUrl = responseData['background_image'];
+
+      // Devolver la URL de la imagen de fondo
+      return imageUrl;
+    }
+    return ''; // O un valor predeterminado en caso de no encontrar el campo
+  }
+
+/* --------------- Downloads a videogame trailer from Youtube --------------- */
   Future<String> searchVideosAndReturnUrl(String query) async {
     var youtube = YoutubeExplode();
     var searchResult = await youtube.search(query);
@@ -227,8 +270,6 @@ class DioClient {
     youtube.close();
     return urlVideo;
   }
-
-  /* --------------- Downloads a videogame trailer from Youtube --------------- */
 
   /* ----------------------------- Get IGDB Media by Steam App Id and Platform ---------------------------- */
   /* ------------------------ Not working by the moment ----------------------- */

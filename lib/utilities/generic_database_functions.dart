@@ -99,6 +99,7 @@ Future<Database?> createAndOpenDB() async {
           'coverImageUrl TEXT,'
           'backImageUrl TEXT,'
           'diskImageUrl TEXT,'
+          'backgroundImageUrl TEXT,'
           'videoUrl TEXT,'
           'marqueeUrl TEXT,'
           'screenshots TEXT,'

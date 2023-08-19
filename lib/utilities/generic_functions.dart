@@ -82,3 +82,22 @@ String generateRandomAlphanumeric() {
   return randomString;
 }
 
+String createSlug(String input) {
+  // Convierte la cadena a minúsculas
+  String lowerCase = input.toLowerCase();
+  
+  // Utiliza RegExp para encontrar todos los caracteres que no son letras ni números
+  final regex = RegExp(r'[^a-z0-9]');
+  
+  // Reemplaza los caracteres especiales y espacios por guiones
+  String cleanedString = lowerCase.replaceAll(regex, '-');
+  
+  // Elimina guiones duplicados
+  cleanedString = cleanedString.replaceAll(RegExp(r'-+'), '-');
+  
+  // Elimina guiones al principio y al final
+  cleanedString = cleanedString.replaceAll(RegExp(r'^-|-$'), '');
+  
+  return cleanedString;
+}
+

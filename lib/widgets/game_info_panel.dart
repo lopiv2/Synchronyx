@@ -20,22 +20,22 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
   Widget build(BuildContext context) {
     final appState = Provider.of<AppState>(context);
 
-    if (appState.selectedGame?.media.videoUrl != null) {
-      url = appState.selectedGame!.media.videoUrl;
+      //url = appState.selectedGame!.media.videoUrl;
       ImageProvider<Object> imageWidgetMarquee;
       imageWidgetMarquee =
-          FileImage(File(appState.selectedGame!.media.marqueeUrl));
+          FileImage(File(appState.selectedGame!.media.backgroundImageUrl));
       return Column(
         children: [
           Container(
               height: MediaQuery.of(context).size.height * 0.3,
               color: Colors.white,
-              child: appState.selectedGame?.media.videoUrl != ""
+              child: appState.selectedGame?.media.videoUrl == "" //Arreglar esto en el futuro para que muestre el video o la imagen segun las opciones
                   ? Text("Video holder")
                   : Container(
                       decoration: BoxDecoration(
                         image: DecorationImage(
                           image: imageWidgetMarquee,
+                          fit: BoxFit.cover,
                         ),
                       ),
                     )
@@ -83,9 +83,7 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
           ),
         ],
       );
-    } else {
-      return Text("nada");
-    }
+
   }
 
   void reload() {
