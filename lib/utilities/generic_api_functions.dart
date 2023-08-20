@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:synchronyx/models/media.dart';
+import 'package:synchronyx/models/rawg_response.dart';
 import 'package:synchronyx/utilities/constants.dart';
 import '../models/game.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
@@ -68,19 +69,19 @@ class DioClient {
           await processMediaFiles(marqueeFrontUrl, "marquee", name, mediaInfo);
 
       //We import by default from SteamGridDB, marquee image
-      String logoUrl =
-          await getAndImportSteamGridDBLogoBySteamIdAndPlatform(
-              key: 'fa61b6d47dfe3b6ab65a516b1f8bd0a3',
-              steamId: '$appId',
-              platform: 'steam');
+      String logoUrl = await getAndImportSteamGridDBLogoBySteamIdAndPlatform(
+          key: 'fa61b6d47dfe3b6ab65a516b1f8bd0a3',
+          steamId: '$appId',
+          platform: 'steam');
       String finallogoFolder =
           await processMediaFiles(logoUrl, "logo", name, mediaInfo);
 
-      //Import Background from RAWG
-      String backgroundUrl = await getAndImportRawgMedia(
+      //Get info from RAWG
+      RawgResponse rawgResponse = await getAndImportRawgData(
           key: '68239c29cb2c49f2acfddf9703077032', title: name);
-      String finalbackgroundFolder =
-          await processMediaFiles(backgroundUrl, "background", name, mediaInfo);
+
+      String finalbackgroundFolder = await processMediaFiles(
+          rawgResponse.imageUrl, "background", name, mediaInfo);
 
       //Get video for Media insert
       String videoUrl = await searchVideosAndReturnUrl('$name trailer');
@@ -96,12 +97,14 @@ class DioClient {
       List<String> tag = List.empty(growable: true);
       tag.add("prueba");
       tag.add("adios");
-      var gameInsert = Game(
+      Game gameInsert = Game(
           title: name,
           playTime: playtime,
+          rating: rawgResponse.metacriticInfo,
           platform: Platforms.Windows.name,
-          mediaId: mediaInfo!.id,
+          mediaId: mediaInsert.id,
           tags: tag.join(','));
+
       await databaseFunctions.insertGame(gameInsert);
       break;
     }
@@ -114,26 +117,35 @@ class DioClient {
     String imageName = '${generateRandomAlphanumeric()}_$lastPartFile';
     String imageFolder = "";
     mediaInfo = await databaseFunctions.getMediaByName(name);
+    //print(mediaInfo?.name);
     switch (mediaType) {
       case "cover":
         imageFolder = '\\Synchronyx\\media\\frontCovers\\';
         //Delete file before download a new one
-        deleteFile(mediaInfo!.coverImageUrl);
+        if (mediaInfo != null) {
+          deleteFile(mediaInfo!.coverImageUrl);
+        }
         break;
       case "marquee":
         imageFolder = '\\Synchronyx\\media\\marquees\\';
         //Delete file before download a new one
-        deleteFile(mediaInfo!.marqueeUrl);
+        if (mediaInfo != null) {
+          deleteFile(mediaInfo!.marqueeUrl);
+        }
         break;
       case "background":
         imageFolder = '\\Synchronyx\\media\\backgrounds\\';
         //Delete file before download a new one
-        deleteFile(mediaInfo!.backgroundImageUrl);
+        if (mediaInfo != null) {
+          deleteFile(mediaInfo!.backgroundImageUrl);
+        }
         break;
       case "logo":
         imageFolder = '\\Synchronyx\\media\\logos\\';
         //Delete file before download a new one
-        deleteFile(mediaInfo!.logoUrl);
+        if (mediaInfo != null) {
+          deleteFile(mediaInfo!.logoUrl);
+        }
         break;
     }
     downloadAndSaveImage(img, imageName, imageFolder);
@@ -280,22 +292,36 @@ class DioClient {
 
   /* ----------------------------- Get RAWG Media by Steam App Id and Platform ---------------------------- */
   /* ------------------------ Not working by the moment ----------------------- */
-  Future<String> getAndImportRawgMedia(
+  Future<RawgResponse> getAndImportRawgData(
       {required String key, required String title}) async {
     String sluggedTitle = createSlug(title);
     Response userData = await _dio.get('$_rawgApiUrl/$sluggedTitle?key=$key');
 
     Map<String, dynamic> responseData = userData.data;
 
-    // Verificar si el campo "background_image" existe en la respuesta
-    if (responseData.containsKey('background_image')) {
-      // Obtener el valor del campo "background_image"
-      String imageUrl = responseData['background_image'];
+    // Get "background_image" field if it exists
+    String imageUrl = responseData.containsKey('background_image')
+        ? responseData['background_image']
+        : '';
 
-      // Devolver la URL de la imagen de fondo
-      return imageUrl;
-    }
-    return ''; // O un valor predeterminado en caso de no encontrar el campo
+    // Get the desired field from the Metacritic response
+    dynamic metacriticInfo = responseData.containsKey('metacritic')
+        ? responseData['metacritic']
+        : null;
+
+    double metacriticScoreScaled = 1 + (metacriticInfo / 100) * 4 as double;
+
+    metacriticScoreScaled = metacriticScoreScaled.clamp(1.0, 5.0);
+
+    // Round the value to 1 decimal place
+    metacriticScoreScaled =
+        double.parse(metacriticScoreScaled.toStringAsFixed(1));
+
+    // Crear una instancia de MediaInfo con los datos recopilados
+    RawgResponse mediaInfo =
+        RawgResponse(imageUrl: imageUrl, metacriticInfo: metacriticScoreScaled);
+
+    return mediaInfo;
   }
 
 /* --------------- Downloads a videogame trailer from Youtube --------------- */
@@ -303,7 +329,7 @@ class DioClient {
     var youtube = YoutubeExplode();
     var searchResult = await youtube.search(query);
     String urlVideo = "";
-    for (var video in searchResult) {
+    /*for (var video in searchResult) {
       print('Title: ${video.title}');
       print('URL: ${video.url}');
       urlVideo = video.url;
@@ -313,7 +339,7 @@ class DioClient {
       print('');
       //Para que solo devuelva el primer resultado
       break;
-    }
+    }*/
 
     youtube.close();
     return urlVideo;

@@ -14,7 +14,7 @@ class GameMediaResponse {
   String publisher;
   String region;
   String file;
-  int releaseYear;
+  DateTime? releaseDate;
   double rating;
   int favorite; // boolean
   int playTime;
@@ -35,7 +35,7 @@ class GameMediaResponse {
     this.publisher = '',
     this.region = '',
     this.file = '',
-    this.releaseYear = 0,
+    this.releaseDate,
     this.rating = 0.0,
     this.favorite = 0,
     this.playTime = 0,
@@ -57,7 +57,7 @@ class GameMediaResponse {
       'publisher': publisher,
       'region': region,
       'file': file,
-      'releaseYear': releaseYear,
+      'releaseDate': releaseDate,
       'rating': rating,
       'favorite': favorite,
       'playTime': playTime,
@@ -68,7 +68,7 @@ class GameMediaResponse {
 
   @override
   String toString() {
-    return 'GameMediaResponse{id: $id, title: $title, description: $description,boxColor: $boxColor, media: $media, platform: $platform, genres: $genres, maxPlayers: $maxPlayers, developer: $developer, publisher: $publisher, region: $region, file: $file, releaseYear: $releaseYear, rating: $rating, favorite: $favorite, playTime: $playTime, lastPlayed: $lastPlayed, tags: $tags}';
+    return 'GameMediaResponse{id: $id, title: $title, description: $description,boxColor: $boxColor, media: $media, platform: $platform, genres: $genres, maxPlayers: $maxPlayers, developer: $developer, publisher: $publisher, region: $region, file: $file, releaseDate: $releaseDate, rating: $rating, favorite: $favorite, playTime: $playTime, lastPlayed: $lastPlayed, tags: $tags}';
   }
 
   factory GameMediaResponse.fromGameAndMedia(Game game, Media media) {
@@ -84,7 +84,7 @@ class GameMediaResponse {
       publisher: game.publisher,
       region: game.region,
       file: game.file,
-      releaseYear: game.releaseYear,
+      releaseDate: game.releaseDate,
       rating: game.rating,
       favorite: game.favorite,
       playTime: game.playTime,
@@ -109,7 +109,7 @@ class GameMediaResponse {
       publisher: map['publisher'] ?? '',
       region: map['region'] ?? '',
       file: map['file'] ?? '',
-      releaseYear: map['releaseYear'] ?? 0,
+      releaseDate: map['releaseDate'] ?? 0,
       rating: map['rating'] ?? 0.0,
       favorite: map['favorite'] ?? 0,
       playTime: map['playTime'] ?? 0,

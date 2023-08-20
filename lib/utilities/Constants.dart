@@ -24,6 +24,7 @@ enum PlatformStore {
 
 enum SearchParametersDropDown {
   AddDate,
+  All,
   CategoryPlatform,
   Developer,
   Favorite,
@@ -44,6 +45,8 @@ extension SearchParametersValueExtension on SearchParametersDropDown {
     switch (this) {
       case SearchParametersDropDown.AddDate:
         return "addDate";
+        case SearchParametersDropDown.All:
+        return "all";
       case SearchParametersDropDown.CategoryPlatform:
         return "categoryPlatform";
       case SearchParametersDropDown.Developer:
@@ -81,6 +84,8 @@ extension SearchParametersExtension on SearchParametersDropDown {
     switch (this) {
       case SearchParametersDropDown.AddDate:
         return AppLocalizations.of(context).addDate;
+        case SearchParametersDropDown.All:
+        return AppLocalizations.of(context).all;
       case SearchParametersDropDown.CategoryPlatform:
         return AppLocalizations.of(context).categoryPlatform;
       case SearchParametersDropDown.Developer:

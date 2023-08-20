@@ -11,7 +11,7 @@ class Game {
   String publisher;
   String region;
   String file;
-  int releaseYear;
+  DateTime? releaseDate = DateTime.now();
   double rating;
   int favorite; //boolean
   int playTime;
@@ -31,7 +31,7 @@ class Game {
     this.publisher = '',
     this.region = '',
     this.file = '',
-    this.releaseYear = 0,
+    this.releaseDate,
     this.rating = 0.0,
     this.favorite = 0,
     this.playTime = 0,
@@ -53,7 +53,7 @@ class Game {
       'publisher': publisher,
       'region': region,
       'file': file,
-      'releaseYear': releaseYear,
+      'releaseDate': releaseDate?.toLocal(),
       'rating': rating,
       'favorite': favorite,
       'playTime': playTime,
@@ -64,7 +64,7 @@ class Game {
 
   @override
   String toString() {
-    return 'Game{id: $id, title: $title, description: $description,boxColor: $boxColor, mediaId: $mediaId, platform: $platform, genres: $genres, maxPlayers: $maxPlayers, developer: $developer, publisher: $publisher, region: $region, file: $file, releaseYear: $releaseYear, rating: $rating, favorite: $favorite, playTime: $playTime, lastPlayed: $lastPlayed, tags: $tags}';
+    return 'Game{id: $id, title: $title, description: $description,boxColor: $boxColor, mediaId: $mediaId, platform: $platform, genres: $genres, maxPlayers: $maxPlayers, developer: $developer, publisher: $publisher, region: $region, file: $file, releaseDate: $releaseDate, rating: $rating, favorite: $favorite, playTime: $playTime, lastPlayed: $lastPlayed, tags: $tags}';
   }
 
   static Game fromMap(Map<String, dynamic> map) {
@@ -81,7 +81,7 @@ class Game {
       publisher: map['publisher'] ?? '',
       region: map['region'] ?? '',
       file: map['file'] ?? '',
-      releaseYear: map['releaseYear'] ?? '',
+      releaseDate: map['releaseDate'] ?? DateTime.now(),
       rating: map['rating'] ?? '',
       favorite: map['favorite'] ?? '',
       playTime: map['playTime'] ?? '',

@@ -156,8 +156,8 @@ class _LeftSideState extends State<LeftSide> {
                         EdgeInsets.symmetric(vertical: 10, horizontal: 6),
                     filled: true,
                     fillColor: Color.fromARGB(127, 11, 129, 46),
-                    border: OutlineInputBorder(), // Aquí establecemos el borde
-                    hintText: 'Search', // Texto de ayuda dentro del TextField
+                    border: OutlineInputBorder(),
+                    hintText: 'Search',
                   ),
                   style: TextStyle(fontSize: 14),
                 )),
@@ -165,7 +165,6 @@ class _LeftSideState extends State<LeftSide> {
               ],
             ),
           ),
-
           const Padding(padding: EdgeInsets.only(top: 20.0)),
           DropdownWidget(
             onChanged: (newValue) {
@@ -176,6 +175,21 @@ class _LeftSideState extends State<LeftSide> {
           ),
           Expanded(
             child: _buildWidgetBasedOnSelectedValue(),
+          ),
+          Container(
+            height: 50, // Altura del contenedor ámbar
+            color: const Color.fromARGB(101, 76, 175, 79), // Color ámbar
+            child: Align(
+              alignment: Alignment.center,
+              child: Text(
+                'Descargas',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+            ),
           ),
         ]));
   }

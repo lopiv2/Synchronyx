@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:synchronyx/models/game.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import '../providers/app_state.dart';
+import 'package:animate_do/animate_do.dart';
 
 class GameInfoPanel extends StatefulWidget {
   const GameInfoPanel({super.key});
@@ -31,7 +32,7 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
         Container(
             height: MediaQuery.of(context).size.height * 0.3,
             color: Colors.white,
-            child: appState.selectedGame?.media.videoUrl ==
+            child: appState.selectedGame?.media.videoUrl !=
                     "" //Arreglar esto en el futuro para que muestre el video o la imagen segun las opciones
                 ? Text("Video holder")
                 : Stack(
@@ -50,17 +51,20 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
                           ? Positioned(
                               right: MediaQuery.of(context).size.width * 0.06,
                               bottom: -80,
-                              child: Container(
-                                width: MediaQuery.of(context).size.width * 0.15,
-                                height:
-                                    MediaQuery.of(context).size.height * 0.5,
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    image: logoWidgetMarquee,
-                                    fit: BoxFit.scaleDown,
-                                  ),
-                                ),
-                              ))
+                              child: FadeInDown(
+                                  duration: Duration(seconds: 2),
+                                  child: Container(
+                                    width: MediaQuery.of(context).size.width *
+                                        0.15,
+                                    height: MediaQuery.of(context).size.height *
+                                        0.5,
+                                    decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                        image: logoWidgetMarquee,
+                                        fit: BoxFit.scaleDown,
+                                      ),
+                                    ),
+                                  )))
                           : Text(""),
                       Positioned(
                         right: MediaQuery.of(context).size.width * 0.17,
@@ -78,17 +82,30 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
                                       5), // Ajusta este valor según tu preferencia
                                 )),
                             Positioned(
+                                bottom:
+                                    MediaQuery.of(context).size.height * 0.006,
+                                right:
+                                    MediaQuery.of(context).size.width * 0.077,
+                                child: Text(
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white),
+                                    appState.selectedGame!.rating.toString())),
+                            Positioned(
                                 //right: MediaQuery.of(context).size.width * 0.17,
                                 bottom: 5,
                                 right: 0,
                                 child: RatingBar.builder(
                                   initialRating: appState.selectedGame!.rating,
                                   minRating: 0,
+                                  maxRating: 5,
                                   direction: Axis.horizontal,
                                   allowHalfRating: true,
                                   itemCount: 5,
-                                  itemPadding: EdgeInsets.symmetric(horizontal: 0),
-                                  itemSize: MediaQuery.of(context).size.width * 0.015,
+                                  itemPadding:
+                                      EdgeInsets.symmetric(horizontal: 0),
+                                  itemSize:
+                                      MediaQuery.of(context).size.width * 0.015,
                                   itemBuilder: (context, _) => Icon(
                                     Icons.star,
                                     color: Colors.amber,

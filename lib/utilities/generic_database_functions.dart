@@ -74,7 +74,7 @@ Future<Database?> createAndOpenDB() async {
           'publisher TEXT,'
           'region TEXT,'
           'file TEXT,'
-          'releaseYear INTEGER,'
+          'releaseDate TEXT,'
           'rating REAL,'
           'favorite INTEGER,'
           'playTime INTEGER,'

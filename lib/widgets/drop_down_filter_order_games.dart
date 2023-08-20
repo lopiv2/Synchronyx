@@ -18,7 +18,7 @@ class DropDownCategories extends State<DropdownWidget> {
 
   @override
   void initState() {
-    currentItem = items[0];
+    currentItem = items[1]; //All per default
     super.initState();
   }
 
@@ -55,13 +55,13 @@ class DropDownCategories extends State<DropdownWidget> {
             (SearchParametersDropDown value) {
               return DropdownMenuItem<SearchParametersDropDown>(
                 value: value,
-                child: Text(
+                child: Text(                
                   value.getLocalizedString(context),
                 ),
               );
             },
-          ).toList()..sort((a, b) =>
-          a.child.toString().compareTo(b.child.toString())),
+          ).toList()
+            ..sort((a, b) => a.child.toString().compareTo(b.child.toString())),
         ),
       ),
     );
