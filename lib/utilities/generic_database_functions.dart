@@ -133,16 +133,7 @@ Future<List<Game>> getAllGames() async {
     maps = await db!.query('games');
   }
 
-  // Convert the List<Map<String, dynamic> into a List<Game>.
-  return List.generate(maps.length, (i) {
-    return Game(
-      id: maps[i]['id'],
-      title: maps[i]['title'],
-      mediaId: maps[i]['mediaId'],
-      description: maps[i]['description'],
-      //lastPlayed: maps[i]['lastPlayed'],
-    );
-  });
+  return maps.map((map) => Game.fromMap(map)).toList();
 }
 
 /* ---------------------------- Check Api by name --------------------------- */
@@ -171,7 +162,6 @@ Future<Game?> getGameByTitle(String name) async {
         ?.query('games', where: 'title = ?', whereArgs: [name]);
     if (game!.isNotEmpty) {
       // Return the first API found (assuming 'name' is unique in the database)
-      //print(apis.first);
       return Game.fromMap(game.first);
     } else {
       return null; // Return null if no matching API is found

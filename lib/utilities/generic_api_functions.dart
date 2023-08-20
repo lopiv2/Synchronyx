@@ -67,6 +67,15 @@ class DioClient {
       String finalmarqueeFolder =
           await processMediaFiles(marqueeFrontUrl, "marquee", name, mediaInfo);
 
+      //We import by default from SteamGridDB, marquee image
+      String logoUrl =
+          await getAndImportSteamGridDBLogoBySteamIdAndPlatform(
+              key: 'fa61b6d47dfe3b6ab65a516b1f8bd0a3',
+              steamId: '$appId',
+              platform: 'steam');
+      String finallogoFolder =
+          await processMediaFiles(logoUrl, "logo", name, mediaInfo);
+
       //Import Background from RAWG
       String backgroundUrl = await getAndImportRawgMedia(
           key: '68239c29cb2c49f2acfddf9703077032', title: name);
@@ -78,6 +87,7 @@ class DioClient {
       var mediaInsert = Media(
           iconUrl: iconUrl,
           name: name,
+          logoUrl: finallogoFolder,
           coverImageUrl: finalImageFolder,
           marqueeUrl: finalmarqueeFolder,
           backgroundImageUrl: finalbackgroundFolder,
@@ -98,7 +108,7 @@ class DioClient {
   }
 
   Future<String> processMediaFiles(
-      String img, String mediaType, String name, mediaInfo) async {
+      String img, String mediaType, String name, Media? mediaInfo) async {
     List<String> parts = img.split('/');
     String lastPartFile = parts.last;
     String imageName = '${generateRandomAlphanumeric()}_$lastPartFile';
@@ -119,6 +129,11 @@ class DioClient {
         imageFolder = '\\Synchronyx\\media\\backgrounds\\';
         //Delete file before download a new one
         deleteFile(mediaInfo!.backgroundImageUrl);
+        break;
+      case "logo":
+        imageFolder = '\\Synchronyx\\media\\logos\\';
+        //Delete file before download a new one
+        deleteFile(mediaInfo!.logoUrl);
         break;
     }
     downloadAndSaveImage(img, imageName, imageFolder);
@@ -223,6 +238,39 @@ class DioClient {
 
       // Obtener el valor del campo "url"
       String imageUrl = firstData['thumb'];
+
+      //Returns the value of the first image obtained.
+      return imageUrl;
+    }
+    return '';
+  }
+
+  /* ----------------------------- Get SteamGridDB Logo by Steam App Id and Platform ---------------------------- */
+  Future<String> getAndImportSteamGridDBLogoBySteamIdAndPlatform(
+      {required String key,
+      required String steamId,
+      required String platform}) async {
+    // Definir los encabezados que deseas enviar
+    Map<String, dynamic> headers = {
+      'Authorization': 'Bearer $key',
+      'Content-Type': 'application/json',
+    };
+    Response userData = await _dio.get(
+        _steamGridDBApiUrl + 'logos/$platform/$steamId',
+        options: Options(headers: headers));
+    String jsonData = jsonEncode(userData.data);
+    //print('Game Data: $jsonData');
+
+    Map<String, dynamic> responseData = userData.data;
+    // Obtener la lista "data"
+    List<dynamic> dataList = responseData['data'];
+
+    if (dataList.isNotEmpty) {
+      // Obtener el primer elemento de la lista
+      Map<String, dynamic> firstData = dataList[0];
+
+      // Obtener el valor del campo "url"
+      String imageUrl = firstData['url'];
 
       //Returns the value of the first image obtained.
       return imageUrl;

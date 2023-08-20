@@ -85,7 +85,7 @@ class Game {
       rating: map['rating'] ?? '',
       favorite: map['favorite'] ?? '',
       playTime: map['playTime'] ?? '',
-      lastPlayed: map['lastPlayed'] ?? '',
+      lastPlayed: map['lastPlayed'] ?? DateTime.now(),
       tags: map['tags'] ?? '',
     );
   }
