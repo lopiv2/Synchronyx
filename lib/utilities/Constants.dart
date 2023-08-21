@@ -45,7 +45,7 @@ extension SearchParametersValueExtension on SearchParametersDropDown {
     switch (this) {
       case SearchParametersDropDown.AddDate:
         return "addDate";
-        case SearchParametersDropDown.All:
+      case SearchParametersDropDown.All:
         return "all";
       case SearchParametersDropDown.CategoryPlatform:
         return "categoryPlatform";
@@ -84,7 +84,7 @@ extension SearchParametersExtension on SearchParametersDropDown {
     switch (this) {
       case SearchParametersDropDown.AddDate:
         return AppLocalizations.of(context).addDate;
-        case SearchParametersDropDown.All:
+      case SearchParametersDropDown.All:
         return AppLocalizations.of(context).all;
       case SearchParametersDropDown.CategoryPlatform:
         return AppLocalizations.of(context).categoryPlatform;
@@ -118,7 +118,23 @@ extension SearchParametersExtension on SearchParametersDropDown {
   }
 }
 
-enum Platforms {
+enum GamePlatforms {
+  All(
+      Image(
+        image: AssetImage("assets/icons/allPlatforms.png"),
+        width: 34,
+        height: 34,
+        color: null,
+      ),
+      "All"),
+  Computers(
+      Image(
+        image: AssetImage("assets/icons/Amstrad CPC.png"),
+        width: 34,
+        height: 34,
+        color: null,
+      ),
+      "Computers"),
   Dreamcast(
       Image(
         image: AssetImage("assets/icons/dreamcast.png"),
@@ -298,7 +314,7 @@ enum Platforms {
 
   final Image image;
   final String name;
-  const Platforms(this.image, this.name);
+  const GamePlatforms(this.image, this.name);
 
   @override
   String toString() {

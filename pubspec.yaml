@@ -51,6 +51,7 @@ dependencies:
   provider: ^6.0.5
   flutter_rating_bar: ^4.0.1
   animate_do: ^3.0.2
+  audioplayers: ^5.1.0
 
 dev_dependencies:
   flutter_test:
@@ -74,6 +75,7 @@ flutter:
     - assets/models/
     - assets/icons/
     - assets/images/
+    - assets/music/
     - assets/database/synchronyx.db
 
   # The following line ensures that the Material Icons font is

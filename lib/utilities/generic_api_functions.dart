@@ -6,12 +6,12 @@ import 'package:dio/dio.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:synchronyx/models/media.dart';
 import 'package:synchronyx/models/rawg_response.dart';
-import 'package:synchronyx/utilities/constants.dart';
 import '../models/game.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 import 'package:synchronyx/utilities/generic_database_functions.dart'
     // ignore: library_prefixes
     as databaseFunctions;
+import 'Constants.dart';
 import 'generic_functions.dart';
 
 /* -------------------------------------------------------------------------- */
@@ -101,7 +101,7 @@ class DioClient {
           title: name,
           playTime: playtime,
           rating: rawgResponse.metacriticInfo,
-          platform: Platforms.Windows.name,
+          platform: GamePlatforms.Windows.name,
           mediaId: mediaInsert.id,
           tags: tag.join(','));
 

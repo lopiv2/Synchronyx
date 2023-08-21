@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_fancy_tree_view/flutter_fancy_tree_view.dart';
+import 'package:provider/provider.dart';
+import 'package:synchronyx/providers/app_state.dart';
 import 'package:synchronyx/widgets/platform_tile_view.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../models/platforms.dart';
+import '../utilities/Constants.dart';
+import 'package:collection/collection.dart';
 import '../utilities/generic_functions.dart';
+import 'package:synchronyx/utilities/generic_database_functions.dart'
+    as databaseFunctions;
 
 class PlatformTreeView extends StatefulWidget {
   final AppLocalizations appLocalizations;
@@ -17,73 +23,18 @@ class _PlatformTreeViewState extends State<PlatformTreeView> {
   late final TreeController<Platforms> treeController;
   static List<Platforms> roots = [];
 
+  final Map<TreeEntry<Platforms>, bool> nodeMouseOverMap = {};
+
+  void updateNodeMouseOver(TreeEntry<Platforms> entry, bool isMouseOver) {
+    setState(() {
+      nodeMouseOverMap[entry] = isMouseOver;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
-    roots = <Platforms>[
-      Platforms(
-          title: widget.appLocalizations.all,
-          icon: const Image(
-            image: AssetImage("assets/icons/allPlatforms.png"),
-            width: 34,
-            height: 34,
-            color: null,
-          )),
-      Platforms(
-        title: widget.appLocalizations.computers,
-        icon: const Image(
-          image: AssetImage("assets/icons/Amstrad CPC.png"),
-          width: 34,
-          height: 34,
-          color: null,
-        ),
-        children: <Platforms>[
-          Platforms(
-            title: 'Windows',
-            icon: const Image(
-              image: AssetImage("assets/icons/windows.png"),
-              width: 34,
-              height: 34,
-              color: null,
-            ),
-          ),
-          Platforms(
-            title: 'Linux',
-            icon: const Image(
-              image: AssetImage("assets/icons/linux.png"),
-              width: 34,
-              height: 34,
-              color: null,
-            ),
-          ),
-          Platforms(
-            title: 'Mac',
-            icon: const Image(
-              image: AssetImage("assets/icons/mac.png"),
-              width: 34,
-              height: 34,
-              color: null,
-            ),
-          ),
-        ],
-      ),
-      Platforms(
-        title: 'Root 2',
-        children: <Platforms>[
-          Platforms(
-            title: 'Node 2.1',
-            children: <Platforms>[
-              Platforms(
-                title: 'Node 2.1.1',
-              ),
-            ],
-          ),
-          Platforms(
-            title: 'Node 2.2',
-          )
-        ],
-      ),
-    ];
+    roots = buildTreeView();
 
     treeController = TreeController<Platforms>(
       // Provide the root nodes that will be used as a starting point when
@@ -94,6 +45,44 @@ class _PlatformTreeViewState extends State<PlatformTreeView> {
       // heavy computations in this method, it should behave like a getter.
       childrenProvider: (Platforms node) => node.children,
     );
+  }
+
+  List<Platforms> buildTreeView() {
+    final appState = Provider.of<AppState>(context, listen: false);
+    List<String> platformsList = appState.gamesInGrid
+        .map((gameResponse) => gameResponse.platform)
+        .toSet()
+        .toList();
+    List<Platforms> platformsNodes = [];
+    Platforms f = Platforms(
+        title: widget.appLocalizations.all,
+        value: GamePlatforms.All.name,
+        icon: GamePlatforms.All.image);
+    platformsNodes.add(f);
+    for (var platform in platformsList) {
+      //Si hay alguna plataforma de ordenador, busco a ver si existe el padre Ordenadores
+      if (platform == "Windows" || platform == "Linux" || platform == "Mac") {
+        Platforms? comp = platformsNodes.firstWhereOrNull(
+          (element) => element.value == GamePlatforms.Computers.name,
+        );
+        //si no hay computers, lo creo
+        if (comp == null) {
+          comp = Platforms(
+              title: widget.appLocalizations.computers,
+              value: GamePlatforms.Computers.name,
+              icon: GamePlatforms.Computers.image);
+          platformsNodes.add(comp);
+        }
+        //Si ya existe, simplemente añado el hijo
+        GamePlatforms g = GamePlatforms.values
+            .firstWhere((element) => element.name == platform);
+        //Creo el hijo
+        Platforms p = Platforms(title: g.name, value: g.name, icon: g.image);
+        //Añado el hijo al padre
+        comp.children.add(p);
+      }
+    }
+    return platformsNodes;
   }
 
   @override
@@ -138,7 +127,17 @@ class _PlatformTreeViewState extends State<PlatformTreeView> {
           // are always up to date.
           entry: entry,
           // Add a callback to toggle the expansion state of this node.
-          onTap: () => treeController.toggleExpansion(entry.node),
+          isMouseOver: nodeMouseOverMap[entry] ?? false,
+          onMouseEnter: () {
+            updateNodeMouseOver(entry, true);
+          },
+          onMouseExit: () {
+            updateNodeMouseOver(entry, false);
+          },
+          onTap: () => {
+            treeController.toggleExpansion(entry.node),
+            print(entry.node.title)
+          },
         );
       },
     );

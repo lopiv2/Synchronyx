@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class Platforms {
   Platforms({
     required this.title,
+    required this.value,
     this.icon = const Image(
       image: AssetImage("assets/icons/default_icon.png"),
       width: 1,
@@ -11,10 +12,11 @@ class Platforms {
       fit: BoxFit.scaleDown,
       alignment: Alignment.center,
     ),
-    this.children = const <Platforms>[],
-  });
+    List<Platforms>? children,
+  }) : children = children ?? [];
 
   final String title;
+  final String value;
   final Image icon;
-  final List<Platforms> children;
+  List<Platforms> children;
 }

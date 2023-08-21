@@ -6,6 +6,7 @@ import 'package:synchronyx/models/game.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import '../providers/app_state.dart';
 import 'package:animate_do/animate_do.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class GameInfoPanel extends StatefulWidget {
   const GameInfoPanel({super.key});
@@ -16,6 +17,7 @@ class GameInfoPanel extends StatefulWidget {
 
 class _GameInfoPanelState extends State<GameInfoPanel> {
   late String url = "";
+  final player = AudioPlayer();
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +29,7 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
         FileImage(File(appState.selectedGame!.media.backgroundImageUrl));
     ImageProvider<Object> logoWidgetMarquee;
     logoWidgetMarquee = FileImage(File(appState.selectedGame!.media.logoUrl));
+    playOst();
     return Column(
       children: [
         Container(
@@ -163,6 +166,10 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
         ),
       ],
     );
+  }
+
+  Future<void> playOst() async {
+    await player.play(AssetSource('music/theme.mp3'));
   }
 
   void reload() {
