@@ -1,5 +1,5 @@
 class Media {
-  int id;
+  int? id;
   String name;
   String coverImageUrl;
   String backImageUrl;
@@ -12,7 +12,7 @@ class Media {
   String logoUrl;
 
   Media({
-    this.id = 0,
+    this.id,
     this.name = '',
     this.coverImageUrl = '',
     this.backImageUrl = '',
@@ -48,7 +48,7 @@ class Media {
 
   static Media fromMap(Map<String, dynamic> map) {
     return Media(
-      id: map['id'] ?? 0,
+      id: map['id'] ?? '',
       name: map['name'] ?? '',
       coverImageUrl: map['coverImageUrl'],
       backImageUrl: map['backImageUrl'] ?? '',

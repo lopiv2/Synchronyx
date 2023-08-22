@@ -3,11 +3,12 @@ import 'package:synchronyx/models/media.dart';
 import 'game.dart';
 
 class GameMediaResponse {
-  int id;
+  int? id;
   String title;
   String description;
   String boxColor;
   String platform;
+  String platformStore;
   String genres; // List of genres joined by commas
   int maxPlayers;
   String developer;
@@ -23,12 +24,13 @@ class GameMediaResponse {
   String tags; // List of tags joined by commas also
 
   GameMediaResponse({
-    this.id = 0,
+    this.id,
     required this.title,
     this.description = '',
     this.boxColor = '',
     required this.media,
     this.platform = '',
+    this.platformStore = '',
     this.genres = '',
     this.maxPlayers = 1,
     this.developer = '',
@@ -51,6 +53,7 @@ class GameMediaResponse {
       'boxColor': boxColor,
       'media': media.toMap(),
       'platform': platform,
+      'platformStore': platformStore,
       'genres': genres,
       'maxPlayers': maxPlayers,
       'developer': developer,
@@ -68,7 +71,7 @@ class GameMediaResponse {
 
   @override
   String toString() {
-    return 'GameMediaResponse{id: $id, title: $title, description: $description,boxColor: $boxColor, media: $media, platform: $platform, genres: $genres, maxPlayers: $maxPlayers, developer: $developer, publisher: $publisher, region: $region, file: $file, releaseDate: $releaseDate, rating: $rating, favorite: $favorite, playTime: $playTime, lastPlayed: $lastPlayed, tags: $tags}';
+    return 'GameMediaResponse{id: $id, title: $title, description: $description,boxColor: $boxColor, media: $media, platform: $platform, platformStore: $platformStore, genres: $genres, maxPlayers: $maxPlayers, developer: $developer, publisher: $publisher, region: $region, file: $file, releaseDate: $releaseDate, rating: $rating, favorite: $favorite, playTime: $playTime, lastPlayed: $lastPlayed, tags: $tags}';
   }
 
   factory GameMediaResponse.fromGameAndMedia(Game game, Media media) {
@@ -78,6 +81,7 @@ class GameMediaResponse {
       description: game.description,
       boxColor: game.boxColor,
       platform: game.platform,
+      platformStore: game.platformStore,
       genres: game.genres,
       maxPlayers: game.maxPlayers,
       developer: game.developer,
@@ -103,6 +107,7 @@ class GameMediaResponse {
       boxColor: map['boxColor'] ?? '',
       media: Media.fromMap(map['media']),
       platform: map['platform'] ?? '',
+      platformStore: map['platformStore'] ?? '',
       genres: map['genres'] ?? '',
       maxPlayers: map['maxPlayers'] ?? 1,
       developer: map['developer'] ?? '',
@@ -113,7 +118,7 @@ class GameMediaResponse {
       rating: map['rating'] ?? 0.0,
       favorite: map['favorite'] ?? 0,
       playTime: map['playTime'] ?? 0,
-      lastPlayed: map['lastPlayed'] ?? null,
+      lastPlayed: map['lastPlayed'],
       tags: map['tags'] ?? '',
     );
   }

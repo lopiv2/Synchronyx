@@ -10,16 +10,25 @@ import '../models/api.dart';
 import '../models/gameMedia_response.dart';
 
 enum PlatformStore {
-  Amazon,
-  BattleNet,
-  Epic,
-  Gog,
-  Itch,
-  Origin,
-  Steam,
-  Uplay,
-  Windows,
-  Xbox,
+  Amazon("amazon"),
+  BattleNet("battlenet"),
+  Epic("epic"),
+  Gog("gog"),
+  Itch("itch"),
+  Origin("origin"),
+  Steam("steam"),
+  Uplay("uplay"),
+  Windows("windows"),
+  Xbox("xbox");
+
+  final String name;
+  const PlatformStore(this.name);
+
+  @override
+  String toString() {
+    super.toString();
+    return "Color name is: $name";
+  }
 }
 
 enum SearchParametersDropDown {
@@ -333,4 +342,5 @@ class Constants {
   static List<Map<String, TextEditingController>> controllerMapList = [];
   static Api? foundApiBeforeImport;
   static Database? database;
+  static double importProgress = 0.0;
 }

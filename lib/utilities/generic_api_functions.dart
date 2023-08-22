@@ -34,6 +34,7 @@ class DioClient {
 /* ----------------------------- Get Steam Games ---------------------------- */
   Future<void> getAndImportSteamGames(
       {required String key, required String steamId}) async {
+    int requestCount = 0; //Number of request per progress bar counting
     Response userData = await _dio.get(
         _steamApiUrl + '$key&steamid=$steamId&format=json&include_appinfo=1');
     String jsonData = jsonEncode(userData.data);
@@ -43,6 +44,7 @@ class DioClient {
     List<dynamic> gamesList = responseData['response']['games'];
 
     for (var game in gamesList) {
+      requestCount++;
       int appId = game['appid'];
       String name = game['name'];
       int playtime = game['playtime_forever'];
@@ -79,21 +81,12 @@ class DioClient {
       //Get info from RAWG
       RawgResponse rawgResponse = await getAndImportRawgData(
           key: '68239c29cb2c49f2acfddf9703077032', title: name);
-
       String finalbackgroundFolder = await processMediaFiles(
           rawgResponse.imageUrl, "background", name, mediaInfo);
 
       //Get video for Media insert
       String videoUrl = await searchVideosAndReturnUrl('$name trailer');
-      var mediaInsert = Media(
-          iconUrl: iconUrl,
-          name: name,
-          logoUrl: finallogoFolder,
-          coverImageUrl: finalImageFolder,
-          marqueeUrl: finalmarqueeFolder,
-          backgroundImageUrl: finalbackgroundFolder,
-          videoUrl: videoUrl);
-      await databaseFunctions.insertMedia(mediaInsert);
+      //Primero inserto el juego
       List<String> tag = List.empty(growable: true);
       tag.add("prueba");
       tag.add("adios");
@@ -102,11 +95,24 @@ class DioClient {
           playTime: playtime,
           rating: rawgResponse.metacriticInfo,
           platform: GamePlatforms.Windows.name,
-          mediaId: mediaInsert.id,
+          platformStore: PlatformStore.Steam.name,
           tags: tag.join(','));
-
       await databaseFunctions.insertGame(gameInsert);
-      break;
+
+      //Luego inserto los medios
+      var mediaInsert = Media(
+          iconUrl: iconUrl,
+          name: name,
+          logoUrl: finallogoFolder,
+          coverImageUrl: finalImageFolder,
+          marqueeUrl: finalmarqueeFolder,
+          backgroundImageUrl: finalbackgroundFolder,
+          videoUrl: videoUrl);
+      await databaseFunctions.insertMedia(
+          mediaInsert, gameInsert);
+      
+      updateProgress(requestCount, gamesList.length);
+      if (requestCount > 1) break;
     }
   }
 
@@ -305,21 +311,20 @@ class DioClient {
         : '';
 
     // Get the desired field from the Metacritic response
-    dynamic metacriticInfo = responseData.containsKey('metacritic')
-        ? responseData['metacritic']
-        : null;
+    dynamic metacriticInfo =
+        responseData.containsKey('rating') ? responseData['rating'] : null;
 
-    double metacriticScoreScaled = 1 + (metacriticInfo / 100) * 4 as double;
+    //double metacriticScoreScaled = 1 + (metacriticInfo / 100) * 4 as double;
 
-    metacriticScoreScaled = metacriticScoreScaled.clamp(1.0, 5.0);
+    //metacriticScoreScaled = metacriticScoreScaled.clamp(1.0, 5.0);
 
     // Round the value to 1 decimal place
-    metacriticScoreScaled =
-        double.parse(metacriticScoreScaled.toStringAsFixed(1));
+    //metacriticScoreScaled =
+    //  double.parse(metacriticScoreScaled.toStringAsFixed(1));
 
     // Crear una instancia de MediaInfo con los datos recopilados
-    RawgResponse mediaInfo =
-        RawgResponse(imageUrl: imageUrl, metacriticInfo: metacriticScoreScaled);
+    RawgResponse mediaInfo = RawgResponse(
+        imageUrl: imageUrl, metacriticInfo: metacriticInfo as double);
 
     return mediaInfo;
   }

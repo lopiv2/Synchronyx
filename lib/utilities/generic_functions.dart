@@ -82,6 +82,7 @@ String generateRandomAlphanumeric() {
   return randomString;
 }
 
+/* ----------------------------- Creates a Slug ----------------------------- */
 String createSlug(String input) {
   // Convierte la cadena a minúsculas
   String lowerCase = input.toLowerCase();
@@ -99,5 +100,11 @@ String createSlug(String input) {
   cleanedString = cleanedString.replaceAll(RegExp(r'^-|-$'), '');
   
   return cleanedString;
+}
+
+/* ----------------------- Updates progress bar value ----------------------- */
+void updateProgress(int currentCount, int totalGames) {
+  double progress = currentCount / totalGames;
+  Constants.importProgress = progress;
 }
 

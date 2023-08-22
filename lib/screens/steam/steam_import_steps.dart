@@ -196,49 +196,50 @@ class SteamImportSteps extends StatefulWidget {
 
   factory SteamImportSteps.step4(
     AppLocalizations appLocalizations,
-    OnFinishCallback onFinish, // Modificado para aceptar el enum
+    OnFinishCallback onFinish,
     PlatformStore selectedPlatform,
-    bool isImporting,
   ) {
     return SteamImportSteps(
       content: Container(
         alignment: Alignment.centerLeft,
         padding: const EdgeInsets.only(left: 40, top: 10, right: 10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              appLocalizations.steamWindowAssistantTitleStep4,
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 20),
-            Text(
-              appLocalizations.steamWindowAssistantStep4,
-              style: const TextStyle(fontSize: 14),
-            ),
-            const SizedBox(height: 40),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+        child: Consumer<AppState>(
+          builder: (context, appState, _) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ElevatedButton(
-                  onPressed: () {
-                    Map<String, dynamic> collectedData =
-                        _collectDataFromControllers();
-                    // Llamar a la función de callback para entregar los datos recopilados
-                    onFinish(collectedData, PlatformStore.Steam);
-                    // Cerrar el diálogo después de enviar los datos
-                    //Navigator.of(context).pop();
-                  },
-                  child: Text(appLocalizations.finish),
+                Text(
+                  appLocalizations.steamWindowAssistantTitleStep4,
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.bold),
                 ),
-                if () // Mostrar el indicador de progreso si se está importando
-                  SizedBox(width: 20),
-                Text(isImporting
-                    .toString()), // Espacio entre el botón y el indicador de progreso
-                CircularProgressIndicator(),
+                const SizedBox(height: 20),
+                Text(
+                  appLocalizations.steamWindowAssistantStep4,
+                  style: const TextStyle(fontSize: 14),
+                ),
+                const SizedBox(height: 40),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        Map<String, dynamic> collectedData =
+                            _collectDataFromControllers();
+                        onFinish(collectedData, PlatformStore.Steam);
+                      },
+                      child: Text(appLocalizations.finish),
+                    ),
+                  ],
+                ),
+                if (appState.isImporting) SizedBox(width: 20),
+                Text(appState.isImporting.toString()),
+                if (appState
+                    .isImporting) // Mostrar el indicador de progreso si se está importando
+                  LinearProgressIndicator(value: Constants.importProgress),
               ],
-            )
-          ],
+            );
+          },
         ),
       ),
       appLocalizations: appLocalizations,

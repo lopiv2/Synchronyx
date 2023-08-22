@@ -4,10 +4,12 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:synchronyx/models/gameMedia_response.dart';
 import 'package:synchronyx/models/media.dart';
 import '../models/api.dart';
 import 'package:synchronyx/utilities/constants.dart';
 import '../models/game.dart';
+import 'generic_functions.dart';
 
 /* -------------------------------------------------------------------------- */
 /*                             DATABASE FUNCTIONS                             */
@@ -62,12 +64,13 @@ Future<Database?> createAndOpenDB() async {
         // Create the games table
         await db.execute(
           'CREATE TABLE IF NOT EXISTS games('
-          'id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,'
+          'id INTEGER PRIMARY KEY AUTOINCREMENT,'
           'title TEXT,'
           'description TEXT,'
           'boxColor TEXT,'
           'mediaId INTEGER,'
           'platform TEXT,'
+          'platformStore TEXT,'
           'genres TEXT,'
           'maxPlayers INTEGER,'
           'developer TEXT,'
@@ -85,7 +88,7 @@ Future<Database?> createAndOpenDB() async {
         // Create the apis table
         await db.execute(
           'CREATE TABLE IF NOT EXISTS apis('
-          'id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,'
+          'id INTEGER PRIMARY KEY AUTOINCREMENT,'
           'name TEXT,'
           'url TEXT,'
           'metadataJson TEXT'
@@ -94,7 +97,7 @@ Future<Database?> createAndOpenDB() async {
         // Create the Medias table
         await db.execute(
           'CREATE TABLE IF NOT EXISTS medias('
-          'id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,'
+          'id INTEGER PRIMARY KEY AUTOINCREMENT,'
           'name TEXT,'
           'coverImageUrl TEXT,'
           'backImageUrl TEXT,'
@@ -219,6 +222,23 @@ Future<void> deleteGame(int id) async {
   );
 }
 
+Future<void> deleteMediaByName(GameMediaResponse game) async {
+  // Get a reference to the database.
+  final db = await Constants.database;
+  deleteFile(game.media!.coverImageUrl);
+  deleteFile(game.media!.backgroundImageUrl);
+  deleteFile(game.media!.marqueeUrl);
+  deleteFile(game.media!.logoUrl);
+  // Remove the Game from the database.
+  await db!.delete(
+    'medias',
+    // Use a `where` clause to delete a specific game.
+    where: 'name = ?',
+    // Pass the Game's id as a whereArg to prevent SQL injection.
+    whereArgs: [game.title],
+  );
+}
+
 /* -------------------------------------------------------------------------- */
 /*                              INSERT FUNCTIONS                              */
 /* -------------------------------------------------------------------------- */
@@ -237,23 +257,63 @@ Future<void> insertApi(Api api) async {
 
 /* ---------------------- Inserts a game in database --------------------- */
 Future<void> insertGame(Game game) async {
-  await Constants.database?.insert(
+  final db = Constants.database;
+
+  // Verificar si el juego ya existe en la base de datos
+  final existingGames = await db?.query(
     'games',
-    game.toMap(),
-    conflictAlgorithm: ConflictAlgorithm.replace,
+    where: 'title = ? AND platformStore = ?',
+    whereArgs: [game.title, game.platformStore],
   );
+
+  if (existingGames != null && existingGames.isNotEmpty) {
+    // El juego ya existe en la base de datos, reemplazarlo
+    await db?.update(
+      'games',
+      game.toMap(),
+      where: 'title = ? AND platformStore = ?',
+      whereArgs: [game.title, game.platformStore],
+    );
+  } else {
+    // El juego no existe en la base de datos, agregarlo como nuevo registro
+    await db?.insert(
+      'games',
+      game.toMap(),
+      conflictAlgorithm:
+          ConflictAlgorithm.ignore, // Opción ignore para evitar reemplazo
+    );
+  }
 }
 
 /* ------------------------ Inserts media in database ----------------------- */
-Future<void> insertMedia(Media media) async {
-  //var database = await createAndOpenDB();
-  await Constants.database?.insert(
-    'medias',
-    media.toMap(),
-    conflictAlgorithm: ConflictAlgorithm.replace,
+Future<void> insertMedia(Media media, Game game) async {
+  final db = Constants.database;
+
+  // Verificar si el juego ya existe en la base de datos
+  final existingGames = await db?.query(
+    'games',
+    where: 'title = ? AND platformStore = ?',
+    whereArgs: [game.title, game.platformStore],
   );
 
-  //await Constants.database?.close();
+  if (existingGames != null && existingGames.isNotEmpty) {
+    // Obtén el valor de mediaId del primer juego encontrado y actualiza ese id con las nuevas medias
+    int mediaId = existingGames[0]['mediaId'] as int;
+    print(mediaId);
+
+    //Obtengo el id de insercion para agregarselo al juego
+    final id= await db?.insert(
+      'medias',
+      media.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+    await db?.update(
+      'games',
+      {'mediaId': id},
+      where: 'title = ? AND platformStore = ?',
+      whereArgs: [game.title, game.platformStore],
+    );
+  }
 }
 
 /* -------------------------------------------------------------------------- */

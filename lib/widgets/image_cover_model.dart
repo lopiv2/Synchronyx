@@ -177,7 +177,7 @@ class _ImageCoverModel extends State<ImageCoverModel>
                             splashColor: Colors.red,
                             elevation: 8.0,
                             onPressed: () {
-                              widget.onGameClick(widget.game.id);
+                              widget.onGameClick(widget.game.id!);
                               GameMediaResponse gameMediaResponse =
                                   GameMediaResponse.fromGameAndMedia(
                                       widget.game, widget.gameMedia);

@@ -63,7 +63,7 @@ class _GridViewGameCoversState extends State<GridViewGameCovers> {
     final appState = Provider.of<AppState>(context, listen: false);
     List<Container> containers = [];
     for (Game game in listOfGames) {
-      Media? gameMedia = await databaseFunctions.getMediaById(game.id);
+      Media? gameMedia = await databaseFunctions.getMediaById(game.mediaId!);
       if (gameMedia != null) {
         GameMediaResponse gameMediaResponse =
             GameMediaResponse.fromGameAndMedia(game, gameMedia);

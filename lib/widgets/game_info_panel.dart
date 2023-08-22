@@ -4,9 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:synchronyx/models/game.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:synchronyx/models/gameMedia_response.dart';
 import '../providers/app_state.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:synchronyx/utilities/generic_database_functions.dart'
+    as databaseFunctions;
 
 class GameInfoPanel extends StatefulWidget {
   const GameInfoPanel({super.key});
@@ -86,11 +89,14 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
                                 )),
                             Positioned(
                                 bottom:
-                                    MediaQuery.of(context).size.height * 0.006,
+                                    MediaQuery.of(context).size.height * 0.0085,
                                 right:
                                     MediaQuery.of(context).size.width * 0.077,
                                 child: Text(
                                     style: TextStyle(
+                                        fontSize:
+                                            MediaQuery.of(context).size.height *
+                                                0.012,
                                         fontWeight: FontWeight.bold,
                                         color: Colors.white),
                                     appState.selectedGame!.rating.toString())),
@@ -157,6 +163,13 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
             ),
             IconButton(
               onPressed: () {
+                showDeleteConfirmationDialog(context, appState.selectedGame!);
+              },
+              icon: Icon(Icons.clear),
+              color: Colors.white,
+            ),
+            IconButton(
+              onPressed: () {
                 print('Botón 4');
               },
               icon: Icon(Icons.play_arrow),
@@ -169,7 +182,7 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
   }
 
   Future<void> playOst() async {
-    await player.play(AssetSource('music/theme.mp3'));
+    //await player.play(AssetSource('music/theme.mp3'));
   }
 
   void reload() {
@@ -187,4 +200,58 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
   void dispose() {
     super.dispose();
   }
+}
+
+class GameDeleteConfirmationDialog extends StatelessWidget {
+  final GameMediaResponse selectedGame;
+  final Function(GameMediaResponse) onConfirm;
+
+  GameDeleteConfirmationDialog({
+    required this.selectedGame,
+    required this.onConfirm,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text('Confirm Delete'),
+      content: Text('Are you sure you want to delete ${selectedGame.title}?'),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop(); // Cierra el diálogo
+          },
+          child: Text('Cancel'),
+        ),
+        TextButton(
+          onPressed: () {
+            onConfirm(
+                selectedGame); // Pasa el juego seleccionado a la función de confirmación
+            Navigator.of(context).pop(); // Cierra el diálogo
+          },
+          child: Text('Delete'),
+        ),
+      ],
+    );
+  }
+}
+
+// En tu función que maneja la eliminación del juego
+void showDeleteConfirmationDialog(
+    BuildContext context, GameMediaResponse selectedGame) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return GameDeleteConfirmationDialog(
+        selectedGame: selectedGame,
+        onConfirm: (GameMediaResponse game) async {
+          await databaseFunctions.deleteGame(game.id!);
+          await databaseFunctions.deleteMediaByName(game);
+          databaseFunctions.getAllGames();
+          // Aquí manejas la eliminación del juego usando el juego seleccionado
+          // Llama a la función para eliminar el juego de la base de datos pasando el juego
+        },
+      );
+    },
+  );
 }

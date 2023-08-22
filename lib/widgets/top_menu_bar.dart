@@ -25,7 +25,6 @@ DioClient dioClient = DioClient();
 class MyMenuBar extends StatelessWidget {
   final AppLocalizations appLocalizations;
   late PlatformStore store = PlatformStore.Amazon;
-  bool _isImporting = false;
 
   MyMenuBar({Key? key, required this.appLocalizations}) : super(key: key);
 
@@ -69,7 +68,7 @@ class MyMenuBar extends StatelessWidget {
         dioClient
             .getAndImportSteamGames(key: apiKeyValue, steamId: steamIdValue)
             .then((_) {
-          _isImporting = false;
+          appState.stopImporting();
           // El método getAndImportSteamGames se ha completado exitosamente
           // Aquí puedes realizar cualquier acción adicional con los datos obtenidos
         }).catchError((error) {
@@ -334,9 +333,9 @@ class MyMenuBar extends StatelessWidget {
 
                                     steps.add(SteamImportSteps.step4(
                                         appLocalizations,
-                                        _handleLastStepFinish,
-                                        store,
-                                        appState));
+                                        (data, st) => _handleLastStepFinish(
+                                            data, st, appState),
+                                        store));
 
                                     return ImportDialog(
                                       appLocalizations: appLocalizations,
