@@ -6,6 +6,19 @@ class AppState extends ChangeNotifier {
   GameMediaResponse? selectedGame;
   List<GameMediaResponse> gamesInGrid = [];
   bool shouldRefreshGridView = false;
+  bool _isImporting = false;
+
+  bool get isImporting => _isImporting;
+
+  void startImporting() {
+    _isImporting = true;
+    notifyListeners();
+  }
+
+  void stopImporting() {
+    _isImporting = false;
+    notifyListeners();
+  }
 
   void updateSelectedGame(GameMediaResponse game) {
     selectedGame = game;

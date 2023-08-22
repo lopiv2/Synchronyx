@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:synchronyx/models/api.dart';
+import 'package:synchronyx/providers/app_state.dart';
 import 'package:synchronyx/screens/generic_import_step.dart';
 import 'package:synchronyx/utilities/generic_database_functions.dart'
     as databaseFunctions;
@@ -196,6 +198,7 @@ class SteamImportSteps extends StatefulWidget {
     AppLocalizations appLocalizations,
     OnFinishCallback onFinish, // Modificado para aceptar el enum
     PlatformStore selectedPlatform,
+    bool isImporting,
   ) {
     return SteamImportSteps(
       content: Container(
@@ -228,6 +231,11 @@ class SteamImportSteps extends StatefulWidget {
                   },
                   child: Text(appLocalizations.finish),
                 ),
+                if () // Mostrar el indicador de progreso si se está importando
+                  SizedBox(width: 20),
+                Text(isImporting
+                    .toString()), // Espacio entre el botón y el indicador de progreso
+                CircularProgressIndicator(),
               ],
             )
           ],
@@ -268,6 +276,7 @@ class _SteamImportStepsState extends State<SteamImportSteps> {
 
   @override
   Widget build(BuildContext context) {
+    final appState = Provider.of<AppState>(context);
     //print(Constants.foundApiBeforeImport);
     return widget.content;
   }

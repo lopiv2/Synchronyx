@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:synchronyx/icons/custom_icons_icons.dart';
+import 'package:synchronyx/providers/app_state.dart';
 import 'package:synchronyx/screens/steam/steam_import_steps.dart';
 import 'package:synchronyx/utilities/constants.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -23,10 +25,12 @@ DioClient dioClient = DioClient();
 class MyMenuBar extends StatelessWidget {
   final AppLocalizations appLocalizations;
   late PlatformStore store = PlatformStore.Amazon;
+  bool _isImporting = false;
 
   MyMenuBar({Key? key, required this.appLocalizations}) : super(key: key);
 
-  void _handleLastStepFinish(Map<String, dynamic> data, PlatformStore st) {
+  void _handleLastStepFinish(
+      Map<String, dynamic> data, PlatformStore st, AppState appState) {
     var api = Api(
       name: '',
       url: '',
@@ -61,9 +65,11 @@ class MyMenuBar extends StatelessWidget {
           apiKeyValue = '${data['steamApiController']}';
           databaseFunctions.insertApi(api);
         }
+        appState.startImporting();
         dioClient
             .getAndImportSteamGames(key: apiKeyValue, steamId: steamIdValue)
             .then((_) {
+          _isImporting = false;
           // El método getAndImportSteamGames se ha completado exitosamente
           // Aquí puedes realizar cualquier acción adicional con los datos obtenidos
         }).catchError((error) {
@@ -79,6 +85,7 @@ class MyMenuBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final appState = Provider.of<AppState>(context);
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
@@ -328,7 +335,8 @@ class MyMenuBar extends StatelessWidget {
                                     steps.add(SteamImportSteps.step4(
                                         appLocalizations,
                                         _handleLastStepFinish,
-                                        store));
+                                        store,
+                                        appState));
 
                                     return ImportDialog(
                                       appLocalizations: appLocalizations,
