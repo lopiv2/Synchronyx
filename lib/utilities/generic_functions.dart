@@ -25,6 +25,17 @@ Future<void> deleteFile(String fileName) async {
   }
 }
 
+/* --------------------------- Convert int to bool -------------------------- */
+bool convertIntBool(int? value) {
+  if (value == 0) return false;
+  return true;
+}
+
+int convertBoolInt(bool? value) {
+  if (value == true) return 1;
+  return 0;
+}
+
 /* ----------------------- Check if asset loads or not ---------------------- */
 Future<void> checkAssetLoading(String assetPath) async {
   //const assetPath = 'assets/image.png'; // Reemplaza con la ruta de tu asset
@@ -86,19 +97,19 @@ String generateRandomAlphanumeric() {
 String createSlug(String input) {
   // Convierte la cadena a minúsculas
   String lowerCase = input.toLowerCase();
-  
+
   // Utiliza RegExp para encontrar todos los caracteres que no son letras ni números
   final regex = RegExp(r'[^a-z0-9]');
-  
+
   // Reemplaza los caracteres especiales y espacios por guiones
   String cleanedString = lowerCase.replaceAll(regex, '-');
-  
+
   // Elimina guiones duplicados
   cleanedString = cleanedString.replaceAll(RegExp(r'-+'), '-');
-  
+
   // Elimina guiones al principio y al final
   cleanedString = cleanedString.replaceAll(RegExp(r'^-|-$'), '');
-  
+
   return cleanedString;
 }
 
@@ -107,4 +118,3 @@ void updateProgress(int currentCount, int totalGames) {
   double progress = currentCount / totalGames;
   Constants.importProgress = progress;
 }
-

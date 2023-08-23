@@ -330,6 +330,20 @@ Future<void> updateGameById(Game game) async {
   //await Constants.database?.close();
 }
 
+Future<void> favoriteGameById(Game? game) async {
+  bool favoriteState = convertIntBool(game?.favorite);
+  favoriteState = !favoriteState;
+  await Constants.database?.update(
+    'games',
+    {'favorite': convertBoolInt(favoriteState)},
+    where: 'id = ?',
+    whereArgs: [game?.id],
+  );
+
+  // Now you can close the database after the update.
+  //await Constants.database?.close();
+}
+
 /* ---------------------- ///Update a game in database by ID ---------------- */
 Future<void> updateGameByName(Game game) async {
   await Constants.database?.update('games', game.toMap(),

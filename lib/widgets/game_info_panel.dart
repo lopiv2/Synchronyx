@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:pushable_button/pushable_button.dart';
 import 'package:synchronyx/models/gameMedia_response.dart';
+import 'package:synchronyx/utilities/generic_functions.dart';
 import 'package:synchronyx/widgets/buttons/icon_button_colored.dart';
 import '../providers/app_state.dart';
 import 'package:animate_do/animate_do.dart';
@@ -24,25 +25,36 @@ class GameInfoPanel extends StatefulWidget {
 class _GameInfoPanelState extends State<GameInfoPanel> {
   late String url = "";
   final player = AudioPlayer();
+  late AnimationController _controller;
+  bool isFavorite = false;
 
   @override
   Widget build(BuildContext context) {
     final appState = Provider.of<AppState>(context);
+    return Consumer<AppState>(
+      builder: (context, appState, child) {
+        final selectedGame = appState.selectedGame;
+        isFavorite = appState.selectedGame?.game.favorite == 1;
+        return _buildGameInfoPanel(appState, selectedGame);
+      },
+    );
+  }
 
-    //url = appState.selectedGame!.media.videoUrl;
+  Widget _buildGameInfoPanel(
+      AppState appState, GameMediaResponse? selectedGame) {
     ImageProvider<Object> imageWidgetMarquee;
     imageWidgetMarquee =
         FileImage(File(appState.selectedGame!.media.backgroundImageUrl));
     ImageProvider<Object> logoWidgetMarquee;
     logoWidgetMarquee = FileImage(File(appState.selectedGame!.media.logoUrl));
     playOst();
+
     return Column(
       children: [
         Container(
             height: MediaQuery.of(context).size.height * 0.3,
             color: Colors.white,
-            child: appState.selectedGame?.media.videoUrl !=
-                    "" //Arreglar esto en el futuro para que muestre el video o la imagen segun las opciones
+            child: appState.selectedGame?.media.videoUrl != ""
                 ? Text("Video holder")
                 : Stack(
                     children: <Widget>[
@@ -61,6 +73,8 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
                               right: MediaQuery.of(context).size.width * 0.06,
                               bottom: -80,
                               child: FadeInDown(
+                                  controller: (controller) =>
+                                      _controller = controller,
                                   duration: Duration(seconds: 2),
                                   child: Container(
                                     width: MediaQuery.of(context).size.width *
@@ -160,8 +174,17 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
               color: Colors.white,
             ),
             IconButtonHoverColored(
-              icon: Icons.star_border_outlined,
-              onPressed: () {},
+              icon: isFavorite ? Icons.star : Icons.star_border_outlined,
+              onPressed: () {
+                databaseFunctions.favoriteGameById(appState.selectedGame?.game);
+                bool b = convertIntBool(appState.selectedGame?.game.favorite);
+                b = !b;
+                int v = convertBoolInt(b);
+                appState.selectedGame?.game.favorite = v;
+                setState(() {
+                  isFavorite = !isFavorite; // Cambia el valor del estado
+                });
+              },
               iconColor: Colors.yellow,
               backColor: Colors.grey,
             ),
@@ -173,32 +196,44 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
               iconColor: Colors.red,
               backColor: Colors.grey,
             ),
-            IconButton(
-              onPressed: () {
-                showDeleteConfirmationDialog(context, appState);
-              },
-              icon: Icon(Icons.play_arrow),
-              color: Colors.white,
-            ),
           ],
         ),
-        Row(children: [
-          Expanded(
+        Row(
+          children: [
+            Expanded(
               flex: 2,
-              child: PushableButton(
-                child: Text('ENROLL NOW'),
-                height: 40,
-                elevation: 8,
-                hslColor: HSLColor.fromAHSL(1.0, 120, 1.0, 0.37),
-                shadow: BoxShadow(
-                  color: Colors.grey.withOpacity(0.5),
-                  spreadRadius: 5,
-                  blurRadius: 7,
-                  offset: Offset(0, 2),
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(
+                    16, 36, 16, 0), // Márgenes izquierdo y derecho
+                child: PushableButton(
+                  height: 40,
+                  elevation: 8,
+                  hslColor: HSLColor.fromAHSL(1.0, 120, 1.0, 0.37),
+                  shadow: BoxShadow(
+                    color: Colors.grey.withOpacity(0.5),
+                    spreadRadius: 5,
+                    blurRadius: 7,
+                    offset: Offset(0, 2),
+                  ),
+                  onPressed: () => print('Button Pressed!'),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.play_arrow, color: Colors.white),
+                      const SizedBox(width: 8),
+                      Text(
+                          appState.selectedGame?.game.installed == 1
+                              ? widget.appLocalizations.play
+                              : widget.appLocalizations.install,
+                          style: const TextStyle(
+                              color: Colors.white, fontSize: 18)),
+                    ],
+                  ),
                 ),
-                onPressed: () => print('Button Pressed!'),
-              )),
-        ]),
+              ),
+            ),
+          ],
+        )
       ],
     );
   }
@@ -215,11 +250,29 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
   @override
   void initState() {
     super.initState();
-    //reload();
+  }
+
+  IconData updateFavIcon(int? value) {
+    IconData ic = Icons.star;
+    if (value == 1) {
+      return Icons.star;
+    } else {
+      return Icons.star_border_outlined;
+    }
+  }
+
+  @override
+  void didUpdateWidget(GameInfoPanel oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    updateFavIcon(Provider.of<AppState>(context).selectedGame?.game.favorite);
+    _controller
+      ..reset()
+      ..forward();
   }
 
   @override
   void dispose() {
+    _controller.dispose();
     super.dispose();
   }
 
