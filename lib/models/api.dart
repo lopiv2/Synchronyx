@@ -1,13 +1,13 @@
 import 'dart:convert';
 
 class Api {
-  int id;
+  int? id;
   String name;
   String? url;
   String metadataJson; // Field for storing metadata in JSON format
 
   Api({
-    this.id = 0,
+    this.id,
     required this.name,
     this.url,
     this.metadataJson = '', // Empty metadata initialization
@@ -29,7 +29,7 @@ class Api {
 
   static Api fromMap(Map<String, dynamic> map) {
     return Api(
-      id: map['id'] ?? 0,
+      id: map['id'] ?? '',
       name: map['name'] ?? '',
       url: map['url'],
       metadataJson:

@@ -2,17 +2,20 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:synchronyx/models/game.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:pushable_button/pushable_button.dart';
 import 'package:synchronyx/models/gameMedia_response.dart';
+import 'package:synchronyx/widgets/buttons/icon_button_colored.dart';
 import '../providers/app_state.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:synchronyx/utilities/generic_database_functions.dart'
     as databaseFunctions;
 
 class GameInfoPanel extends StatefulWidget {
-  const GameInfoPanel({super.key});
+  const GameInfoPanel({super.key, required this.appLocalizations});
+  final AppLocalizations appLocalizations;
 
   @override
   State<GameInfoPanel> createState() => _GameInfoPanelState();
@@ -99,13 +102,15 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
                                                 0.012,
                                         fontWeight: FontWeight.bold,
                                         color: Colors.white),
-                                    appState.selectedGame!.rating.toString())),
+                                    appState.selectedGame!.game.rating
+                                        .toString())),
                             Positioned(
                                 //right: MediaQuery.of(context).size.width * 0.17,
                                 bottom: 5,
                                 right: 0,
                                 child: RatingBar.builder(
-                                  initialRating: appState.selectedGame!.rating,
+                                  initialRating:
+                                      appState.selectedGame!.game.rating,
                                   minRating: 0,
                                   maxRating: 5,
                                   direction: Axis.horizontal,
@@ -154,29 +159,46 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
               icon: Icon(Icons.settings),
               color: Colors.white,
             ),
-            IconButton(
+            IconButtonHoverColored(
+              icon: Icons.star_border_outlined,
+              onPressed: () {},
+              iconColor: Colors.yellow,
+              backColor: Colors.grey,
+            ),
+            IconButtonHoverColored(
+              icon: Icons.clear,
               onPressed: () {
-                print('Botón 3');
+                showDeleteConfirmationDialog(context, appState);
               },
-              icon: Icon(Icons.star),
-              color: Colors.white,
+              iconColor: Colors.red,
+              backColor: Colors.grey,
             ),
             IconButton(
               onPressed: () {
-                showDeleteConfirmationDialog(context, appState.selectedGame!);
-              },
-              icon: Icon(Icons.clear),
-              color: Colors.white,
-            ),
-            IconButton(
-              onPressed: () {
-                print('Botón 4');
+                showDeleteConfirmationDialog(context, appState);
               },
               icon: Icon(Icons.play_arrow),
               color: Colors.white,
             ),
           ],
         ),
+        Row(children: [
+          Expanded(
+              flex: 2,
+              child: PushableButton(
+                child: Text('ENROLL NOW'),
+                height: 40,
+                elevation: 8,
+                hslColor: HSLColor.fromAHSL(1.0, 120, 1.0, 0.37),
+                shadow: BoxShadow(
+                  color: Colors.grey.withOpacity(0.5),
+                  spreadRadius: 5,
+                  blurRadius: 7,
+                  offset: Offset(0, 2),
+                ),
+                onPressed: () => print('Button Pressed!'),
+              )),
+        ]),
       ],
     );
   }
@@ -200,58 +222,71 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
   void dispose() {
     super.dispose();
   }
+
+  void showDeleteConfirmationDialog(BuildContext context, AppState appState) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return GameDeleteConfirmationDialog(
+          selectedGame: appState.selectedGame!,
+          onConfirm: (GameMediaResponse game) async {
+            await databaseFunctions.deleteGame(game.game.id!);
+            await databaseFunctions.deleteMediaByName(game);
+            appState.gamesInGrid.removeWhere(
+                (game) => game.game.id == appState.selectedGame!.game.id);
+            //Refresh grid view when deleted
+            appState.refreshGridView();
+          },
+          appLocalizations: widget.appLocalizations,
+        );
+      },
+    );
+  }
 }
 
-class GameDeleteConfirmationDialog extends StatelessWidget {
+class GameDeleteConfirmationDialog extends StatefulWidget {
   final GameMediaResponse selectedGame;
   final Function(GameMediaResponse) onConfirm;
+  final AppLocalizations appLocalizations;
 
-  GameDeleteConfirmationDialog({
-    required this.selectedGame,
-    required this.onConfirm,
-  });
+  const GameDeleteConfirmationDialog(
+      {super.key,
+      required this.selectedGame,
+      required this.onConfirm,
+      required this.appLocalizations});
 
   @override
+  State<GameDeleteConfirmationDialog> createState() =>
+      _GameDeleteConfirmationDialogState();
+}
+
+class _GameDeleteConfirmationDialogState
+    extends State<GameDeleteConfirmationDialog> {
+  @override
   Widget build(BuildContext context) {
+    final appState = Provider.of<AppState>(context);
     return AlertDialog(
-      title: Text('Confirm Delete'),
-      content: Text('Are you sure you want to delete ${selectedGame.title}?'),
+      title: Text(widget.appLocalizations.confirmDelete),
+      content: Text(
+          widget.appLocalizations.sureDelete(widget.selectedGame.game.title)),
       actions: [
         TextButton(
           onPressed: () {
             Navigator.of(context).pop(); // Cierra el diálogo
           },
-          child: Text('Cancel'),
+          child: Text(widget.appLocalizations.cancel),
         ),
         TextButton(
           onPressed: () {
-            onConfirm(
-                selectedGame); // Pasa el juego seleccionado a la función de confirmación
+            widget.onConfirm(widget
+                .selectedGame); // Pasa el juego seleccionado a la función de confirmación
             Navigator.of(context).pop(); // Cierra el diálogo
           },
-          child: Text('Delete'),
+          child: Text(
+              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red),
+              widget.appLocalizations.delete),
         ),
       ],
     );
   }
-}
-
-// En tu función que maneja la eliminación del juego
-void showDeleteConfirmationDialog(
-    BuildContext context, GameMediaResponse selectedGame) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return GameDeleteConfirmationDialog(
-        selectedGame: selectedGame,
-        onConfirm: (GameMediaResponse game) async {
-          await databaseFunctions.deleteGame(game.id!);
-          await databaseFunctions.deleteMediaByName(game);
-          databaseFunctions.getAllGames();
-          // Aquí manejas la eliminación del juego usando el juego seleccionado
-          // Llama a la función para eliminar el juego de la base de datos pasando el juego
-        },
-      );
-    },
-  );
 }

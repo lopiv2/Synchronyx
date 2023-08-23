@@ -10,7 +10,9 @@
   "cancel": "Cancel",
   "categoryPlatform": "Category Platform",
   "computers": "Computers",
+  "confirmDelete": "Confirm deletion?",
   "consoles": "Consoles",
+  "delete": "Delete",
   "developer": "Developer",
   "epicWindowAssistant": "Epic Games Import Wizard",
   "favorite": "Favorite",
@@ -68,6 +70,14 @@
   "steamWindowAssistantTitleStep2": "Enter your Steam id to be able to import all your games",
   "steamWindowAssistantTitleStep3": "Enter your Steam Api Key to be able to import all your games",
   "steamWindowAssistantTitleStep4": "Import games...",
+  "sureDelete": "Are you sure you want to delete {game}?",
+  "@sureDelete": {
+        "placeholders":{
+            "game": {
+                "type":"String"
+            }
+        }
+    },
   "tools": "Tools",
   "uplayWindowAssistant": "Uplay Games Import Wizard",
   "winWindowAssistant": "Windows Games Import Wizard",

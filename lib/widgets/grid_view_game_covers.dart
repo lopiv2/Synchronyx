@@ -61,6 +61,7 @@ class _GridViewGameCoversState extends State<GridViewGameCovers> {
 
   Future<List<Container>> _buildGridTileList(List<Game> listOfGames) async {
     final appState = Provider.of<AppState>(context, listen: false);
+    appState.gamesInGrid.clear();
     List<Container> containers = [];
     for (Game game in listOfGames) {
       Media? gameMedia = await databaseFunctions.getMediaById(game.mediaId!);
@@ -84,7 +85,6 @@ class _GridViewGameCoversState extends State<GridViewGameCovers> {
         );
       }
     }
-
     return containers;
   }
 }

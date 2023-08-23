@@ -15,6 +15,7 @@ class Game {
   DateTime? releaseDate = DateTime.now();
   double rating;
   int favorite; //boolean
+  int installed; //boolean
   int playTime;
   DateTime? lastPlayed = DateTime.now();
   String tags; //List of tags joined by commas also
@@ -36,6 +37,7 @@ class Game {
     this.releaseDate,
     this.rating = 0.0,
     this.favorite = 0,
+    this.installed = 0,
     this.playTime = 0,
     this.lastPlayed,
     this.tags = '',
@@ -59,6 +61,7 @@ class Game {
       'releaseDate': releaseDate?.toLocal(),
       'rating': rating,
       'favorite': favorite,
+      'installed': installed,
       'playTime': playTime,
       'lastPlayed': lastPlayed?.toLocal(),
       'tags': tags,
@@ -67,7 +70,7 @@ class Game {
 
   @override
   String toString() {
-    return 'Game{id: $id, title: $title, description: $description,boxColor: $boxColor, mediaId: $mediaId, platform: $platform,platformStore: $platformStore, genres: $genres, maxPlayers: $maxPlayers, developer: $developer, publisher: $publisher, region: $region, file: $file, releaseDate: $releaseDate, rating: $rating, favorite: $favorite, playTime: $playTime, lastPlayed: $lastPlayed, tags: $tags}';
+    return 'Game{id: $id, title: $title, description: $description,boxColor: $boxColor, mediaId: $mediaId, platform: $platform,platformStore: $platformStore, genres: $genres, maxPlayers: $maxPlayers, developer: $developer, publisher: $publisher, region: $region, file: $file, releaseDate: $releaseDate, rating: $rating, favorite: $favorite,installed: $installed, playTime: $playTime, lastPlayed: $lastPlayed, tags: $tags}';
   }
 
   static Game fromMap(Map<String, dynamic> map) {
@@ -90,6 +93,7 @@ class Game {
           : DateTime.now(),
       rating: (map['rating'] ?? 0.0).toDouble(),
       favorite: map['favorite'] == 1 ? 1 : 0,
+      installed: map['installed'] == 1 ? 1 : 0,
       playTime: map['playTime'] ?? 0,
       lastPlayed: map['lastPlayed'] != null
           ? DateTime.parse(map['lastPlayed'])

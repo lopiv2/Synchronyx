@@ -10,7 +10,9 @@
     "cancel": "Cancelar",
     "categoryPlatform": "Categoría de Plataforma",
     "computers": "Ordenadores",
+    "confirmDelete": "¿Confirmar borrado?",
     "consoles": "Consolas",
+    "delete": "Eliminar",
     "developer": "Desarrollador",
     "epicWindowAssistant": "Asistente de importación de juegos de Epic",
     "favorite": "Favorito",
@@ -68,6 +70,14 @@
     "steamWindowAssistantTitleStep2":"Introduce tu id de Steam para poder importar todos tus juegos",
     "steamWindowAssistantTitleStep3":"Introduce tu Clave Api de Steam para poder importar todos tus juegos",
     "steamWindowAssistantTitleStep4":"Importar juegos...",
+    "sureDelete": "¿Estás seguro que quieres borrar {game}?",
+    "@sureDelete": {
+        "placeholders":{
+            "game": {
+                "type":"String"
+            }
+        }
+    },
     "tools": "Herramientas",
     "uplayWindowAssistant": "Asistente de importación de juegos de Uplay",
     "winWindowAssistant": "Asistente de importación de juegos de Windows",

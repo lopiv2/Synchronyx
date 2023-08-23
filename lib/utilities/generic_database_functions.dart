@@ -80,6 +80,7 @@ Future<Database?> createAndOpenDB() async {
           'releaseDate TEXT,'
           'rating REAL,'
           'favorite INTEGER,'
+          'installed INTEGER,'
           'playTime INTEGER,'
           'lastPlayed TEXT,'
           'tags TEXT'
@@ -235,7 +236,7 @@ Future<void> deleteMediaByName(GameMediaResponse game) async {
     // Use a `where` clause to delete a specific game.
     where: 'name = ?',
     // Pass the Game's id as a whereArg to prevent SQL injection.
-    whereArgs: [game.title],
+    whereArgs: [game.game.title],
   );
 }
 
@@ -249,7 +250,7 @@ Future<void> insertApi(Api api) async {
   await Constants.database?.insert(
     'apis',
     api.toMap(),
-    conflictAlgorithm: ConflictAlgorithm.replace,
+    conflictAlgorithm: ConflictAlgorithm.ignore,
   );
 
   //await Constants.database?.close();
@@ -302,7 +303,7 @@ Future<void> insertMedia(Media media, Game game) async {
     print(mediaId);
 
     //Obtengo el id de insercion para agregarselo al juego
-    final id= await db?.insert(
+    final id = await db?.insert(
       'medias',
       media.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,

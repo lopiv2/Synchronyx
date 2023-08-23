@@ -50,7 +50,7 @@ class _PlatformTreeViewState extends State<PlatformTreeView> {
   List<Platforms> buildTreeView() {
     final appState = Provider.of<AppState>(context, listen: false);
     List<String> platformsList = appState.gamesInGrid
-        .map((gameResponse) => gameResponse.platform)
+        .map((gameResponse) => gameResponse.game.platform)
         .toSet()
         .toList();
     List<Platforms> platformsNodes = [];

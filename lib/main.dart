@@ -283,7 +283,9 @@ class _MyWidgetState extends State<RightSide> {
       child: provider.Consumer<AppState>(
         builder: (context, appState, child) {
           if (appState.selectedGame != null) {
-            return GameInfoPanel();
+            return GameInfoPanel(
+              appLocalizations: widget.appLocalizations,
+            );
           } else {
             return Text("nada");
           }
