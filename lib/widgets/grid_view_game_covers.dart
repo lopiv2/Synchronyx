@@ -64,7 +64,8 @@ class _GridViewGameCoversState extends State<GridViewGameCovers> {
     appState.gamesInGrid.clear();
     List<Container> containers = [];
     for (int index = 0; index < listOfGames.length; index++) {
-      Media? gameMedia = await databaseFunctions.getMediaById(listOfGames[index].mediaId!);
+      Media? gameMedia =
+          await databaseFunctions.getMediaById(listOfGames[index].mediaId!);
       if (gameMedia != null) {
         GameMediaResponse gameMediaResponse =
             GameMediaResponse.fromGameAndMedia(listOfGames[index], gameMedia);
@@ -79,7 +80,7 @@ class _GridViewGameCoversState extends State<GridViewGameCovers> {
                 gameMedia: gameMedia,
                 index: index,
                 onGameClick: (gameId) {
-                  appState.clickedElementIndex=index;
+                  appState.clickedElementIndex = index;
                 },
               ),
             ),

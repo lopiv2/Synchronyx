@@ -10,7 +10,6 @@ class AppState extends ChangeNotifier {
   bool get isImporting => _isImporting;
   int clickedElementIndex=0;
   List<bool> elementsAnimations=[];
-
   bool _isCoverRotated = false;
   bool get isCoverRotated => _isCoverRotated;
 
