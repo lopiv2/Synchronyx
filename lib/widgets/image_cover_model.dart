@@ -32,9 +32,19 @@ class _ImageCoverModel extends State<ImageCoverModel>
   DioClient dioClient = DioClient();
   late AnimationController _animationController;
   double rotationAngleY = 0.0;
-
+  bool rotatedCover = false;
   bool showAdditionalOverlay =
       false; // Variable para controlar la visibilidad de la imagen overlay adicional
+
+  void toggleImageAnimation(BuildContext context) {
+    final appState = Provider.of<AppState>(context, listen: false);
+    appState.toggleAnimation();
+  }
+
+  void toggleCoverAnimation(BuildContext context) {
+    final appState = Provider.of<AppState>(context, listen: false);
+    appState.toggleCover();
+  }
 
   @override
   void initState() {
@@ -55,6 +65,16 @@ class _ImageCoverModel extends State<ImageCoverModel>
         });
       }
     });
+    // Iniciar la animación si animationState.isAnimationActive es true
+    if (Provider.of<AppState>(context, listen: false).isAnimationActive) {
+      if (Provider.of<AppState>(context, listen: false).isCoverRotated == false) {
+        _animationController.forward();
+        print("forward");
+      } else {
+        _animationController.reverse();
+        print("back");
+      }
+    }
   }
 
   void createGameFromTitle(GameMediaResponse game) {
@@ -71,6 +91,9 @@ class _ImageCoverModel extends State<ImageCoverModel>
 
   @override
   Widget build(BuildContext context) {
+    final animationState = Provider.of<AppState>(context);
+    final isAnimationActive = animationState.isAnimationActive;
+
     ImageProvider<Object> imageWidgetFront;
     if (widget.gameMedia.coverImageUrl.isNotEmpty) {
       imageWidgetFront = FileImage(File(widget.gameMedia.coverImageUrl));
@@ -79,10 +102,10 @@ class _ImageCoverModel extends State<ImageCoverModel>
     }
 
     return MouseRegion(
-      onEnter: (_) {
+      /*onEnter: (_) {
         setState(() {
           isMouseOver = true;
-          _animationController.forward();
+          //_animationController.forward();
         });
       },
       onExit: (_) {
@@ -91,9 +114,12 @@ class _ImageCoverModel extends State<ImageCoverModel>
           _animationController.reverse();
           showAdditionalOverlay = false;
         });
-      },
+      },*/
       child: GestureDetector(
-        onTap: () {},
+        onTap: () {
+          //_animationController.forward();
+          //animationState.toggleAnimation();
+        },
         child: AnimatedBuilder(
           animation: _animationController,
           builder: (context, child) {
@@ -102,7 +128,7 @@ class _ImageCoverModel extends State<ImageCoverModel>
               transform: Matrix4.identity()
                 ..setEntry(3, 2, 0.0018) // Aplicar una perspectiva 3D
                 ..rotateX(0.2) // Rotación en el eje x
-                ..rotateY(isMouseOver
+                ..rotateY(animationState.isAnimationActive
                     ? _animationController.value * 3.45
                     : 0.4), // Rotación en el eje y (45 grados si el ratón está sobre el widget, 0 grados si no)
               child: Stack(
@@ -130,7 +156,11 @@ class _ImageCoverModel extends State<ImageCoverModel>
                           splashColor: Colors.red,
                           elevation: 8.0,
                           onPressed: () {
-                            print('Tapped');
+                            widget.onGameClick(widget.game.id!);
+                            GameMediaResponse gameMediaResponse =
+                                GameMediaResponse.fromGameAndMedia(
+                                    widget.game, widget.gameMedia);
+                            createGameFromTitle(gameMediaResponse);
                           },
                           child: Transform(
                             transform: Matrix4.identity()

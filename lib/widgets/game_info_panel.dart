@@ -47,6 +47,8 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
         FileImage(File(appState.selectedGame!.media.backgroundImageUrl));
     ImageProvider<Object> logoWidgetMarquee;
     logoWidgetMarquee = FileImage(File(appState.selectedGame!.media.logoUrl));
+    final animationState = Provider.of<AppState>(context);
+    //final isAnimationActive = animationState.isAnimationActive;
     playOst();
 
     return Column(
@@ -161,7 +163,8 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
             ),
             IconButton(
               onPressed: () {
-                print('Botón 2');
+                final appState = Provider.of<AppState>(context, listen: false);
+                appState.toggleAnimation(); // Cambia el estado de la animación
               },
               icon: Icon(Icons.threesixty),
               color: Colors.white,
