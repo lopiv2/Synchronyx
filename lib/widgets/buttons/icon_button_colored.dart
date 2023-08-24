@@ -38,7 +38,11 @@ class _IconButtonHoverColored extends State<IconButtonHoverColored> {
         onTap: widget.onPressed,
         child: Container(
           padding: EdgeInsets.all(8.0),
-          color: isHovered ? widget.backColor : Colors.transparent,
+          decoration: BoxDecoration(
+            color: isHovered ? widget.backColor : Colors.transparent,
+            borderRadius: BorderRadius.circular(
+                80.0), // Ajusta el valor según tu preferencia
+          ),
           child: Icon(
             widget.icon,
             color: widget.iconColor,

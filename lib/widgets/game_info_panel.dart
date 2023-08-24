@@ -47,7 +47,6 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
         FileImage(File(appState.selectedGame!.media.backgroundImageUrl));
     ImageProvider<Object> logoWidgetMarquee;
     logoWidgetMarquee = FileImage(File(appState.selectedGame!.media.logoUrl));
-    final animationState = Provider.of<AppState>(context);
     //final isAnimationActive = animationState.isAnimationActive;
     playOst();
 
@@ -154,27 +153,27 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            IconButton(
+            IconButtonHoverColored(
               onPressed: () {
                 reload();
               },
-              icon: Icon(Icons.shopping_cart),
-              color: Colors.white,
+              icon: Icons.shopping_cart,
+              iconColor: Colors.white,
             ),
-            IconButton(
+            IconButtonHoverColored(
               onPressed: () {
                 final appState = Provider.of<AppState>(context, listen: false);
-                appState.toggleAnimation(); // Cambia el estado de la animación
+                appState.toggleAnimations();
               },
-              icon: Icon(Icons.threesixty),
-              color: Colors.white,
+              icon: Icons.threesixty,
+              iconColor: Colors.white,
             ),
-            IconButton(
+            IconButtonHoverColored(
               onPressed: () {
                 print('Botón 3');
               },
-              icon: Icon(Icons.settings),
-              color: Colors.white,
+              icon: Icons.settings,
+              iconColor: Colors.white,
             ),
             IconButtonHoverColored(
               icon: isFavorite ? Icons.star : Icons.star_border_outlined,

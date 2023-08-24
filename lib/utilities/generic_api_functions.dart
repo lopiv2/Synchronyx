@@ -92,6 +92,8 @@ class DioClient {
       tag.add("adios");
       Game gameInsert = Game(
           title: name,
+          installed: 1,
+          favorite: 0,
           playTime: playtime,
           rating: rawgResponse.metacriticInfo,
           platform: GamePlatforms.Windows.name,
