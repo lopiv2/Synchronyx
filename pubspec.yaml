@@ -76,6 +76,7 @@ flutter:
     - assets/models/
     - assets/icons/
     - assets/images/
+    - assets/images/backgrounds/
     - assets/music/
     - assets/database/synchronyx.db
 

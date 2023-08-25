@@ -29,7 +29,7 @@ class _GridViewGameCoversState extends State<GridViewGameCovers> {
         } else if (!snapshot.hasData) {
           return Text('Cargando datos...'); // Mensaje durante la carga inicial
         } else if (snapshot.data!.isEmpty) {
-          return Text('No hay datos disponibles');
+          return Text('');
         } else {
           List<Game> listOfGames = snapshot.data!;
           return FutureBuilder<List<Container>>(
@@ -69,12 +69,13 @@ class _GridViewGameCoversState extends State<GridViewGameCovers> {
       if (gameMedia != null) {
         GameMediaResponse gameMediaResponse =
             GameMediaResponse.fromGameAndMedia(listOfGames[index], gameMedia);
-        //appState.gamesInGrid.add(gameMediaResponse);
+        appState.gamesInGrid.add(gameMediaResponse);
         appState.elementsAnimations.add(false);
         containers.add(
           Container(
+            color: Colors.red,
             child: Transform.scale(
-              scale: 2.2,
+              scale: 5.2,
               child: ImageCoverModel(
                 game: listOfGames[index],
                 gameMedia: gameMedia,

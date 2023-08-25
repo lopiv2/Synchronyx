@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:synchronyx/providers/app_state.dart';
 import 'package:synchronyx/utilities/generic_database_functions.dart';
+import 'package:synchronyx/widgets/filter_info_panel.dart';
+import 'package:synchronyx/widgets/filters/favorite_filter.dart';
 import 'package:synchronyx/widgets/game_info_panel.dart';
 import 'package:synchronyx/widgets/platform_tree_view.dart';
 import 'package:synchronyx/widgets/top_menu_bar.dart';
@@ -198,8 +200,8 @@ class _LeftSideState extends State<LeftSide> {
     switch (selectedValue?.caseValue) {
       case 'categoryPlatform':
         return PlatformTreeView(appLocalizations: widget.appLocalizations);
-      case 'OtherCase1':
-        return Text("otro"); // Cambia YourWidget1 por el widget deseado
+      case 'favorite':
+        return FavoriteFilterColumn();
       case 'OtherCase2':
         return Text("otro2"); // Cambia YourWidget2 por el widget deseado
       // Agrega más casos según tus necesidades
@@ -282,13 +284,11 @@ class _MyWidgetState extends State<RightSide> {
       ),
       child: provider.Consumer<AppState>(
         builder: (context, appState, child) {
-          if (appState.selectedGame != null) {
-            return GameInfoPanel(
-              appLocalizations: widget.appLocalizations,
-            );
-          } else {
-            return Text("nada");
-          }
+          return appState.selectedGame != null
+              ? GameInfoPanel(
+                  appLocalizations: widget.appLocalizations,
+                )
+              : FilterInfoPanel(appLocalizations: widget.appLocalizations);
         },
       ),
     );
