@@ -19,8 +19,9 @@ class GridViewGameCovers extends StatefulWidget {
 class _GridViewGameCoversState extends State<GridViewGameCovers> {
   @override
   Widget build(BuildContext context) {
+    final appState = Provider.of<AppState>(context);
     return FutureBuilder<List<Game>>(
-      future: databaseFunctions.getAllGames(),
+      future: databaseFunctions.getAllGamesWithFilter(appState.filter, appState.filterValue),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return CircularProgressIndicator();
@@ -73,9 +74,9 @@ class _GridViewGameCoversState extends State<GridViewGameCovers> {
         appState.elementsAnimations.add(false);
         containers.add(
           Container(
-            color: Colors.red,
+            //color: Colors.red,
             child: Transform.scale(
-              scale: 5.2,
+              scale: 2.2,
               child: ImageCoverModel(
                 game: listOfGames[index],
                 gameMedia: gameMedia,

@@ -83,5 +83,7 @@
   "tools": "Tools",
   "uplayWindowAssistant": "Uplay Games Import Wizard",
   "winWindowAssistant": "Windows Games Import Wizard",
-  "xboxWindowAssistant": "XBox/Microsoft Games Import Wizard"
+  "xboxWindowAssistant": "XBox/Microsoft Games Import Wizard",
+  "yes": "Yes",
+  "no": "No"
 }

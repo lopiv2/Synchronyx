@@ -83,5 +83,7 @@
     "tools": "Herramientas",
     "uplayWindowAssistant": "Asistente de importación de juegos de Uplay",
     "winWindowAssistant": "Asistente de importación de juegos de Windows",
-    "xboxWindowAssistant": "Asistente de importación de juegos de XBox/Tienda Microsoft"
+    "xboxWindowAssistant": "Asistente de importación de juegos de XBox/Tienda Microsoft",
+    "yes": "Si",
+    "no": "No"
 }

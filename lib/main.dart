@@ -176,7 +176,8 @@ class _LeftSideState extends State<LeftSide> {
             },
           ),
           Expanded(
-            child: _buildWidgetBasedOnSelectedValue(),
+            child: _buildWidgetBasedOnSelectedValue(
+                Provider.of<AppState>(context)),
           ),
           Container(
             height: 50, // Altura del contenedor ámbar
@@ -196,12 +197,12 @@ class _LeftSideState extends State<LeftSide> {
         ]));
   }
 
-  Widget _buildWidgetBasedOnSelectedValue() {
+  Widget _buildWidgetBasedOnSelectedValue(AppState appState) {
     switch (selectedValue?.caseValue) {
       case 'categoryPlatform':
         return PlatformTreeView(appLocalizations: widget.appLocalizations);
       case 'favorite':
-        return FavoriteFilterColumn();
+        return FavoriteFilterColumn(appLocalizations: widget.appLocalizations);
       case 'OtherCase2':
         return Text("otro2"); // Cambia YourWidget2 por el widget deseado
       // Agrega más casos según tus necesidades

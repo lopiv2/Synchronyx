@@ -1,40 +1,51 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:synchronyx/providers/app_state.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:synchronyx/widgets/buttons/text_button_colored.dart';
 
 class FavoriteFilterColumn extends StatelessWidget {
-  const FavoriteFilterColumn({super.key});
+  const FavoriteFilterColumn({required this.appLocalizations, super.key});
+
+  final AppLocalizations appLocalizations;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      alignment: Alignment.topLeft,
-        child: Padding(
-            padding: const EdgeInsets.fromLTRB(
-                10, 20, 0, 0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    // Acción del primer botón
-                  },
-                  child: Text('Todo'),
-                ),
-                SizedBox(height: 20), // Espacio entre botones
-                ElevatedButton(
-                  onPressed: () {
-                    // Acción del segundo botón
-                  },
-                  child: Text('No'),
-                ),
-                SizedBox(height: 20), // Espacio entre botones
-                ElevatedButton(
-                  onPressed: () {
-                    // Acción del tercer botón
-                  },
-                  child: Text('Si'),
-                ),
-              ],
-            )));
+    final appState = Provider.of<AppState>(context);
+    return Consumer<AppState>(builder: (context, appState, child) {
+      return Container(
+          padding: const EdgeInsets.all(10.0), // Padding del contenedor
+          child: ListView(
+            children: <Widget>[
+              TextButtonHoverColored(
+                text: appLocalizations.all,
+                key: const ValueKey(1),
+                onPressed: (() => {
+                      appState.updateFilters('favorite', 'all'),
+                      appState.updateButtonClickedKey(ValueKey(1)),
+                      appState.refreshGridView()
+                    }),
+              ),
+              TextButtonHoverColored(
+                text: appLocalizations.yes,
+                key: const ValueKey(2),
+                onPressed: (() => {
+                      appState.updateFilters('favorite', 'yes'),
+                      appState.updateButtonClickedKey(ValueKey(2)),
+                      appState.refreshGridView()
+                    }),
+              ),
+              TextButtonHoverColored(
+                text: appLocalizations.no,
+                key: const ValueKey(3),
+                onPressed: (() => {
+                      appState.updateFilters('favorite', 'no'),
+                      appState.updateButtonClickedKey(ValueKey(3)),
+                      appState.refreshGridView()
+                    }),
+              ),
+            ],
+          ));
+    });
   }
 }

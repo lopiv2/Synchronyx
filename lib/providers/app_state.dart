@@ -7,22 +7,27 @@ class AppState extends ChangeNotifier {
   List<GameMediaResponse> gamesInGrid = [];
   bool shouldRefreshGridView = false;
   bool _isImporting = false;
+  Key buttonClickedKey = ValueKey<int>(42);
   bool get isImporting => _isImporting;
-  int clickedElementIndex=0;
-  List<bool> elementsAnimations=[];
+  int clickedElementIndex = 0;
+  List<bool> elementsAnimations = [];
   bool _isCoverRotated = false;
   bool get isCoverRotated => _isCoverRotated;
+  String filter = '';
+  String filterValue = '';
 
   void toggleAnimations() {
-    for(int x=0;x<elementsAnimations.length;x++){
-      elementsAnimations[x]=false;
+    for (int x = 0; x < elementsAnimations.length; x++) {
+      elementsAnimations[x] = false;
     }
-    elementsAnimations[clickedElementIndex] = !elementsAnimations[clickedElementIndex];
+    elementsAnimations[clickedElementIndex] =
+        !elementsAnimations[clickedElementIndex];
     notifyListeners();
   }
 
   void toggleAnimation() {
-    elementsAnimations[clickedElementIndex] = !elementsAnimations[clickedElementIndex];
+    elementsAnimations[clickedElementIndex] =
+        !elementsAnimations[clickedElementIndex];
     notifyListeners();
   }
 
@@ -38,6 +43,17 @@ class AppState extends ChangeNotifier {
 
   void stopImporting() {
     _isImporting = false;
+    notifyListeners();
+  }
+
+  void updateButtonClickedKey(Key k) {
+    buttonClickedKey = k;
+    notifyListeners();
+  }
+
+  void updateFilters(String filter, String value) {
+    this.filter = filter;
+    filterValue = value;
     notifyListeners();
   }
 

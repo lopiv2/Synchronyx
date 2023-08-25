@@ -140,6 +140,35 @@ Future<List<Game>> getAllGames() async {
   return maps.map((map) => Game.fromMap(map)).toList();
 }
 
+/* ------- A method that retrieves all the games filtered from the games table. ------ */
+Future<List<Game>> getAllGamesWithFilter(String filter, String value) async {
+  // Get a reference to the database.
+  final db = await Constants.database;
+  List<Map<String, dynamic>> maps = List.empty(growable: true);
+  if (db != null) {
+    switch (filter) {
+      case 'favorite':
+        if (value == 'yes') {
+          maps =
+              await db!.query('games', where: 'favorite = ?', whereArgs: [1]);
+        }
+        if (value == 'no') {
+          maps =
+              await db!.query('games', where: 'favorite = ?', whereArgs: [0]);
+        }
+        if (value == 'all') {
+          maps =
+              maps = await db!.query('games');
+        }
+        break;
+      default:
+        maps = await db!.query('games');
+    }
+  }
+
+  return maps.map((map) => Game.fromMap(map)).toList();
+}
+
 /* ---------------------------- Check Api by name --------------------------- */
 Future<Api?> checkApiByName(String name) async {
   //print('Base de datos abierta en:${Constants.database}');
