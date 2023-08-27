@@ -57,7 +57,7 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateSelectedGame(GameMediaResponse game) {
+  void updateSelectedGame(GameMediaResponse? game) {
     selectedGame = game;
     notifyListeners();
   }

@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:getwidget/components/accordion/gf_accordion.dart';
+import 'package:getwidget/getwidget.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:pushable_button/pushable_button.dart';
@@ -47,11 +49,25 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
         FileImage(File(appState.selectedGame!.media.backgroundImageUrl));
     ImageProvider<Object> logoWidgetMarquee;
     logoWidgetMarquee = FileImage(File(appState.selectedGame!.media.logoUrl));
-    //final isAnimationActive = animationState.isAnimationActive;
+    List<String> developersList =
+        appState.selectedGame!.game.developer.split(',');
+    List<Widget> developerWidgets = developersList.map((developer) {
+      return Text(style: TextStyle(color: Colors.white), '- $developer');
+    }).toList();
+    List<String> publisherList =
+        appState.selectedGame!.game.publisher.split(',');
+    List<Widget> publisherWidgets = publisherList.map((publisher) {
+      return Text(
+          style: TextStyle(color: Colors.white),
+          textAlign: TextAlign.start,
+          '- $publisher');
+    }).toList();
     playOst();
 
-    return Column(
-      children: [
+    return Column(children: [
+      Expanded(
+          child: SingleChildScrollView(
+              child: Column(children: [
         Container(
             height: MediaQuery.of(context).size.height * 0.3,
             color: Colors.white,
@@ -104,45 +120,37 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
                                       const Color.fromARGB(115, 158, 158, 158),
                                   borderRadius: BorderRadius.circular(
                                       5), // Ajusta este valor según tu preferencia
-                                )),
-                            Positioned(
-                                bottom:
-                                    MediaQuery.of(context).size.height * 0.0085,
-                                right:
-                                    MediaQuery.of(context).size.width * 0.077,
-                                child: Text(
-                                    style: TextStyle(
-                                        fontSize:
-                                            MediaQuery.of(context).size.height *
-                                                0.012,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white),
-                                    appState.selectedGame!.game.rating
-                                        .toString())),
-                            Positioned(
-                                //right: MediaQuery.of(context).size.width * 0.17,
-                                bottom: 5,
-                                right: 0,
-                                child: RatingBar.builder(
-                                  initialRating:
-                                      appState.selectedGame!.game.rating,
-                                  minRating: 0,
-                                  maxRating: 5,
-                                  direction: Axis.horizontal,
-                                  allowHalfRating: true,
-                                  itemCount: 5,
-                                  itemPadding:
-                                      EdgeInsets.symmetric(horizontal: 0),
-                                  itemSize:
-                                      MediaQuery.of(context).size.width * 0.015,
-                                  itemBuilder: (context, _) => Icon(
-                                    Icons.star,
-                                    color: Colors.amber,
-                                  ),
-                                  onRatingUpdate: (rating) {
-                                    print(rating);
-                                  },
-                                )),
+                                ),
+                                child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                          style: TextStyle(
+                                              fontSize: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.014,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white),
+                                          appState.selectedGame!.game.rating
+                                              .toString()),
+                                      GFRating(
+                                        itemCount: 5,
+                                        color: Colors.amber,
+                                        size:
+                                            MediaQuery.of(context).size.width *
+                                                0.015,
+                                        value:
+                                            appState.selectedGame!.game.rating,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            //_rating = value;
+                                          });
+                                        },
+                                      ),
+                                    ])),
                           ],
                         ),
                       )
@@ -205,8 +213,7 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
             Expanded(
               flex: 2,
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(
-                    16, 36, 16, 0), // Márgenes izquierdo y derecho
+                padding: const EdgeInsets.fromLTRB(16, 36, 16, 0),
                 child: PushableButton(
                   height: 40,
                   elevation: 8,
@@ -235,9 +242,156 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
               ),
             ),
           ],
-        )
-      ],
-    );
+        ),
+        Padding(
+            padding: const EdgeInsets.fromLTRB(26, 16, 26, 0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                          widget.appLocalizations.launchDate),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, color: Colors.white),
+                          formatDateString(appState
+                              .selectedGame!.game.releaseDate
+                              .toString())),
+                    ],
+                  ),
+                ),
+              ],
+            )),
+        Padding(
+            padding: const EdgeInsets.fromLTRB(26, 0, 26, 0),
+            child: const Divider()),
+        Padding(
+            padding: const EdgeInsets.fromLTRB(26, 0, 26, 0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                          widget.appLocalizations.developer),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      GFAccordion(
+                          title: 'Pulse para abrir',
+                          contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                          collapsedTitleBackgroundColor:
+                              const Color.fromARGB(0, 250, 205, 202),
+                          expandedTitleBackgroundColor:
+                              const Color.fromARGB(0, 250, 205, 202),
+                          contentBackgroundColor:
+                              const Color.fromARGB(0, 250, 205, 202),
+                          textStyle: const TextStyle(
+                              backgroundColor: Color.fromARGB(0, 244, 67, 54)),
+                          contentChild: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: developerWidgets),
+                          collapsedIcon: Icon(Icons.add),
+                          expandedIcon: Icon(Icons.minimize)),
+                    ],
+                  ),
+                ),
+              ],
+            )),
+        Padding(
+            padding: const EdgeInsets.fromLTRB(26, 0, 26, 0),
+            child: const Divider()),
+        Padding(
+            padding: const EdgeInsets.fromLTRB(26, 0, 26, 0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                          widget.appLocalizations.publisher),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      GFAccordion(
+                          title: 'Pulse para abrir',
+                          contentPadding: EdgeInsets.fromLTRB(10, 2, 0, 0),
+                          collapsedTitleBackgroundColor:
+                              const Color.fromARGB(0, 250, 205, 202),
+                          expandedTitleBackgroundColor:
+                              const Color.fromARGB(0, 250, 205, 202),
+                          contentBackgroundColor:
+                              const Color.fromARGB(0, 250, 205, 202),
+                          textStyle: const TextStyle(
+                              backgroundColor: Color.fromARGB(0, 244, 67, 54)),
+                          contentChild: Column(children: publisherWidgets),
+                          collapsedIcon: const Icon(Icons.add),
+                          expandedIcon: const Icon(Icons.minimize)),
+                    ],
+                  ),
+                ),
+              ],
+            )),
+        Padding(
+            padding: const EdgeInsets.fromLTRB(
+                26, 0, 26, 0), // Agrega el padding deseado
+            child: const Divider()),
+        Padding(
+            padding: const EdgeInsets.fromLTRB(
+                26, 0, 26, 0), // Agrega el padding deseado
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                          widget.appLocalizations.playTime),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                          style: TextStyle(color: Colors.white),
+                          formatMinutesToHMS(
+                              appState.selectedGame!.game.playTime)),
+                    ],
+                  ),
+                ),
+              ],
+            )),
+        Padding(
+            padding: const EdgeInsets.fromLTRB(
+                26, 0, 26, 0), // Agrega el padding deseado
+            child: const Divider()),
+      ])))
+    ]);
   }
 
   Future<void> playOst() async {
@@ -266,7 +420,6 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
   @override
   void didUpdateWidget(GameInfoPanel oldWidget) {
     super.didUpdateWidget(oldWidget);
-    final appState = Provider.of<AppState>(context);
     updateFavIcon(Provider.of<AppState>(context).selectedGame?.game.favorite);
     _controller
       ..reset()
@@ -275,7 +428,7 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
 
   @override
   void dispose() {
-    _controller.dispose();
+    //_controller.dispose();
     super.dispose();
   }
 

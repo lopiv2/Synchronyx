@@ -53,6 +53,7 @@ dependencies:
   animate_do: ^3.0.2
   audioplayers: ^5.1.0
   pushable_button: ^0.0.2
+  getwidget: ^4.0.0
 
 dev_dependencies:
   flutter_test:

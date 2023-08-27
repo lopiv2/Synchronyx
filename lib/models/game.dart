@@ -58,12 +58,12 @@ class Game {
       'publisher': publisher,
       'region': region,
       'file': file,
-      'releaseDate': releaseDate?.toLocal(),
+      'releaseDate': releaseDate?.toIso8601String(),
       'rating': rating,
       'favorite': favorite,
       'installed': installed,
       'playTime': playTime,
-      'lastPlayed': lastPlayed?.toLocal(),
+      'lastPlayed': lastPlayed?.toIso8601String(),
       'tags': tags,
     };
   }

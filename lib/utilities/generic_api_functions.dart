@@ -95,7 +95,10 @@ class DioClient {
           installed: 1,
           favorite: 0,
           playTime: playtime,
+          releaseDate: DateTime.parse(rawgResponse.releaseDate!),
           rating: rawgResponse.metacriticInfo,
+          developer: rawgResponse.developer!,
+          publisher: rawgResponse.publisher!,
           platform: GamePlatforms.Windows.name,
           platformStore: PlatformStore.Steam.name,
           tags: tag.join(','));
@@ -110,9 +113,8 @@ class DioClient {
           marqueeUrl: finalmarqueeFolder,
           backgroundImageUrl: finalbackgroundFolder,
           videoUrl: videoUrl);
-      await databaseFunctions.insertMedia(
-          mediaInsert, gameInsert);
-      
+      await databaseFunctions.insertMedia(mediaInsert, gameInsert);
+
       updateProgress(requestCount, gamesList.length);
       if (requestCount > 1) break;
     }
@@ -311,22 +313,48 @@ class DioClient {
     String imageUrl = responseData.containsKey('background_image')
         ? responseData['background_image']
         : '';
+    //Get developer if exists
+    String developersNames = '';
+    List<String> developers = List.empty(growable: true);
+    if (responseData.containsKey('developers') &&
+        responseData['developers'] is List) {
+      List<dynamic> developersList = responseData['developers'];
+      for (var developerData in developersList) {
+        if (developerData.containsKey('name')) {
+          developers.add(developerData['name']);
+        }
+      }
+      developersNames = developers.join(', ');
+    }
+
+    //Get publisher if exists
+    String publisherNames = '';
+    List<String> publishers = List.empty(growable: true);
+    if (responseData.containsKey('publishers') &&
+        responseData['publishers'] is List) {
+      List<dynamic> publisherList = responseData['publishers'];
+      for (var publisherData in publisherList) {
+        if (publisherData.containsKey('name')) {
+          publishers.add(publisherData['name']);
+        }
+      }
+      publisherNames = publishers.join(', ');
+    }
+
+    String releaseDate =
+        responseData.containsKey('released') ? responseData['released'] : null;
 
     // Get the desired field from the Metacritic response
     dynamic metacriticInfo =
         responseData.containsKey('rating') ? responseData['rating'] : null;
 
-    //double metacriticScoreScaled = 1 + (metacriticInfo / 100) * 4 as double;
-
-    //metacriticScoreScaled = metacriticScoreScaled.clamp(1.0, 5.0);
-
-    // Round the value to 1 decimal place
-    //metacriticScoreScaled =
-    //  double.parse(metacriticScoreScaled.toStringAsFixed(1));
-
     // Crear una instancia de MediaInfo con los datos recopilados
     RawgResponse mediaInfo = RawgResponse(
-        imageUrl: imageUrl, metacriticInfo: metacriticInfo as double);
+        imageUrl: imageUrl,
+        metacriticInfo: metacriticInfo as double,
+        releaseDate: releaseDate,
+        developer: developersNames,
+        publisher: publisherNames);
 
     return mediaInfo;
   }

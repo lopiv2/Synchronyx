@@ -23,6 +23,7 @@ class FavoriteFilterColumn extends StatelessWidget {
                 onPressed: (() => {
                       appState.updateFilters('favorite', 'all'),
                       appState.updateButtonClickedKey(ValueKey(1)),
+                      appState.updateSelectedGame(null),
                       appState.refreshGridView()
                     }),
               ),

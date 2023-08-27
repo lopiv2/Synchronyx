@@ -5,6 +5,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../widgets/platform_tree_view.dart';
@@ -23,6 +24,22 @@ Future<void> deleteFile(String fileName) async {
   } catch (e) {
     print('Error al eliminar el archivo: $e');
   }
+}
+
+/* -------------- Converts minutes to hours, minutes and seconds ------------- */
+String formatMinutesToHMS(int totalMinutes) {
+  int hours = totalMinutes ~/ 60;
+  int minutes = totalMinutes % 60;
+  int seconds = 0; // Inicialmente establecido en cero segundos
+
+  return '${hours.toString()}h  ${minutes.toString()}m  ${seconds.toString()}s';
+}
+
+/* ------------ Converts a database date to local readable format ----------- */
+String formatDateString(String dateString) {
+  DateTime dateTime = DateTime.parse(dateString);
+  String formattedDate = DateFormat('d MMMM y', 'es').format(dateTime);
+  return formattedDate;
 }
 
 /* --------------------------- Convert int to bool -------------------------- */
