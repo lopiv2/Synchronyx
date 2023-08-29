@@ -3,12 +3,14 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:getwidget/components/accordion/gf_accordion.dart';
 import 'package:getwidget/getwidget.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:pushable_button/pushable_button.dart';
 import 'package:synchronyx/models/gameMedia_response.dart';
 import 'package:synchronyx/utilities/generic_functions.dart';
 import 'package:synchronyx/widgets/buttons/icon_button_colored.dart';
+import 'package:synchronyx/widgets/image_preview_dialog.dart';
 import '../providers/app_state.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:audioplayers/audioplayers.dart';
@@ -33,22 +35,51 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
   @override
   Widget build(BuildContext context) {
     final appState = Provider.of<AppState>(context);
+
     return Consumer<AppState>(
       builder: (context, appState, child) {
         final selectedGame = appState.selectedGame;
         isFavorite = appState.selectedGame?.game.favorite == 1;
-        return _buildGameInfoPanel(appState, selectedGame);
+
+        return FutureBuilder<Widget>(
+          future: _buildGameInfoPanel(appState, selectedGame),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return CircularProgressIndicator(); // Mostrar un indicador de carga mientras esperas
+            } else if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            } else {
+              return snapshot.data ??
+                  SizedBox(); // Construir el widget obtenido o un SizedBox si es nulo
+            }
+          },
+        );
       },
     );
   }
 
-  Widget _buildGameInfoPanel(
-      AppState appState, GameMediaResponse? selectedGame) {
+  Future<Widget> _buildGameInfoPanel(
+      AppState appState, GameMediaResponse? selectedGame) async {
+    bool isHovered = false;
+    //Marquee
     ImageProvider<Object> imageWidgetMarquee;
     imageWidgetMarquee =
         FileImage(File(appState.selectedGame!.media.backgroundImageUrl));
+    //Logo
     ImageProvider<Object> logoWidgetMarquee;
     logoWidgetMarquee = FileImage(File(appState.selectedGame!.media.logoUrl));
+    //Screenshots
+
+    List<String> screensPaths =
+        appState.selectedGame!.media.screenshots.split(',');
+    String id = screensPaths[0].split('_')[0];
+    Directory appDocumentsDirectory = await getApplicationDocumentsDirectory();
+    String folder = '\\Synchronyx\\media\\screenshots\\$id\\';
+    String screenFolder = '${appDocumentsDirectory.path}$folder';
+    List<ImageProvider<Object>> imageProvidersMarquee = List.generate(
+      screensPaths.length,
+      (index) => FileImage(File('$screenFolder${screensPaths[index]}')),
+    );
     List<String> developersList =
         appState.selectedGame!.game.developer.split(',');
     List<Widget> developerWidgets = developersList.map((developer) {
@@ -205,6 +236,86 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
               },
               iconColor: Colors.red,
               backColor: Colors.grey,
+            ),
+          ],
+        ),
+        Row(
+          children: [
+            Expanded(
+              flex: 2,
+              child: MouseRegion(
+                cursor: SystemMouseCursors
+                    .click, // Cambia el cursor al estilo de un botón
+                child: GestureDetector(
+                  onTap: () {
+                    _showImageDialog(context, imageProvidersMarquee[0]);
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                    child: Container(
+                      height: MediaQuery.of(context).size.height * 0.25,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        image: DecorationImage(
+                          image: imageProvidersMarquee[0],
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: 20),
+        Row(
+          children: [
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+                child: Container(
+                  height: MediaQuery.of(context).size.height *
+                      0.195, // Ajusta la altura según tus necesidades
+                  child: GridView.builder(
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3, // Número de columnas en cada fila
+                      mainAxisSpacing: 8.0, // Espacio vertical entre elementos
+                      crossAxisSpacing:
+                          8.0, // Espacio horizontal entre elementos
+                    ),
+                    itemCount: imageProvidersMarquee.length - 1,
+                    itemBuilder: (context, index) {
+                      return InkWell(
+                        onTap: () {
+                          _showImageDialog(
+                              context, imageProvidersMarquee[index + 1]);
+                        },
+                        onHover: (value) {
+                          isHovered = value;
+                          print(isHovered);
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            image: DecorationImage(
+                              image: imageProvidersMarquee[index + 1],
+                              fit: BoxFit.fitHeight,
+                              colorFilter: isHovered
+                                  ? ColorFilter.mode(
+                                      const Color.fromARGB(255, 155, 16, 16).withOpacity(0.1),
+                                      BlendMode.srcATop,
+                                    )
+                                  : null,
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ),
             ),
           ],
         ),
@@ -394,6 +505,15 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
     ]);
   }
 
+  void _showImageDialog(BuildContext context, ImageProvider imageProvider) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return ImageDialog(imageProvider: imageProvider);
+      },
+    );
+  }
+
   Future<void> playOst() async {
     //await player.play(AssetSource('music/theme.mp3'));
   }
@@ -444,6 +564,7 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
             appState.gamesInGrid.removeWhere(
                 (game) => game.game.id == appState.selectedGame!.game.id);
             //Refresh grid view when deleted
+            appState.updateSelectedGame(null);
             appState.refreshGridView();
           },
           appLocalizations: widget.appLocalizations,

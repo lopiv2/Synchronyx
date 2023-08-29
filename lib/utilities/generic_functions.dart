@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:synchronyx/models/media.dart';
 
 import '../widgets/platform_tree_view.dart';
 import 'Constants.dart';
@@ -23,6 +24,40 @@ Future<void> deleteFile(String fileName) async {
     }
   } catch (e) {
     print('Error al eliminar el archivo: $e');
+  }
+}
+
+/* ------------------------ Delete a whole directory ------------------------ */
+void deleteDirectory(String folderPath) {
+  Directory directory = Directory(folderPath);
+
+  if (directory.existsSync()) {
+    try {
+      directory.deleteSync(recursive: true);
+      print('Directorio eliminado: $folderPath');
+    } catch (e) {
+      print('Error al eliminar el directorio: $e');
+    }
+  } else {
+    print('El directorio no existe: $folderPath');
+  }
+}
+
+/* -------- Delete all files with different names, passed from a List ------- */
+void deleteFilesFromFolder(String folderPath, List<String> files) {
+  Directory directory = Directory(folderPath);
+  for (String fileName in files) {
+    File file = File('${directory.path}/$fileName');
+    if (file.existsSync()) {
+      try {
+        file.deleteSync();
+        print('Archivo eliminado: $fileName');
+      } catch (e) {
+        print('Error al eliminar $fileName: $e');
+      }
+    } else {
+      print('El archivo $fileName no existe en la carpeta.');
+    }
   }
 }
 
@@ -67,6 +102,31 @@ Future<void> checkAssetLoading(String assetPath) async {
     }
   } catch (error) {
     print('Error al cargar el asset: $error');
+  }
+}
+
+Future<void> processScreenshots(
+    String imageUrl, String fileName, String folder) async {
+  try {
+    var response = await http.get(Uri.parse(imageUrl));
+    if (response.statusCode == 200) {
+      Directory appDocumentsDirectory =
+          await getApplicationDocumentsDirectory();
+      Directory imageFolder = Directory('${appDocumentsDirectory.path}$folder');
+
+      // Create the directory if it doesn't exist
+      if (!imageFolder.existsSync()) {
+        imageFolder.createSync(recursive: true);
+      }
+
+      final file = File('${imageFolder.path}$fileName');
+      await file.writeAsBytes(response.bodyBytes);
+      //print('Imagen guardada en: ${file.path}');
+    } else {
+      print('Error al descargar la imagen: ${response.statusCode}');
+    }
+  } catch (e) {
+    print('Error: $e');
   }
 }
 

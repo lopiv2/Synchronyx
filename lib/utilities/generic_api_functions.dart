@@ -108,6 +108,7 @@ class DioClient {
       var mediaInsert = Media(
           iconUrl: iconUrl,
           name: name,
+          screenshots: rawgResponse.screenshots!,
           logoUrl: finallogoFolder,
           coverImageUrl: finalImageFolder,
           marqueeUrl: finalmarqueeFolder,
@@ -309,6 +310,8 @@ class DioClient {
 
     Map<String, dynamic> responseData = userData.data;
 
+    String id = responseData.containsKey('id') ? responseData['id'].toString() : '';
+
     // Get "background_image" field if it exists
     String imageUrl = responseData.containsKey('background_image')
         ? responseData['background_image']
@@ -348,11 +351,40 @@ class DioClient {
     dynamic metacriticInfo =
         responseData.containsKey('rating') ? responseData['rating'] : null;
 
+    //I get the screenshots of the game
+    Response screensData =
+        await _dio.get('$_rawgApiUrl/$id/screenshots?key=$key');
+
+    Map<String, dynamic> responseScreensData = screensData.data;
+
+    String screenNames = '';
+    List<String> sc = List.empty(growable: true);
+    if (responseScreensData.containsKey('results') &&
+        responseScreensData['results'] is List) {
+      List<dynamic> scList = responseScreensData['results'];
+      for (var scData in scList) {
+        if (scData.containsKey('image')) {
+          //sc.add(scData['image']);
+          //}
+          List<String> parts = scData['image'].split('/');
+          String lastPartFile = parts.last;
+          String imageName = '${id}_$lastPartFile';
+          String imageFolder = '\\Synchronyx\\media\\screenshots\\$id\\';
+          processScreenshots(scData['image'], imageName, imageFolder);
+          sc.add(imageName);
+        }
+      }
+
+      screenNames = sc.join(',');
+    }
+
     // Crear una instancia de MediaInfo con los datos recopilados
     RawgResponse mediaInfo = RawgResponse(
+        gameId: id,
         imageUrl: imageUrl,
         metacriticInfo: metacriticInfo as double,
         releaseDate: releaseDate,
+        screenshots: screenNames,
         developer: developersNames,
         publisher: publisherNames);
 

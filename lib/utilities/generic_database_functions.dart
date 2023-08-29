@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/services.dart';
 import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:synchronyx/models/gameMedia_response.dart';
 import 'package:synchronyx/models/media.dart';
@@ -157,8 +158,7 @@ Future<List<Game>> getAllGamesWithFilter(String filter, String value) async {
               await db!.query('games', where: 'favorite = ?', whereArgs: [0]);
         }
         if (value == 'all') {
-          maps =
-              maps = await db!.query('games');
+          maps = maps = await db!.query('games');
         }
         break;
       default:
@@ -259,6 +259,13 @@ Future<void> deleteMediaByName(GameMediaResponse game) async {
   deleteFile(game.media!.backgroundImageUrl);
   deleteFile(game.media!.marqueeUrl);
   deleteFile(game.media!.logoUrl);
+  //Deleting screenshots folder
+  List<String> fileNames = game.media!.screenshots.split(',');
+  String id = fileNames[0].split('_')[0];
+  Directory appDocumentsDirectory = await getApplicationDocumentsDirectory();
+  String folder = '\\Synchronyx\\media\\screenshots\\$id\\';
+  String screenFolder = '${appDocumentsDirectory.path}$folder';
+  deleteDirectory(screenFolder);
   // Remove the Game from the database.
   await db!.delete(
     'medias',
