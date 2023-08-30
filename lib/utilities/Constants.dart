@@ -5,29 +5,42 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:sqflite_common/sqlite_api.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:synchronyx/icons/custom_icons_icons.dart';
 import 'package:synchronyx/models/game.dart';
 import '../models/api.dart';
 import '../models/gameMedia_response.dart';
 
 enum PlatformStore {
-  Amazon("amazon"),
-  BattleNet("battlenet"),
-  Epic("epic"),
-  Gog("gog"),
-  Itch("itch"),
-  Origin("origin"),
-  Steam("steam"),
-  Uplay("uplay"),
-  Windows("windows"),
-  Xbox("xbox");
+  Amazon(
+      Icon(CustomIcons.amazon_games, color: Colors.orange, size: 20), "amazon"),
+  BattleNet(Icon(CustomIcons.amazon_games, color: Colors.blue, size: 20),
+      "battlenet"),
+  Epic(Icon(CustomIcons.battle_net, color: Colors.black, size: 20), "epic"),
+  Gog(
+      Icon(CustomIcons.gog_dot_com,
+          color: Color.fromARGB(255, 84, 9, 97), size: 20),
+      "gog"),
+  Itch(
+      Icon(CustomIcons.itch_dot_io, color: Colors.redAccent, size: 20), "itch"),
+  Origin(Icon(CustomIcons.origin, color: Colors.orange, size: 20), "origin"),
+  Steam(
+      Icon(CustomIcons.steam, color: Color.fromARGB(255, 12, 66, 94), size: 20),
+      "steam"),
+  Uplay(Icon(CustomIcons.ubisoft, color: Colors.blueAccent, size: 20), "uplay"),
+  Windows(Icon(CustomIcons.windows, color: Colors.blue, size: 20), "windows"),
+  Xbox(
+      Icon(CustomIcons.xbox,
+          color: Color.fromARGB(255, 98, 219, 102), size: 20),
+      "xbox");
 
+  final Icon icon;
   final String name;
-  const PlatformStore(this.name);
+  const PlatformStore(this.icon, this.name);
 
   @override
   String toString() {
     super.toString();
-    return "Color name is: $name";
+    return "Platform Storename is: $name";
   }
 }
 
@@ -328,7 +341,7 @@ enum GamePlatforms {
   @override
   String toString() {
     super.toString();
-    return "Color name is: $name";
+    return "Platform name is: $name";
   }
 }
 

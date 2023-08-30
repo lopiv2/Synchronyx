@@ -64,11 +64,11 @@ class MyMenuBar extends StatelessWidget {
           apiKeyValue = '${data['steamApiController']}';
           databaseFunctions.insertApi(api);
         }
-        appState.startImporting();
+        //appState.startImporting();
         dioClient
             .getAndImportSteamGames(key: apiKeyValue, steamId: steamIdValue)
             .then((_) {
-          appState.stopImporting();
+          appState.setImportingState('finished');
           // El método getAndImportSteamGames se ha completado exitosamente
           // Aquí puedes realizar cualquier acción adicional con los datos obtenidos
         }).catchError((error) {

@@ -227,16 +227,19 @@ class SteamImportSteps extends StatefulWidget {
                         Map<String, dynamic> collectedData =
                             _collectDataFromControllers();
                         onFinish(collectedData, PlatformStore.Steam);
+                        appState.setImportingState('importing');
                       },
                       child: Text(appLocalizations.finish),
                     ),
                   ],
                 ),
-                if (appState.isImporting) SizedBox(width: 20),
-                Text(appState.isImporting.toString()),
-                if (appState
-                    .isImporting) // Mostrar el indicador de progreso si se está importando
-                  LinearProgressIndicator(value: Constants.importProgress),
+                appState.isImporting == 'importing'
+                    ? CircularProgressIndicator() // Show progress indicator if import is in progress
+                    : appState.isImporting == 'finished'
+                        ? Text(
+                            'Finalizado') // Show 'Finished' if import is completed
+                        : Text(''),
+                //LinearProgressIndicator(value: Constants.importProgress),
               ],
             );
           },

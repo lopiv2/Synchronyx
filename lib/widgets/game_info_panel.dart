@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:pushable_button/pushable_button.dart';
 import 'package:synchronyx/models/gameMedia_response.dart';
+import 'package:synchronyx/utilities/Constants.dart';
 import 'package:synchronyx/utilities/generic_functions.dart';
 import 'package:synchronyx/widgets/buttons/icon_button_colored.dart';
 import 'package:synchronyx/widgets/image_preview_dialog.dart';
@@ -69,7 +70,12 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
     ImageProvider<Object> logoWidgetMarquee;
     logoWidgetMarquee = FileImage(File(appState.selectedGame!.media.logoUrl));
     //Screenshots
-
+    GamePlatforms g = GamePlatforms.values.firstWhere(
+        (element) => element.name == appState.selectedGame!.game.platform);
+    Image platformIcon = g.image;
+    PlatformStore p = PlatformStore.values.firstWhere(
+        (element) => element.name == appState.selectedGame!.game.platformStore);
+    Icon platformStoreIcon = p.icon;
     List<String> screensPaths =
         appState.selectedGame!.media.screenshots.split(',');
     String id = screensPaths[0].split('_')[0];
@@ -136,6 +142,17 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
                                       ),
                                     ),
                                   )))
+                          : Text(""),
+                      platformStoreIcon != ""
+                          ? Positioned(
+                              right: 0.01,
+                              bottom: 0,
+                              child: Container(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.35,
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.55,
+                                  child: platformStoreIcon))
                           : Text(""),
                       Positioned(
                         right: MediaQuery.of(context).size.width * 0.17,
@@ -240,6 +257,40 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
           ],
         ),
         Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: EdgeInsets.fromLTRB(10, 0, 0,
+                  0), // Aplicar espacio de padding a la derecha del icono
+              child: platformIcon,
+            ),
+            Text(
+              appState.selectedGame!.game.platform.toUpperCase(),
+              style: TextStyle(
+                fontSize: 18,
+                color: Colors.grey,
+              ),
+            ),
+          ],
+        ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+              child: Text(
+                appState.selectedGame!.game.title.toUpperCase(),
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ],
+        ),
+        Row(
           children: [
             Expanded(
               flex: 2,
@@ -294,7 +345,7 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
                         },
                         onHover: (value) {
                           isHovered = value;
-                          print(isHovered);
+                          //print(isHovered);
                         },
                         child: Container(
                           decoration: BoxDecoration(
@@ -304,7 +355,8 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
                               fit: BoxFit.fitHeight,
                               colorFilter: isHovered
                                   ? ColorFilter.mode(
-                                      const Color.fromARGB(255, 155, 16, 16).withOpacity(0.1),
+                                      const Color.fromARGB(255, 155, 16, 16)
+                                          .withOpacity(0.1),
                                       BlendMode.srcATop,
                                     )
                                   : null,

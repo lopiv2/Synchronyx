@@ -6,9 +6,9 @@ class AppState extends ChangeNotifier {
   GameMediaResponse? selectedGame;
   List<GameMediaResponse> gamesInGrid = [];
   bool shouldRefreshGridView = false;
-  bool _isImporting = false;
+  String _isImporting = 'no'; //Three states, no, importing and finished
   Key buttonClickedKey = ValueKey<int>(42);
-  bool get isImporting => _isImporting;
+  String get isImporting => _isImporting;
   int clickedElementIndex = 0;
   List<bool> elementsAnimations = [];
   bool _isCoverRotated = false;
@@ -36,15 +36,11 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  void startImporting() {
-    _isImporting = true;
+  void setImportingState(String value) {
+    _isImporting = value;
     notifyListeners();
   }
 
-  void stopImporting() {
-    _isImporting = false;
-    notifyListeners();
-  }
 
   void updateButtonClickedKey(Key k) {
     buttonClickedKey = k;
