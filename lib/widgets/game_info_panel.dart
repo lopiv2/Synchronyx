@@ -145,14 +145,14 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
                           : Text(""),
                       platformStoreIcon != ""
                           ? Positioned(
-                              right: 0.01,
-                              bottom: 0,
+                              right: 20.01,
+                              bottom: MediaQuery.of(context).size.height * 0.25,
                               child: Container(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.35,
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.55,
-                                  child: platformStoreIcon))
+                                  child: Icon(
+                                platformStoreIcon.icon,
+                                color: Colors.white,
+                                size: MediaQuery.of(context).size.width * 0.02,
+                              )))
                           : Text(""),
                       Positioned(
                         right: MediaQuery.of(context).size.width * 0.17,
@@ -407,152 +407,181 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
           ],
         ),
         Padding(
-            padding: const EdgeInsets.fromLTRB(26, 16, 26, 0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                          widget.appLocalizations.launchDate),
-                    ],
-                  ),
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+            child: Container(
+                decoration: BoxDecoration(
+                  color: Color.fromARGB(46, 12, 77, 12),
+                  borderRadius: BorderRadius.circular(20),
+                  //border: Border.all(),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Color.fromARGB(20, 12, 77, 12),
+                      spreadRadius: 1,
+                      blurRadius: 1,
+                      offset: Offset(0, 0), // changes position of shadow
+                    ),
+                  ],
                 ),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Text(
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, color: Colors.white),
-                          formatDateString(appState
-                              .selectedGame!.game.releaseDate
-                              .toString())),
-                    ],
-                  ),
-                ),
-              ],
-            )),
-        Padding(
-            padding: const EdgeInsets.fromLTRB(26, 0, 26, 0),
-            child: const Divider()),
-        Padding(
-            padding: const EdgeInsets.fromLTRB(26, 0, 26, 0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                          widget.appLocalizations.developer),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      GFAccordion(
-                          title: 'Pulse para abrir',
-                          contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                          collapsedTitleBackgroundColor:
-                              const Color.fromARGB(0, 250, 205, 202),
-                          expandedTitleBackgroundColor:
-                              const Color.fromARGB(0, 250, 205, 202),
-                          contentBackgroundColor:
-                              const Color.fromARGB(0, 250, 205, 202),
-                          textStyle: const TextStyle(
-                              backgroundColor: Color.fromARGB(0, 244, 67, 54)),
-                          contentChild: Column(
+                child: Column(children: [
+                  Padding(
+                      padding: const EdgeInsets.fromLTRB(26, 16, 26, 0),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
-                              children: developerWidgets),
-                          collapsedIcon: Icon(Icons.add),
-                          expandedIcon: Icon(Icons.minimize)),
-                    ],
-                  ),
-                ),
-              ],
-            )),
-        Padding(
-            padding: const EdgeInsets.fromLTRB(26, 0, 26, 0),
-            child: const Divider()),
-        Padding(
-            padding: const EdgeInsets.fromLTRB(26, 0, 26, 0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                          widget.appLocalizations.publisher),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      GFAccordion(
-                          title: 'Pulse para abrir',
-                          contentPadding: EdgeInsets.fromLTRB(10, 2, 0, 0),
-                          collapsedTitleBackgroundColor:
-                              const Color.fromARGB(0, 250, 205, 202),
-                          expandedTitleBackgroundColor:
-                              const Color.fromARGB(0, 250, 205, 202),
-                          contentBackgroundColor:
-                              const Color.fromARGB(0, 250, 205, 202),
-                          textStyle: const TextStyle(
-                              backgroundColor: Color.fromARGB(0, 244, 67, 54)),
-                          contentChild: Column(children: publisherWidgets),
-                          collapsedIcon: const Icon(Icons.add),
-                          expandedIcon: const Icon(Icons.minimize)),
-                    ],
-                  ),
-                ),
-              ],
-            )),
-        Padding(
-            padding: const EdgeInsets.fromLTRB(
-                26, 0, 26, 0), // Agrega el padding deseado
-            child: const Divider()),
-        Padding(
-            padding: const EdgeInsets.fromLTRB(
-                26, 0, 26, 0), // Agrega el padding deseado
-            child: Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                          widget.appLocalizations.playTime),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Text(
-                          style: TextStyle(color: Colors.white),
-                          formatMinutesToHMS(
-                              appState.selectedGame!.game.playTime)),
-                    ],
-                  ),
-                ),
-              ],
-            )),
-        Padding(
-            padding: const EdgeInsets.fromLTRB(
-                26, 0, 26, 0), // Agrega el padding deseado
-            child: const Divider()),
+                              children: [
+                                Text(
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                    widget.appLocalizations.launchDate),
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text(
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white),
+                                    formatDateString(appState
+                                        .selectedGame!.game.releaseDate
+                                        .toString())),
+                              ],
+                            ),
+                          ),
+                        ],
+                      )),
+                  Padding(
+                      padding: const EdgeInsets.fromLTRB(26, 0, 26, 0),
+                      child: const Divider()),
+                  Padding(
+                      padding: const EdgeInsets.fromLTRB(26, 0, 26, 0),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                    widget.appLocalizations.developer),
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                GFAccordion(
+                                    title: 'Pulse para abrir',
+                                    contentPadding:
+                                        EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                    collapsedTitleBackgroundColor:
+                                        const Color.fromARGB(0, 250, 205, 202),
+                                    expandedTitleBackgroundColor:
+                                        const Color.fromARGB(0, 250, 205, 202),
+                                    contentBackgroundColor:
+                                        const Color.fromARGB(0, 250, 205, 202),
+                                    textStyle: const TextStyle(
+                                        backgroundColor:
+                                            Color.fromARGB(0, 244, 67, 54)),
+                                    contentChild: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: developerWidgets),
+                                    collapsedIcon: Icon(Icons.add),
+                                    expandedIcon: Icon(Icons.minimize)),
+                              ],
+                            ),
+                          ),
+                        ],
+                      )),
+                  Padding(
+                      padding: const EdgeInsets.fromLTRB(26, 0, 26, 0),
+                      child: const Divider()),
+                  Padding(
+                      padding: const EdgeInsets.fromLTRB(26, 0, 26, 0),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                    widget.appLocalizations.publisher),
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                GFAccordion(
+                                    title: 'Pulse para abrir',
+                                    contentPadding:
+                                        EdgeInsets.fromLTRB(10, 2, 0, 0),
+                                    collapsedTitleBackgroundColor:
+                                        const Color.fromARGB(0, 250, 205, 202),
+                                    expandedTitleBackgroundColor:
+                                        const Color.fromARGB(0, 250, 205, 202),
+                                    contentBackgroundColor:
+                                        const Color.fromARGB(0, 250, 205, 202),
+                                    textStyle: const TextStyle(
+                                        backgroundColor:
+                                            Color.fromARGB(0, 244, 67, 54)),
+                                    contentChild:
+                                        Column(children: publisherWidgets),
+                                    collapsedIcon: const Icon(Icons.add),
+                                    expandedIcon: const Icon(Icons.minimize)),
+                              ],
+                            ),
+                          ),
+                        ],
+                      )),
+                  Padding(
+                      padding: const EdgeInsets.fromLTRB(
+                          26, 0, 26, 0), // Agrega el padding deseado
+                      child: const Divider()),
+                  Padding(
+                      padding: const EdgeInsets.fromLTRB(
+                          26, 0, 26, 0), // Agrega el padding deseado
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                    widget.appLocalizations.playTime),
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text(
+                                    style: TextStyle(color: Colors.white),
+                                    formatMinutesToHMS(
+                                        appState.selectedGame!.game.playTime)),
+                              ],
+                            ),
+                          ),
+                        ],
+                      )),
+                  Padding(
+                      padding: const EdgeInsets.fromLTRB(
+                          26, 0, 26, 0), // Agrega el padding deseado
+                      child: const Divider()),
+                ])))
       ])))
     ]);
   }
