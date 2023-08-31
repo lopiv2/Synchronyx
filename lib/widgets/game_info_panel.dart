@@ -7,11 +7,12 @@ import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:pushable_button/pushable_button.dart';
-import 'package:synchronyx/models/gameMedia_response.dart';
+import 'package:synchronyx/models/responses/gameMedia_response.dart';
 import 'package:synchronyx/utilities/Constants.dart';
 import 'package:synchronyx/utilities/generic_functions.dart';
 import 'package:synchronyx/widgets/buttons/icon_button_colored.dart';
-import 'package:synchronyx/widgets/image_preview_dialog.dart';
+import 'package:synchronyx/widgets/dialogs/image_preview_dialog.dart';
+import 'package:synchronyx/widgets/dialogs/ost_download_dialog.dart';
 import '../providers/app_state.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:audioplayers/audioplayers.dart';
@@ -154,6 +155,75 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
                                 size: MediaQuery.of(context).size.width * 0.02,
                               )))
                           : Text(""),
+                      appState.selectedGame!.media.musicUrl != ""
+                          ? Positioned(
+                              left: 10.01,
+                              bottom: MediaQuery.of(context).size.height * 0.24,
+                              child: Tooltip(
+                                  message:
+                                      widget.appLocalizations.ostDownloadClick,
+                                  child: InkWell(
+                                    onTap: () {
+                                      // Función que se ejecutará al tocar el icono
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return OstDownloadDialog(appLocalizations: widget.appLocalizations,);
+                                        },
+                                      );
+                                    },
+                                    child: Container(
+                                      padding: EdgeInsets.all(
+                                          8.0), // Espacio de relleno alrededor del icono
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: const Color.fromARGB(0, 33, 149,
+                                            243), // Color de fondo del botón
+                                      ),
+                                      child: Icon(
+                                        Icons.music_note,
+                                        color: Colors.white,
+                                        size:
+                                            MediaQuery.of(context).size.width *
+                                                0.02,
+                                      ),
+                                    ),
+                                  )),
+                            )
+                          : Positioned(
+                              left: 10.01,
+                              bottom: MediaQuery.of(context).size.height * 0.24,
+                              child: Tooltip(
+                                  message:
+                                      widget.appLocalizations.ostDownloadClick,
+                                  child: InkWell(
+                                    onTap: () {
+                                      // Función que se ejecutará al tocar el icono
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return OstDownloadDialog(appLocalizations: widget.appLocalizations,);
+                                        },
+                                      );
+                                    },
+                                    child: Container(
+                                      padding: const EdgeInsets.all(
+                                          8.0), // Espacio de relleno alrededor del icono
+                                      decoration: const BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: Color.fromARGB(0, 33, 149,
+                                            243), // Color de fondo del botón
+                                      ),
+                                      child: Icon(
+                                        Icons.music_off,
+                                        color: Colors.white,
+                                        size:
+                                            MediaQuery.of(context).size.width *
+                                                0.02,
+                                      ),
+                                    ),
+                                  )),
+                            ),
                       Positioned(
                         right: MediaQuery.of(context).size.width * 0.17,
                         bottom: 10,
@@ -267,7 +337,7 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
             ),
             Text(
               appState.selectedGame!.game.platform.toUpperCase(),
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 18,
                 color: Colors.grey,
               ),
@@ -278,10 +348,10 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+              padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
               child: Text(
                 appState.selectedGame!.game.title.toUpperCase(),
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
@@ -413,7 +483,7 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
                   color: Color.fromARGB(46, 12, 77, 12),
                   borderRadius: BorderRadius.circular(20),
                   //border: Border.all(),
-                  boxShadow: [
+                  boxShadow: const [
                     BoxShadow(
                       color: Color.fromARGB(20, 12, 77, 12),
                       spreadRadius: 1,

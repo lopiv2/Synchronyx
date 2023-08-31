@@ -8,8 +8,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:synchronyx/utilities/generic_database_functions.dart'
     as databaseFunctions;
 import 'package:synchronyx/utilities/generic_api_functions.dart';
-import 'package:synchronyx/widgets/import_dialog.dart';
-import 'package:synchronyx/widgets/settings_dialog.dart';
+import 'package:synchronyx/widgets/dialogs/import_dialog.dart';
+import 'package:synchronyx/widgets/dialogs/settings_dialog.dart';
 import '../models/api.dart';
 
 MaterialStateProperty<Color?> myColor =

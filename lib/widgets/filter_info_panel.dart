@@ -1,7 +1,7 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:synchronyx/models/gameMedia_response.dart';
+import 'package:synchronyx/models/responses/gameMedia_response.dart';
 import 'package:synchronyx/widgets/buttons/icon_button_colored.dart';
 import '../providers/app_state.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';

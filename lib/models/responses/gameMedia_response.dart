@@ -1,6 +1,6 @@
 import 'package:synchronyx/models/media.dart';
 
-import 'game.dart';
+import '../game.dart';
 
 class GameMediaResponse {
   Game game;

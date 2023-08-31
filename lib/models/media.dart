@@ -1,28 +1,30 @@
 class Media {
   int? id;
-  String name;
-  String coverImageUrl;
-  String backImageUrl;
-  String diskImageUrl;
   String backgroundImageUrl;
-  String videoUrl;
-  String marqueeUrl;
-  String screenshots;
+  String backImageUrl;
+  String coverImageUrl;
+  String diskImageUrl;
   String iconUrl;
   String logoUrl;
+  String marqueeUrl;
+  String musicUrl;
+  String name;
+  String screenshots;
+  String videoUrl;
 
   Media({
-    this.id,
-    this.name = '',
-    this.coverImageUrl = '',
-    this.backImageUrl = '',
-    this.diskImageUrl = '',
     this.backgroundImageUrl = '',
-    this.videoUrl = '',
-    this.marqueeUrl = '',
-    this.screenshots = '',
+    this.backImageUrl = '',
+    this.coverImageUrl = '',
+    this.diskImageUrl = '',
     this.iconUrl = '',
+    this.id,
     this.logoUrl = '',
+    this.marqueeUrl = '',
+    this.musicUrl = '',
+    this.name = '',
+    this.screenshots = '',
+    this.videoUrl = '',
   });
 
   Map<String, dynamic> toMap() {
@@ -35,6 +37,7 @@ class Media {
       'backgroundImageUrl': backgroundImageUrl,
       'videoUrl': videoUrl,
       'marqueeUrl': marqueeUrl,
+      'musicUrl': musicUrl,
       'screenshots': screenshots,
       'iconUrl': iconUrl,
       'logoUrl': logoUrl,
@@ -43,7 +46,7 @@ class Media {
 
   @override
   String toString() {
-    return 'Media{id: $id, name: $name, coverImageUrl: $coverImageUrl,backImageUrl: $backImageUrl, diskImageUrl: $diskImageUrl, backgroundImageUrl: $backgroundImageUrl, videoUrl: $videoUrl, marqueeUrl: $marqueeUrl,screenshots: $screenshots, iconUrl: $iconUrl, logoUrl: $logoUrl}';
+    return 'Media{id: $id, name: $name, coverImageUrl: $coverImageUrl,backImageUrl: $backImageUrl, diskImageUrl: $diskImageUrl, backgroundImageUrl: $backgroundImageUrl, videoUrl: $videoUrl, marqueeUrl: $marqueeUrl, musicUrl: $musicUrl,screenshots: $screenshots, iconUrl: $iconUrl, logoUrl: $logoUrl}';
   }
 
   static Media fromMap(Map<String, dynamic> map) {
@@ -56,6 +59,7 @@ class Media {
       backgroundImageUrl: map['backgroundImageUrl'] ?? '',
       videoUrl: map['videoUrl'] ?? '',
       marqueeUrl: map['marqueeUrl'] ?? '',
+      musicUrl: map['musicUrl'] ?? '',
       screenshots: map['screenshots'] ?? '',
       iconUrl: map['iconUrl'] ?? '',
       logoUrl: map['logoUrl'] ?? '',

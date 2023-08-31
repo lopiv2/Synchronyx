@@ -190,6 +190,26 @@ String createSlug(String input) {
   return cleanedString;
 }
 
+/* ----------------------------- Creates a Search String for Khinsider----------------------------- */
+String createSearchString(String input) {
+  // Convierte la cadena a minúsculas
+  String lowerCase = input.toLowerCase();
+
+  // Utiliza RegExp para encontrar todos los caracteres que no son letras ni números
+  final regex = RegExp(r'[^a-z0-9]');
+
+  // Replace special characters and spaces with plus
+  String cleanedString = lowerCase.replaceAll(regex, '+');
+
+  // Elimina guiones duplicados
+  cleanedString = cleanedString.replaceAll(RegExp(r'-+'), '-');
+
+  // Elimina guiones al principio y al final
+  cleanedString = cleanedString.replaceAll(RegExp(r'^-|-$'), '');
+
+  return cleanedString;
+}
+
 /* ----------------------- Updates progress bar value ----------------------- */
 void updateProgress(int currentCount, int totalGames) {
   double progress = currentCount / totalGames;

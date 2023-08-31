@@ -8,7 +8,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:synchronyx/icons/custom_icons_icons.dart';
 import 'package:synchronyx/models/game.dart';
 import '../models/api.dart';
-import '../models/gameMedia_response.dart';
+import '../models/responses/gameMedia_response.dart';
 
 enum PlatformStore {
   Amazon(

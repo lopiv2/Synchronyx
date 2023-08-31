@@ -5,8 +5,11 @@ import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:synchronyx/models/media.dart';
-import 'package:synchronyx/models/rawg_response.dart';
+import 'package:synchronyx/models/responses/khinsider_response.dart';
+import 'package:synchronyx/models/responses/rawg_response.dart';
 import '../models/game.dart';
+import 'package:html/parser.dart' as parser;
+import 'package:html/dom.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 import 'package:synchronyx/utilities/generic_database_functions.dart'
     // ignore: library_prefixes
@@ -170,6 +173,77 @@ class DioClient {
   /*                             Scrappers for Media                            */
   /* -------------------------------------------------------------------------- */
 
+/* ------------------------ Get music from Khinsider ------------------------ */
+  Future<List<KhinsiderResponse>> scrapeKhinsider(
+      {required String title}) async {
+    String searchTitle = createSearchString(title);
+    List<KhinsiderResponse> results = [];
+    final url = 'https://downloads.khinsider.com/search?search=$searchTitle';
+
+    final response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      final document = parser.parse(response.body);
+
+      final table = document.querySelector('.albumList');
+      if (table != null) {
+        final rows = table.querySelectorAll('tr');
+
+        for (var i = 1; i < rows.length; i++) {
+          // Start from the second element
+          final row = rows[i];
+          KhinsiderResponse kResponse = new KhinsiderResponse(nameAlbum: '');
+          final title = row.querySelectorAll(
+              'td')[1]; // Select the second <td> in the row - Title
+          final platform = row.querySelectorAll(
+              'td')[2]; // Select the third <td> in the row - platform
+          final year = row.querySelectorAll(
+              'td')[4]; // Select the forth <td> in the row - year
+          if (title != null) {
+            kResponse = KhinsiderResponse(
+                nameAlbum: title.text,
+                platform: platform.text,
+                year: int.parse(year.text));
+          }
+          final urlElement =
+              'https://downloads.khinsider.com${title.querySelector('a')!.attributes['href']}';
+          final responseSongs = await http.get(Uri.parse(urlElement));
+          if (responseSongs.statusCode == 200) {
+            final document = parser.parse(responseSongs.body);
+            final table = document.querySelector('table[id="songlist"]');
+            if (table != null) {
+              final rows = table.querySelectorAll(
+                  'tr'); //I select all the tr, which are equivalent to each track of the album
+              for (var i = 2; i < rows.length-1; i++) {
+                // Start from the second element
+                final row = rows[i];
+                final int songNumber = int.parse(row
+                    .querySelectorAll('td')[2]
+                    .text
+                    .replaceAll('.', '')); //Song number
+                final String title =
+                    row.querySelectorAll('td')[3].text; //Song title
+                final String length =
+                    row.querySelectorAll('td')[4].text; //Song length
+                final String size =
+                    row.querySelectorAll('td')[5].text; //Song size
+                KhinsiderTrackResponse k = KhinsiderTrackResponse(
+                    songNumber: songNumber,
+                    title: title,
+                    length: length,
+                    size: size);
+                kResponse.tracks?.add(k);
+              }
+            }
+          }
+          results.add(kResponse);
+        }
+      }
+    } else {
+      print('Error: ${response.statusCode}');
+    }
+    return results;
+  }
+
   /* --------------------------- Get GiantBomb Media -------------------------- */
   Future<void> getAndImportGiantBombMedia(
       {required String apiKey, required String query}) async {
@@ -310,7 +384,8 @@ class DioClient {
 
     Map<String, dynamic> responseData = userData.data;
 
-    String id = responseData.containsKey('id') ? responseData['id'].toString() : '';
+    String id =
+        responseData.containsKey('id') ? responseData['id'].toString() : '';
 
     // Get "background_image" field if it exists
     String imageUrl = responseData.containsKey('background_image')

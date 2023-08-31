@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:synchronyx/providers/app_state.dart';
 import 'package:synchronyx/utilities/constants.dart';
 import '../models/game.dart';
-import '../models/gameMedia_response.dart';
+import '../models/responses/gameMedia_response.dart';
 import '../models/media.dart';
 import 'image_cover_model.dart';
 import 'package:synchronyx/utilities/generic_database_functions.dart'

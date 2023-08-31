@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:synchronyx/models/game.dart';
-import 'package:synchronyx/models/gameMedia_response.dart';
+import 'package:synchronyx/models/responses/gameMedia_response.dart';
 
 class AppState extends ChangeNotifier {
   GameMediaResponse? selectedGame;
