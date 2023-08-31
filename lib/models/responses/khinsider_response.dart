@@ -17,11 +17,13 @@ class KhinsiderTrackResponse {
   final String title;
   final String? length;
   final String? size;
+  final String? url;
 
   KhinsiderTrackResponse({
     required this.songNumber,
     required this.title,
     this.length,
     this.size,
+    this.url,
   });
 }

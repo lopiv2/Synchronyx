@@ -105,7 +105,7 @@ class OstDownloadDialog extends StatelessWidget {
                                 ConnectionState.waiting) {
                               return CircularProgressIndicator();
                             } else if (snapshot.hasError) {
-                              return Text('Error al cargar los resultados');
+                              return Text(snapshot.error.toString());
                             } else if (!snapshot.hasData ||
                                 snapshot.data!.isEmpty) {
                               return Text('No se encontraron resultados');

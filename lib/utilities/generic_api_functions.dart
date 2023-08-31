@@ -210,27 +210,42 @@ class DioClient {
           if (responseSongs.statusCode == 200) {
             final document = parser.parse(responseSongs.body);
             final table = document.querySelector('table[id="songlist"]');
+            //Cuento las columnas que tiene cada columna
             if (table != null) {
-              final rows = table.querySelectorAll(
-                  'tr'); //I select all the tr, which are equivalent to each track of the album
-              for (var i = 2; i < rows.length-1; i++) {
+              final rows = table.querySelectorAll('tr');
+              //print(rows.length-2);
+              for (var i = 1; i < rows.length - 1; i++) {
                 // Start from the second element
                 final row = rows[i];
-                final int songNumber = int.parse(row
-                    .querySelectorAll('td')[2]
-                    .text
-                    .replaceAll('.', '')); //Song number
-                final String title =
-                    row.querySelectorAll('td')[3].text; //Song title
-                final String length =
-                    row.querySelectorAll('td')[4].text; //Song length
-                final String size =
-                    row.querySelectorAll('td')[5].text; //Song size
+                int songNumber = 0; //Song number
+                String title = ''; //Song title
+                String length = ''; //Song length
+                String size = ''; //Song size
+                String urlMp3 = ''; //Song size
+                RegExp regex =
+                    RegExp(r'^\d+\.'); //Coincide un numero y un punto
+                if (regex.hasMatch(row.querySelectorAll('td')[2].text)) {
+                  songNumber = int.parse(
+                      row.querySelectorAll('td')[2].text.replaceAll('.', ''));
+                  title = row.querySelectorAll('td')[3].text;
+                  length = row.querySelectorAll('td')[4].text;
+                  size = row.querySelectorAll('td')[5].text;
+                  urlMp3 = row.querySelectorAll('td')[5].querySelector('a')!.attributes['href']!;
+                }
+                if (regex.hasMatch(row.querySelectorAll('td')[1].text)) {
+                  songNumber = int.parse(
+                      row.querySelectorAll('td')[1].text.replaceAll('.', ''));
+                  title = row.querySelectorAll('td')[2].text;
+                  length = row.querySelectorAll('td')[3].text;
+                  size = row.querySelectorAll('td')[4].text;
+                  urlMp3 = row.querySelectorAll('td')[4].querySelector('a')!.attributes['href']!;
+                }
                 KhinsiderTrackResponse k = KhinsiderTrackResponse(
                     songNumber: songNumber,
                     title: title,
                     length: length,
-                    size: size);
+                    size: size,
+                    url: urlMp3);
                 kResponse.tracks?.add(k);
               }
             }
