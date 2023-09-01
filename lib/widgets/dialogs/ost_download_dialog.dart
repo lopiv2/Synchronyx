@@ -9,7 +9,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:synchronyx/utilities/generic_api_functions.dart';
 
 class OstDownloadDialog extends StatelessWidget {
-  const OstDownloadDialog({super.key, required this.appLocalizations});
+  OstDownloadDialog({super.key, required this.appLocalizations});
   final AppLocalizations appLocalizations;
 
   @override
@@ -17,7 +17,14 @@ class OstDownloadDialog extends StatelessWidget {
     final appState = Provider.of<AppState>(context);
     String title = appState.selectedGame!.game.title;
     List<KhinsiderResponse> responses = [];
-    final GlobalKey _dialogKey = GlobalKey();
+    //int indexSelected = 0;
+    final indexSelected = ValueNotifier<int>(-1);
+
+    final ValueNotifier<bool> tog = ValueNotifier<bool>(false);
+
+    void toggleVisibility() {
+      tog.value = !tog.value; // Cambia el valor de tog y notifica a los oyentes
+    }
 
     return Dialog(
       shape: RoundedRectangleBorder(
@@ -114,12 +121,14 @@ class OstDownloadDialog extends StatelessWidget {
                                 snapshot.data!.isEmpty) {
                               return Text('No se encontraron resultados');
                             } else {
+                              responses = snapshot.data!;
                               return SingleChildScrollView(
                                   child: Table(
                                 border: TableBorder.all(color: Colors.grey),
                                 defaultColumnWidth: FixedColumnWidth(150.0),
-                                children:
-                                    snapshot.data!.map((khinsiderResponse) {
+                                children: responses.map((khinsiderResponse) {
+                                  final currentIndex =
+                                      responses.indexOf(khinsiderResponse);
                                   return TableRow(
                                     children: [
                                       TableCell(
@@ -151,12 +160,11 @@ class OstDownloadDialog extends StatelessWidget {
                                                   ? 'Seleccionar'
                                                   : 'Más'),
                                           onPressed: () {
-                                            // Usa el Provider para cambiar el estado de mostrar/ocultar contenido.
-                                            appState.toggleShowMoreContent();
-                                            print(appState.showMoreContent);
+                                            indexSelected.value = currentIndex;
+                                            toggleVisibility();
                                           }, // Agrega el botón "Más" aquí
                                         ),
-                                      )
+                                      ),
                                     ],
                                   );
                                 }).toList(),
@@ -164,28 +172,97 @@ class OstDownloadDialog extends StatelessWidget {
                             }
                           },
                         ),
+                        SizedBox(height: 16,),
+                        ValueListenableBuilder<int>(
+                          valueListenable: indexSelected,
+                          builder: (context, selectedIndex, child) {
+                            return Visibility(
+                              visible: selectedIndex != -1,
+                              child: Container(
+                                padding: EdgeInsets.fromLTRB(10,10,0,0),
+                                decoration: BoxDecoration(
+                                  color: Color.fromARGB(132, 27, 94, 31),
+                                  border: Border.all(color: Colors.grey),
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                                height:
+                                    MediaQuery.of(context).size.height * 0.2,
+                                child: ListView(
+                                  children: [
+                                    Table(
+                                      columnWidths: const {
+                                        0: FlexColumnWidth(1),
+                                        1: FlexColumnWidth(3),
+                                        2: FlexColumnWidth(1),
+                                        3: FlexColumnWidth(1),
+                                        4: FlexColumnWidth(1),
+                                      },
+                                      children: [
+                                        TableRow(
+                                          children: [
+                                            TableCell(child: Text('Número')),
+                                            TableCell(child: Text('Título')),
+                                            TableCell(child: Text('Duración')),
+                                            TableCell(child: Text('Tamaño')),
+                                            TableCell(child: Text('Acción')),
+                                          ],
+                                        ),
+                                        if (selectedIndex != -1)
+                                          for (int i = 0;
+                                              i <
+                                                  responses[selectedIndex]
+                                                      .tracks
+                                                      .length;
+                                              i++)
+                                            TableRow(
+                                              children: [
+                                                TableCell(
+                                                  child: Text(
+                                                    responses[selectedIndex]
+                                                        .tracks[i]
+                                                        .songNumber
+                                                        .toString(),
+                                                  ),
+                                                ),
+                                                TableCell(
+                                                  child: Text(
+                                                      responses[selectedIndex]
+                                                          .tracks[i]
+                                                          .title),
+                                                ),
+                                                TableCell(
+                                                  child: Text(
+                                                      responses[selectedIndex]
+                                                          .tracks[i]
+                                                          .length),
+                                                ),
+                                                TableCell(
+                                                  child: Text(
+                                                      responses[selectedIndex]
+                                                          .tracks[i]
+                                                          .size),
+                                                ),
+                                                TableCell(
+                                                  child: ElevatedButton(
+                                                    onPressed: () {
+                                                      // Acción del botón
+                                                    },
+                                                    child: Text('Botón'),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        )
                       ],
                     ),
                   ),
-                  Consumer<AppState>(
-                      builder: (context, moreContentProvider, child) {
-                    return Container(
-                      height: 200,
-                      child: Visibility(
-                        visible: appState.showMoreContent,
-                        child: Column(
-                          children: [
-                            // Aquí puedes construir la lista de elementos que deseas mostrar
-                            // Puedes usar un ListView.builder u otro widget apropiado
-                            for (int i = 0; i < 4; i++)
-                              ListTile(
-                                title: Text('Elemento $i'),
-                              ),
-                          ],
-                        ),
-                      ),
-                    );
-                  })
                 ],
               ),
             ),

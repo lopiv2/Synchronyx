@@ -288,14 +288,7 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
               icon: Icons.shopping_cart,
               iconColor: Colors.white,
             ),
-            IconButtonHoverColored(
-              onPressed: () {
-                final appState = Provider.of<AppState>(context, listen: false);
-                appState.toggleAnimations();
-              },
-              icon: Icons.threesixty,
-              iconColor: Colors.white,
-            ),
+            ToggleGameCover(),
             IconButtonHoverColored(
               onPressed: () {
                 print('Botón 3');
@@ -760,7 +753,6 @@ class _GameDeleteConfirmationDialogState
   }
 }
 
-
 class ToggleFavoriteButton extends StatefulWidget {
   @override
   _ToggleFavoriteButtonState createState() => _ToggleFavoriteButtonState();
@@ -807,6 +799,13 @@ class ToggleGameCover extends StatefulWidget {
 class _ToggleGameCoverState extends State<ToggleGameCover> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return IconButtonHoverColored(
+      onPressed: () {
+        final appState = Provider.of<AppState>(context, listen: false);
+        appState.toggleAnimations();
+      },
+      icon: Icons.threesixty,
+      iconColor: Colors.white,
+    );
   }
 }

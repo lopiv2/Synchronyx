@@ -18,7 +18,10 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const MyApp());
+  runApp(MultiProvider(providers: [
+    //ChangeNotifierProvider(create: (_) => TrackListState()),
+    ChangeNotifierProvider(create: (_) => AppState()),
+  ], child: MyApp()));
   doWhenWindowReady(() {
     final win = appWindow;
     const initialSize = Size(1024, 768);
@@ -36,31 +39,29 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return provider.ChangeNotifierProvider(
-        create: (context) => AppState(),
-        child: MaterialApp(
-          debugShowCheckedModeBanner:
-              false, // Esta línea elimina el banner de depuración
-          title: 'Synchronyx Game Launcher',
-          localizationsDelegates:
-              AppLocalizations.localizationsDelegates, // Cambio aquí
-          supportedLocales: AppLocalizations.supportedLocales,
-          theme: ThemeData(
-            // This is the theme of your application.
-            //
-            // Try running your application with "flutter run". You'll see the
-            // application has a blue toolbar. Then, without quitting the app, try
-            // changing the primarySwatch below to Colors.green and then invoke
-            // "hot reload" (press "r" in the console where you ran "flutter run",
-            // or simply save your changes to "hot reload" in a Flutter IDE).
-            // Notice that the counter didn't reset back to zero; the application
-            // is not restarted.
-            primarySwatch: Colors.blue,
-          ),
-          home: Scaffold(
-            body: MainGrid(context: context),
-          ),
-        ));
+    return MaterialApp(
+      debugShowCheckedModeBanner:
+          false, // Esta línea elimina el banner de depuración
+      title: 'Synchronyx Game Launcher',
+      localizationsDelegates:
+          AppLocalizations.localizationsDelegates, // Cambio aquí
+      supportedLocales: AppLocalizations.supportedLocales,
+      theme: ThemeData(
+        // This is the theme of your application.
+        //
+        // Try running your application with "flutter run". You'll see the
+        // application has a blue toolbar. Then, without quitting the app, try
+        // changing the primarySwatch below to Colors.green and then invoke
+        // "hot reload" (press "r" in the console where you ran "flutter run",
+        // or simply save your changes to "hot reload" in a Flutter IDE).
+        // Notice that the counter didn't reset back to zero; the application
+        // is not restarted.
+        primarySwatch: Colors.blue,
+      ),
+      home: Scaffold(
+        body: MainGrid(context: context),
+      ),
+    );
   }
 }
 

@@ -67,6 +67,7 @@ class AppState extends ChangeNotifier {
 
   void refreshGridView() {
     shouldRefreshGridView = !shouldRefreshGridView;
+    print("refresh");
     notifyListeners();
   }
 

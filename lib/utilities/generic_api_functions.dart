@@ -246,10 +246,11 @@ class DioClient {
                     length: length,
                     size: size,
                     url: urlMp3);
-                kResponse.tracks?.add(k);
+                kResponse.tracks.add(k);
               }
             }
           }
+          //print(kResponse.nameAlbum);
           results.add(kResponse);
         }
       }

@@ -54,7 +54,7 @@ class _ImageCoverModel extends State<ImageCoverModel>
   void createGameFromTitle(GameMediaResponse game) {
     final appState = Provider.of<AppState>(context, listen: false);
     appState.updateSelectedGame(game);
-    //print(appState.selectedGame?.media.videoUrl);
+    //print(appState.selectedGame);
   }
 
   @override
