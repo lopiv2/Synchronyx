@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:getwidget/getwidget.dart';
 import 'package:path/path.dart';
 import 'package:provider/provider.dart';
 import 'package:synchronyx/models/responses/khinsider_response.dart';
@@ -16,12 +17,15 @@ class OstDownloadDialog extends StatelessWidget {
     final appState = Provider.of<AppState>(context);
     String title = appState.selectedGame!.game.title;
     List<KhinsiderResponse> responses = [];
+    final GlobalKey _dialogKey = GlobalKey();
+
     return Dialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0),
       ),
       child: Container(
-        width: MediaQuery.of(context).size.width * 0.5,
+        alignment: Alignment.center,
+        width: MediaQuery.of(context).size.width * 0.7,
         height: MediaQuery.of(context).size.height * 0.7,
         decoration: BoxDecoration(
           border: Border.all(
@@ -138,6 +142,21 @@ class OstDownloadDialog extends StatelessWidget {
                                           textAlign: TextAlign.center,
                                         ),
                                       ),
+                                      TableCell(
+                                        verticalAlignment:
+                                            TableCellVerticalAlignment.middle,
+                                        child: ElevatedButton(
+                                          child: Text(
+                                              appState.showMoreContent == false
+                                                  ? 'Seleccionar'
+                                                  : 'Más'),
+                                          onPressed: () {
+                                            // Usa el Provider para cambiar el estado de mostrar/ocultar contenido.
+                                            appState.toggleShowMoreContent();
+                                            print(appState.showMoreContent);
+                                          }, // Agrega el botón "Más" aquí
+                                        ),
+                                      )
                                     ],
                                   );
                                 }).toList(),
@@ -148,6 +167,25 @@ class OstDownloadDialog extends StatelessWidget {
                       ],
                     ),
                   ),
+                  Consumer<AppState>(
+                      builder: (context, moreContentProvider, child) {
+                    return Container(
+                      height: 200,
+                      child: Visibility(
+                        visible: appState.showMoreContent,
+                        child: Column(
+                          children: [
+                            // Aquí puedes construir la lista de elementos que deseas mostrar
+                            // Puedes usar un ListView.builder u otro widget apropiado
+                            for (int i = 0; i < 4; i++)
+                              ListTile(
+                                title: Text('Elemento $i'),
+                              ),
+                          ],
+                        ),
+                      ),
+                    );
+                  })
                 ],
               ),
             ),
@@ -170,7 +208,13 @@ class OstDownloadDialog extends StatelessWidget {
                     Row(
                       children: [
                         ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                Colors.red, // Change the button color to red
+                          ),
                           child: Text(appLocalizations.cancel),
                         ),
                         const SizedBox(width: 8),

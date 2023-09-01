@@ -15,6 +15,14 @@ class AppState extends ChangeNotifier {
   bool get isCoverRotated => _isCoverRotated;
   String filter = '';
   String filterValue = '';
+  bool _showMoreContent = false;
+  bool get showMoreContent => _showMoreContent;
+
+  //Show more tracks in ost import dialog
+  void toggleShowMoreContent() {
+    _showMoreContent = !_showMoreContent;
+    notifyListeners();
+  }
 
   void toggleAnimations() {
     for (int x = 0; x < elementsAnimations.length; x++) {
@@ -40,7 +48,6 @@ class AppState extends ChangeNotifier {
     _isImporting = value;
     notifyListeners();
   }
-
 
   void updateButtonClickedKey(Key k) {
     buttonClickedKey = k;

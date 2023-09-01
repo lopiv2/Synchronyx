@@ -168,7 +168,10 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
                                       showDialog(
                                         context: context,
                                         builder: (BuildContext context) {
-                                          return OstDownloadDialog(appLocalizations: widget.appLocalizations,);
+                                          return OstDownloadDialog(
+                                            appLocalizations:
+                                                widget.appLocalizations,
+                                          );
                                         },
                                       );
                                     },
@@ -202,7 +205,10 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
                                       showDialog(
                                         context: context,
                                         builder: (BuildContext context) {
-                                          return OstDownloadDialog(appLocalizations: widget.appLocalizations,);
+                                          return OstDownloadDialog(
+                                            appLocalizations:
+                                                widget.appLocalizations,
+                                          );
                                         },
                                       );
                                     },
@@ -262,11 +268,7 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
                                                 0.015,
                                         value:
                                             appState.selectedGame!.game.rating,
-                                        onChanged: (value) {
-                                          setState(() {
-                                            //_rating = value;
-                                          });
-                                        },
+                                        onChanged: (value) {},
                                       ),
                                     ])),
                           ],
@@ -301,21 +303,7 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
               icon: Icons.settings,
               iconColor: Colors.white,
             ),
-            IconButtonHoverColored(
-              icon: isFavorite ? Icons.star : Icons.star_border_outlined,
-              onPressed: () {
-                databaseFunctions.favoriteGameById(appState.selectedGame?.game);
-                bool b = convertIntBool(appState.selectedGame?.game.favorite);
-                b = !b;
-                int v = convertBoolInt(b);
-                appState.selectedGame?.game.favorite = v;
-                setState(() {
-                  isFavorite = !isFavorite; // Cambia el valor del estado
-                });
-              },
-              iconColor: Colors.yellow,
-              backColor: Colors.grey,
-            ),
+            ToggleFavoriteButton(),
             IconButtonHoverColored(
               icon: Icons.clear,
               onPressed: () {
@@ -769,5 +757,56 @@ class _GameDeleteConfirmationDialogState
         ),
       ],
     );
+  }
+}
+
+
+class ToggleFavoriteButton extends StatefulWidget {
+  @override
+  _ToggleFavoriteButtonState createState() => _ToggleFavoriteButtonState();
+}
+
+class _ToggleFavoriteButtonState extends State<ToggleFavoriteButton> {
+  bool isFavorite = false;
+
+  void toggleIcon() {
+    setState(() {
+      isFavorite = !isFavorite;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final appState = Provider.of<AppState>(context);
+    isFavorite = appState.selectedGame?.game.favorite == 1;
+    return IconButtonHoverColored(
+      icon: isFavorite ? Icons.star : Icons.star_border_outlined,
+      onPressed: () {
+        databaseFunctions.favoriteGameById(appState.selectedGame?.game);
+        bool b = convertIntBool(appState.selectedGame?.game.favorite);
+        b = !b;
+        int v = convertBoolInt(b);
+        appState.selectedGame?.game.favorite = v;
+        setState(() {
+          isFavorite = !isFavorite; // Cambia el valor del estado
+        });
+      },
+      iconColor: Colors.yellow,
+      backColor: Colors.grey,
+    );
+  }
+}
+
+class ToggleGameCover extends StatefulWidget {
+  const ToggleGameCover({super.key});
+
+  @override
+  State<ToggleGameCover> createState() => _ToggleGameCoverState();
+}
+
+class _ToggleGameCoverState extends State<ToggleGameCover> {
+  @override
+  Widget build(BuildContext context) {
+    return const Placeholder();
   }
 }

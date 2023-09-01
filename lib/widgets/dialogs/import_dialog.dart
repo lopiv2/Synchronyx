@@ -144,7 +144,7 @@ class _ImportDialogState extends State<ImportDialog> {
                                 backgroundColor: Colors
                                     .red, // Change the button color to red
                               ),
-                              child: const Text('Cancelar'),
+                              child: Text(widget.appLocalizations.cancel),
                             ),
                           ],
                         ),
