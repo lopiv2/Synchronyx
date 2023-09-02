@@ -1,5 +1,6 @@
 {
   "accept": "Accept",
+  "actions": "Actions",
   "addDate": "Date added",
   "all": "All",
   "amazonWindowAssistant": "Amazon Games Import Wizard",
@@ -43,23 +44,19 @@
   "importWindowsWindowTitle": "Import games from Windows",
   "importXbox": "XBox/Microsoft games...",
   "importXboxWindowTitle": "Import games from XBox/Microsoft Store",
-  "importOstWindowTitle": "Import audio for game", 
+  "importOstWindowTitle": "Import audio for game",
   "install": "Install",
   "installed": "Installed",
   "itchWindowAssistant": "Itch.IO Games Import Wizard",
   "lastPlayed": "Last Played",
   "launchDate": "Launch date",
+  "length": "Duration",
   "maxPlayers": "Max Players",
   "menu": "Menu",
   "mobile": "Cell phones",
   "next": "Next",
-  "number": "Number",
-  "title": "Title",
-  "length": "Duration",
-  "size": "Size",
-  "actions": "Actions",
-  "trackList": "Track List",
   "nextForContinue": "Press next to continue",
+  "number": "Number",
   "ok": "Ok",
   "originWindowAssistant": "Origin Games Import Wizard",
   "ostDownloadClick": "Click to download OST audio",
@@ -72,6 +69,7 @@
   "region": "Region",
   "results": "Results",
   "settings": "Settings",
+  "size": "Size",
   "steamWindowAssistant": "Steam Games Import Wizard",
   "steamWindowAssistantLinkStep3": "https://steamcommunity.com/dev/apikey/",
   "steamWindowAssistantStep1": "This wizard will help you import your Steam games into Synchronyx. You will be able to choose which games you want, both installed and uninstalled.",
@@ -83,12 +81,14 @@
   "steamWindowAssistantTitleStep4": "Import games...",
   "sureDelete": "Are you sure you want to delete {game}?",
   "@sureDelete": {
-        "placeholders":{
-            "game": {
-                "type":"String"
-            }
-        }
-    },
+    "placeholders": {
+      "game": {
+        "type": "String"
+      }
+    }
+  },
+  "title": "Title",
+  "trackList": "Track List",
   "tools": "Tools",
   "uplayWindowAssistant": "Uplay Games Import Wizard",
   "winWindowAssistant": "Windows Games Import Wizard",
