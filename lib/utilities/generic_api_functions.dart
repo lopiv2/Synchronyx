@@ -221,7 +221,7 @@ class DioClient {
                 String title = ''; //Song title
                 String length = ''; //Song length
                 String size = ''; //Song size
-                String urlMp3 = ''; //Song size
+                String urlMp3 = ''; //Song url page
                 RegExp regex =
                     RegExp(r'^\d+\.'); //Coincide un numero y un punto
                 if (regex.hasMatch(row.querySelectorAll('td')[2].text)) {
@@ -230,7 +230,10 @@ class DioClient {
                   title = row.querySelectorAll('td')[3].text;
                   length = row.querySelectorAll('td')[4].text;
                   size = row.querySelectorAll('td')[5].text;
-                  urlMp3 = row.querySelectorAll('td')[5].querySelector('a')!.attributes['href']!;
+                  urlMp3 = row
+                      .querySelectorAll('td')[5]
+                      .querySelector('a')!
+                      .attributes['href']!;
                 }
                 if (regex.hasMatch(row.querySelectorAll('td')[1].text)) {
                   songNumber = int.parse(
@@ -238,7 +241,10 @@ class DioClient {
                   title = row.querySelectorAll('td')[2].text;
                   length = row.querySelectorAll('td')[3].text;
                   size = row.querySelectorAll('td')[4].text;
-                  urlMp3 = row.querySelectorAll('td')[4].querySelector('a')!.attributes['href']!;
+                  urlMp3 = row
+                      .querySelectorAll('td')[4]
+                      .querySelector('a')!
+                      .attributes['href']!;
                 }
                 KhinsiderTrackResponse k = KhinsiderTrackResponse(
                     songNumber: songNumber,
@@ -258,6 +264,20 @@ class DioClient {
       print('Error: ${response.statusCode}');
     }
     return results;
+  }
+
+  //Get the mp3 url to download or play
+  Future<String> getMp3UrlDownload({required String url}) async {
+    String playerUrl = ''; //Song url to download
+    final responseSongsUrl =
+        await http.get(Uri.parse('https://downloads.khinsider.com$url'));
+    if (responseSongsUrl.statusCode == 200) {
+      final documentSong = parser.parse(responseSongsUrl.body);
+      playerUrl =
+          documentSong.querySelector('audio[id="audio"]')!.attributes['src'] ??
+              "";
+    }
+    return playerUrl;
   }
 
   /* --------------------------- Get GiantBomb Media -------------------------- */

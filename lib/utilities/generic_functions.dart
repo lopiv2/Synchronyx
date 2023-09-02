@@ -27,6 +27,25 @@ Future<void> deleteFile(String fileName) async {
   }
 }
 
+//Transforms a 5:30 format for example in seconds
+int stringToSeconds(String value) {
+  // Divide la cadena en minutos y segundos
+  List<String> parts = value.split(':');
+
+  if (parts.length == 2) {
+    // Convierte las partes en enteros
+    int minutes = int.tryParse(parts[0]) ?? 0;
+    int seconds = int.tryParse(parts[1]) ?? 0;
+
+    // Calcula el tiempo total en segundos
+    int totalTime = (minutes * 60) + seconds;
+    return totalTime;
+  } else {
+    // Si la cadena no tiene el formato esperado, devuelve 0 o un valor predeterminado
+    return 0;
+  }
+}
+
 /* ------------------------ Delete a whole directory ------------------------ */
 void deleteDirectory(String folderPath) {
   Directory directory = Directory(folderPath);
