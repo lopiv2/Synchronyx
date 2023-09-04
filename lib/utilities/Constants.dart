@@ -1,14 +1,13 @@
 // ignore_for_file: constant_identifier_names
 
-import 'dart:ui';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:sqflite_common/sqlite_api.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:synchronyx/icons/custom_icons_icons.dart';
-import 'package:synchronyx/models/game.dart';
 import '../models/api.dart';
-import '../models/responses/gameMedia_response.dart';
 
 enum PlatformStore {
   Amazon(
@@ -356,4 +355,15 @@ class Constants {
   static Api? foundApiBeforeImport;
   static Database? database;
   static double importProgress = 0.0;
+  static late Directory appDocumentsDirectory;
+
+  static Future<void> initialize() async {
+    try {
+      appDocumentsDirectory = await getApplicationDocumentsDirectory();
+      /*print(
+          'appDocumentsDirectory initialized to: ${appDocumentsDirectory.path}');*/
+    } catch (e) {
+      print('Error initializing appDocumentsDirectory: $e');
+    }
+  }
 }

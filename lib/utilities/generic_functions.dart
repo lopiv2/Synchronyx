@@ -129,9 +129,7 @@ Future<void> processScreenshots(
   try {
     var response = await http.get(Uri.parse(imageUrl));
     if (response.statusCode == 200) {
-      Directory appDocumentsDirectory =
-          await getApplicationDocumentsDirectory();
-      Directory imageFolder = Directory('${appDocumentsDirectory.path}$folder');
+      Directory imageFolder = Directory('${Constants.appDocumentsDirectory.path}$folder');
 
       // Create the directory if it doesn't exist
       if (!imageFolder.existsSync()) {
@@ -149,15 +147,37 @@ Future<void> processScreenshots(
   }
 }
 
+/* ----------------------- Download and save audio OST ---------------------- */
+Future<void> downloadAndSaveAudioOst(
+    String audioUrl, String fileName, String folder) async {
+  try {
+    var response = await http.get(Uri.parse(audioUrl));
+    if (response.statusCode == 200) {
+      Directory imageFolder = Directory('${Constants.appDocumentsDirectory.path}$folder');
+
+      // Create the directory if it doesn't exist
+      if (!imageFolder.existsSync()) {
+        imageFolder.createSync(recursive: true);
+      }
+
+      final file = File('${imageFolder.path}$fileName');
+      await file.writeAsBytes(response.bodyBytes);
+      //print('Imagen guardada en: ${file.path}');
+    } else {
+      print('Error al descargar el audio: ${response.statusCode}');
+    }
+  } catch (e) {
+    print('Error: $e');
+  }
+}
+
 /* ------ Download and Save Image from URL, custom filename and folder ------ */
 Future<void> downloadAndSaveImage(
     String imageUrl, String fileName, String folder) async {
   try {
     var response = await http.get(Uri.parse(imageUrl));
     if (response.statusCode == 200) {
-      Directory appDocumentsDirectory =
-          await getApplicationDocumentsDirectory();
-      Directory imageFolder = Directory('${appDocumentsDirectory.path}$folder');
+      Directory imageFolder = Directory('${Constants.appDocumentsDirectory.path}$folder');
 
       // Create the directory if it doesn't exist
       if (!imageFolder.existsSync()) {

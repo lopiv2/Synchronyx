@@ -60,6 +60,11 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
+  void updateSelectedGameOst(String musicUrl) {
+    selectedGame?.media.musicUrl = musicUrl;
+    notifyListeners();
+  }
+
   void updateSelectedGame(GameMediaResponse? game) {
     selectedGame = game;
     notifyListeners();

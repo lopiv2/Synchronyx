@@ -163,9 +163,8 @@ class DioClient {
         break;
     }
     downloadAndSaveImage(img, imageName, imageFolder);
-    Directory appDocumentsDirectory = await getApplicationDocumentsDirectory();
     String finalImageFolder =
-        '${appDocumentsDirectory.path}$imageFolder$imageName';
+        '${Constants.appDocumentsDirectory.path}$imageFolder$imageName';
     return finalImageFolder;
   }
 

@@ -10,6 +10,7 @@ import 'package:synchronyx/utilities/audio_singleton.dart';
 import 'package:synchronyx/utilities/constants.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:synchronyx/utilities/generic_api_functions.dart';
+import 'package:synchronyx/utilities/generic_database_functions.dart';
 import 'package:synchronyx/utilities/generic_functions.dart';
 import 'package:synchronyx/widgets/buttons/icon_button_colored.dart';
 
@@ -220,21 +221,28 @@ class OstDownloadDialog extends StatelessWidget {
                                                       TableCellVerticalAlignment
                                                           .middle,
                                                   child: Center(
-                                                      child: Text(appLocalizations.number))),
+                                                      child: Text(
+                                                          appLocalizations
+                                                              .number))),
                                               TableCell(
                                                   verticalAlignment:
                                                       TableCellVerticalAlignment
                                                           .middle,
                                                   child: Center(
-                                                      child: Text(appLocalizations.title))),
+                                                      child: Text(
+                                                          appLocalizations
+                                                              .title))),
                                               TableCell(
-                                                  child: Text(appLocalizations.length)),
+                                                  child: Text(
+                                                      appLocalizations.length)),
                                               TableCell(
                                                   verticalAlignment:
                                                       TableCellVerticalAlignment
                                                           .middle,
                                                   child: Center(
-                                                      child: Text(appLocalizations.size))),
+                                                      child: Text(
+                                                          appLocalizations
+                                                              .size))),
                                               TableCell(
                                                   verticalAlignment:
                                                       TableCellVerticalAlignment
@@ -247,7 +255,7 @@ class OstDownloadDialog extends StatelessWidget {
                                                         .middle,
                                                 child: Center(
                                                   child: Text(
-                                                      appLocalizations.actions), 
+                                                      appLocalizations.actions),
                                                 ),
                                               ),
                                             ],
@@ -414,30 +422,23 @@ class OstDownloadDialog extends StatelessWidget {
                   vertical: 4.0,
                 ),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     ElevatedButton(
-                      onPressed: () {},
-                      child: Text(appLocalizations.back),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        audioManager.currentUrlNotifier.value = '';
+                        audioManager.isPlayingNotifier.value = false;
+                        audioManager.audioPlayer.dispose;
+                        audioManager.stop();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor:
+                            Colors.red, // Change the button color to red
+                      ),
+                      child: Text(appLocalizations.cancel),
                     ),
-                    Row(
-                      children: [
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                            audioManager.currentUrlNotifier.value = '';
-                            audioManager.isPlayingNotifier.value = false;
-                            audioManager.stop();
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor:
-                                Colors.red, // Change the button color to red
-                          ),
-                          child: Text(appLocalizations.cancel),
-                        ),
-                        const SizedBox(width: 8),
-                      ],
-                    ),
+                    const SizedBox(width: 8),
                   ],
                 ),
               ),
@@ -538,6 +539,8 @@ class _AudioControlButtonsState extends State<AudioControlButtons> {
 
   @override
   Widget build(BuildContext context) {
+    String mp3Play = '';
+    final appState = Provider.of<AppState>(context);
     return ValueListenableBuilder<String>(
       valueListenable: widget.audioManager.currentUrlNotifier,
       builder: (context, currentUrl, child) {
@@ -551,8 +554,7 @@ class _AudioControlButtonsState extends State<AudioControlButtons> {
                 IconButtonHoverColored(
                   onPressed: () async {
                     String url = widget.audioUrl;
-                    String mp3Play =
-                        await DioClient().getMp3UrlDownload(url: url);
+                    mp3Play = await DioClient().getMp3UrlDownload(url: url);
 
                     if (isPlaying && url == currentUrl) {
                       // If playing, pause the song
@@ -561,7 +563,7 @@ class _AudioControlButtonsState extends State<AudioControlButtons> {
                     } else {
                       // If it is not playing or the URL has changed, play the song
                       if (url != currentUrl) {
-                        await widget.audioManager.play(mp3Play);
+                        await widget.audioManager.playUrl(mp3Play);
                         widget.audioManager.isPlayingNotifier.value = true;
                         widget.audioManager.currentUrlNotifier.value =
                             url; // Update the current URL
@@ -592,8 +594,22 @@ class _AudioControlButtonsState extends State<AudioControlButtons> {
                   icon: Icons.stop,
                 ),
                 IconButtonHoverColored(
-                  onPressed: () {
-                    // Download button action
+                  onPressed: () async {
+                    String id = appState.selectedGame?.media.screenshots
+                            .split('_')[0] ??
+                        '';
+                    String url = widget.audioUrl;
+                    mp3Play = await DioClient().getMp3UrlDownload(url: url);
+                    int? mediaId = appState.selectedGame?.media.id;
+                    String audioFolder = '\\Synchronyx\\media\\audio\\$id\\';
+                    String audioName = '${id}_ost.mp3';
+                    downloadAndSaveAudioOst(mp3Play, audioName, audioFolder);
+                    updateOstInMedia(audioName, mediaId);
+                    Navigator.of(context).pop();
+                    widget.audioManager.currentUrlNotifier.value = '';
+                    widget.audioManager.isPlayingNotifier.value = false;
+                    widget.audioManager.stop();
+                    appState.updateSelectedGameOst(audioName);
                   },
                   iconColor: Colors.black,
                   icon: Icons.file_download,

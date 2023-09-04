@@ -263,9 +263,8 @@ Future<void> deleteMediaByName(GameMediaResponse game) async {
   //Deleting screenshots folder
   List<String> fileNames = game.media!.screenshots.split(',');
   String id = fileNames[0].split('_')[0];
-  Directory appDocumentsDirectory = await getApplicationDocumentsDirectory();
   String folder = '\\Synchronyx\\media\\screenshots\\$id\\';
-  String screenFolder = '${appDocumentsDirectory.path}$folder';
+  String screenFolder = '${Constants.appDocumentsDirectory.path}$folder';
   deleteDirectory(screenFolder);
   // Remove the Game from the database.
   await db!.delete(
@@ -367,6 +366,7 @@ Future<void> updateGameById(Game game) async {
   //await Constants.database?.close();
 }
 
+/* ---------------------------- Favorites a game ---------------------------- */
 Future<void> favoriteGameById(Game? game) async {
   bool favoriteState = convertIntBool(game?.favorite);
   favoriteState = !favoriteState;
@@ -385,6 +385,19 @@ Future<void> favoriteGameById(Game? game) async {
 Future<void> updateGameByName(Game game) async {
   await Constants.database?.update('games', game.toMap(),
       where: 'title = ?', whereArgs: [game.title]);
+
+  // Now you can close the database after the update.
+  //await Constants.database?.close();
+}
+
+/* --------------------- Update audioUrl in Media Table --------------------- */
+Future<void> updateOstInMedia(String audioName, int? id) async {
+  await Constants.database?.update(
+    'medias',
+    {'musicUrl': audioName},
+    where: 'id = ?',
+    whereArgs: [id],
+  );
 
   // Now you can close the database after the update.
   //await Constants.database?.close();

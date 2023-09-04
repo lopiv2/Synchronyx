@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:getwidget/components/accordion/gf_accordion.dart';
 import 'package:getwidget/getwidget.dart';
@@ -9,6 +10,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:pushable_button/pushable_button.dart';
 import 'package:synchronyx/models/responses/gameMedia_response.dart';
 import 'package:synchronyx/utilities/Constants.dart';
+import 'package:synchronyx/utilities/audio_singleton.dart';
 import 'package:synchronyx/utilities/generic_functions.dart';
 import 'package:synchronyx/widgets/buttons/icon_button_colored.dart';
 import 'package:synchronyx/widgets/dialogs/image_preview_dialog.dart';
@@ -29,8 +31,8 @@ class GameInfoPanel extends StatefulWidget {
 }
 
 class _GameInfoPanelState extends State<GameInfoPanel> {
+  final AudioManager audioManager = AudioManager();
   late String url = "";
-  final player = AudioPlayer();
   late AnimationController _controller;
   bool isFavorite = false;
 
@@ -63,6 +65,7 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
   Future<Widget> _buildGameInfoPanel(
       AppState appState, GameMediaResponse? selectedGame) async {
     bool isHovered = false;
+    audioManager.stop();
     //Marquee
     ImageProvider<Object> imageWidgetMarquee;
     imageWidgetMarquee =
@@ -80,9 +83,9 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
     List<String> screensPaths =
         appState.selectedGame!.media.screenshots.split(',');
     String id = screensPaths[0].split('_')[0];
-    Directory appDocumentsDirectory = await getApplicationDocumentsDirectory();
     String folder = '\\Synchronyx\\media\\screenshots\\$id\\';
-    String screenFolder = '${appDocumentsDirectory.path}$folder';
+    await Constants.initialize();
+    String screenFolder = '${Constants.appDocumentsDirectory.path}$folder';
     List<ImageProvider<Object>> imageProvidersMarquee = List.generate(
       screensPaths.length,
       (index) => FileImage(File('$screenFolder${screensPaths[index]}')),
@@ -100,7 +103,7 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
           textAlign: TextAlign.start,
           '- $publisher');
     }).toList();
-    playOst();
+    playOst(appState);
 
     return Column(children: [
       Expanded(
@@ -155,81 +158,16 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
                                 size: MediaQuery.of(context).size.width * 0.02,
                               )))
                           : Text(""),
-                      appState.selectedGame!.media.musicUrl != ""
-                          ? Positioned(
-                              left: 10.01,
-                              bottom: MediaQuery.of(context).size.height * 0.24,
-                              child: Tooltip(
-                                  message:
-                                      widget.appLocalizations.ostDownloadClick,
-                                  child: InkWell(
-                                    onTap: () {
-                                      // Función que se ejecutará al tocar el icono
-                                      showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return OstDownloadDialog(
-                                            appLocalizations:
-                                                widget.appLocalizations,
-                                          );
-                                        },
-                                      );
-                                    },
-                                    child: Container(
-                                      padding: EdgeInsets.all(
-                                          8.0), // Espacio de relleno alrededor del icono
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: const Color.fromARGB(0, 33, 149,
-                                            243), // Color de fondo del botón
-                                      ),
-                                      child: Icon(
-                                        Icons.music_note,
-                                        color: Colors.white,
-                                        size:
-                                            MediaQuery.of(context).size.width *
-                                                0.02,
-                                      ),
-                                    ),
-                                  )),
-                            )
-                          : Positioned(
-                              left: 10.01,
-                              bottom: MediaQuery.of(context).size.height * 0.24,
-                              child: Tooltip(
-                                  message:
-                                      widget.appLocalizations.ostDownloadClick,
-                                  child: InkWell(
-                                    onTap: () {
-                                      // Función que se ejecutará al tocar el icono
-                                      showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return OstDownloadDialog(
-                                            appLocalizations:
-                                                widget.appLocalizations,
-                                          );
-                                        },
-                                      );
-                                    },
-                                    child: Container(
-                                      padding: const EdgeInsets.all(
-                                          8.0), // Espacio de relleno alrededor del icono
-                                      decoration: const BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: Color.fromARGB(0, 33, 149,
-                                            243), // Color de fondo del botón
-                                      ),
-                                      child: Icon(
-                                        Icons.music_off,
-                                        color: Colors.white,
-                                        size:
-                                            MediaQuery.of(context).size.width *
-                                                0.02,
-                                      ),
-                                    ),
-                                  )),
-                            ),
+                      ToggleMusicIcon(
+                        appLocalizations: widget.appLocalizations,
+                        audioManager: audioManager,
+                      ),
+                      appState.selectedGame?.media.musicUrl != ''
+                          ? PlayPauseSong(
+                              appLocalizations: widget.appLocalizations,
+                              audioManager: audioManager,
+                              playOst: () => playOst(appState))
+                          : Text(""),
                       Positioned(
                         right: MediaQuery.of(context).size.width * 0.17,
                         bottom: 10,
@@ -646,8 +584,13 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
     );
   }
 
-  Future<void> playOst() async {
-    //await player.play(AssetSource('music/theme.mp3'));
+  Future<void> playOst(AppState appState) async {
+    List<String>? parts = appState.selectedGame?.media.musicUrl.split('_');
+    String id = parts!.first;
+    String soundFolder = '\\Synchronyx\\media\\audio\\$id\\';
+    audioManager.audioPlayer.setReleaseMode(ReleaseMode.loop);
+    await audioManager.playFile(
+        '${Constants.appDocumentsDirectory.path}$soundFolder${appState.selectedGame?.media.musicUrl}');
   }
 
   void reload() {
@@ -703,6 +646,164 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
         );
       },
     );
+  }
+}
+
+class PlayPauseSong extends StatelessWidget {
+  final AudioManager audioManager;
+  final AppLocalizations appLocalizations;
+  final AsyncCallback playOst;
+  const PlayPauseSong(
+      {super.key,
+      required this.appLocalizations,
+      required this.audioManager,
+      required this.playOst});
+
+  @override
+  Widget build(BuildContext context) {
+    final appState = Provider.of<AppState>(context);
+    return ValueListenableBuilder<bool>(
+        valueListenable: audioManager.isPlayingNotifier,
+        builder: (context, isPlaying, child) {
+          return ValueListenableBuilder<String>(
+              valueListenable: audioManager.currentUrlNotifier,
+              builder: (context, url, child) {
+                return Positioned(
+                  left: 40.01,
+                  bottom: MediaQuery.of(context).size.height * 0.24,
+                  child: Tooltip(
+                      message: appLocalizations.ostDownloadedClick,
+                      child: InkWell(
+                        onTap: () {
+                          isPlaying
+                              ? {
+                                  audioManager.currentUrlNotifier.value =
+                                      appState.selectedGame?.media.musicUrl ??
+                                          '',
+                                  audioManager.pause(),
+                                  audioManager.isPlayingNotifier.value = false
+                                }
+                              : {
+                                  if (url !=
+                                      appState.selectedGame?.media.musicUrl)
+                                    {
+                                      playOst(),
+                                      audioManager.isPlayingNotifier.value =
+                                          true
+                                    }
+                                  else
+                                    {
+                                      audioManager.resume(),
+                                      audioManager.isPlayingNotifier.value =
+                                          true
+                                    }
+                                };
+                        },
+                        child: Container(
+                          padding: EdgeInsets.all(
+                              8.0), // Espacio de relleno alrededor del icono
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: const Color.fromARGB(
+                                0, 33, 149, 243), // Color de fondo del botón
+                          ),
+                          child: isPlaying
+                              ? Icon(
+                                  Icons.volume_up,
+                                  color: Colors.white,
+                                  size:
+                                      MediaQuery.of(context).size.width * 0.02,
+                                )
+                              : Icon(
+                                  Icons.volume_off,
+                                  color: Colors.white,
+                                  size:
+                                      MediaQuery.of(context).size.width * 0.02,
+                                ),
+                        ),
+                      )),
+                );
+              });
+        });
+  }
+}
+
+class ToggleMusicIcon extends StatelessWidget {
+  final AppLocalizations appLocalizations;
+  final AudioManager audioManager;
+  const ToggleMusicIcon(
+      {super.key, required this.appLocalizations, required this.audioManager});
+
+  @override
+  Widget build(BuildContext context) {
+    final appState = Provider.of<AppState>(context);
+    return appState.selectedGame!.media.musicUrl != ""
+        ? Positioned(
+            left: 10.01,
+            bottom: MediaQuery.of(context).size.height * 0.24,
+            child: Tooltip(
+                message: appLocalizations.ostDownloadedClick,
+                child: InkWell(
+                  onTap: () {
+                    audioManager.stop();
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return OstDownloadDialog(
+                          appLocalizations: appLocalizations,
+                        );
+                      },
+                    );
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(
+                        8.0), // Espacio de relleno alrededor del icono
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: const Color.fromARGB(
+                          0, 33, 149, 243), // Color de fondo del botón
+                    ),
+                    child: Icon(
+                      Icons.music_note,
+                      color: Colors.white,
+                      size: MediaQuery.of(context).size.width * 0.02,
+                    ),
+                  ),
+                )),
+          )
+        : Positioned(
+            left: 10.01,
+            bottom: MediaQuery.of(context).size.height * 0.24,
+            child: Tooltip(
+                message: appLocalizations.ostDownloadClick,
+                child: InkWell(
+                  onTap: () {
+                    audioManager.stop();
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return OstDownloadDialog(
+                          appLocalizations: appLocalizations,
+                        );
+                      },
+                    );
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(
+                        8.0), // Espacio de relleno alrededor del icono
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Color.fromARGB(
+                          0, 33, 149, 243), // Color de fondo del botón
+                    ),
+                    child: Icon(
+                      Icons.music_off,
+                      color: Colors.red,
+                      size: MediaQuery.of(context).size.width * 0.02,
+                    ),
+                  ),
+                )),
+          );
   }
 }
 

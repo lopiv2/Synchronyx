@@ -18,18 +18,22 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(MultiProvider(providers: [
-    //ChangeNotifierProvider(create: (_) => TrackListState()),
-    ChangeNotifierProvider(create: (_) => AppState()),
-  ], child: MyApp()));
-  doWhenWindowReady(() {
-    final win = appWindow;
-    const initialSize = Size(1024, 768);
-    win.minSize = initialSize;
-    win.size = initialSize;
-    win.alignment = Alignment.center;
-    win.title = "Synchronyx";
-    win.show();
+
+  await Constants.initialize().then((_) {
+    runApp(MultiProvider(providers: [
+      //ChangeNotifierProvider(create: (_) => TrackListState()),
+      ChangeNotifierProvider(create: (_) => AppState()),
+    ], child: MyApp()));
+
+    doWhenWindowReady(() {
+      final win = appWindow;
+      const initialSize = Size(1024, 768);
+      win.minSize = initialSize;
+      win.size = initialSize;
+      win.alignment = Alignment.center;
+      win.title = "Synchronyx";
+      win.show();
+    });
   });
 }
 

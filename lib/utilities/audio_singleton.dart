@@ -24,20 +24,29 @@ class AudioManager {
 
   get audioPlayer => _audioPlayer;
 
-  Future<void> play(String url) async {
+  Future<void> playUrl(String url) async {
     await _audioPlayer.stop();
     await _audioPlayer.play(UrlSource(url));
   }
 
+  Future<void> playFile(String source) async {
+    await _audioPlayer.stop();
+    isPlayingNotifier.value=true;
+    await _audioPlayer.play(DeviceFileSource(source));
+  }
+
   Future<void> pause() async {
+    isPlayingNotifier.value = false;
     await _audioPlayer.pause();
   }
 
   Future<void> stop() async {
+    isPlayingNotifier.value = false;
     await _audioPlayer.stop();
   }
 
   Future<void> resume() async {
+    isPlayingNotifier.value = true;
     await _audioPlayer.resume();
   }
 
