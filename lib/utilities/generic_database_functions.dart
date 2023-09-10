@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:synchronyx/models/global_options.dart';
 import 'package:synchronyx/models/responses/gameMedia_response.dart';
 import 'package:synchronyx/models/media.dart';
 import '../models/api.dart';
@@ -113,6 +114,22 @@ Future<Database?> createAndOpenDB() async {
           'logoUrl TEXT'
           ')',
         );
+        // Create the Options table
+        await db.execute(
+          'CREATE TABLE IF NOT EXISTS options('
+          'id INTEGER PRIMARY KEY AUTOINCREMENT,'
+          'twoDThreeDCovers INTEGER,'
+          'playOSTOnSelectGame INTEGER,'
+          ')',
+        );
+        await db.insert(
+          'options',
+          {
+            'twoDThreeDCovers': 1,
+            'playOSTOnSelectGame': 1,
+            'showLogoNameOnGrid': 0
+          },
+        );
       },
       version: 1,
     );
@@ -168,6 +185,28 @@ Future<List<Game>> getAllGamesWithFilter(String filter, String value) async {
   }
 
   return maps.map((map) => Game.fromMap(map)).toList();
+}
+
+Future<GlobalOptions?> getOptions() async {
+  // Get a reference to the database.
+  final db = await Constants.database;
+
+  GlobalOptions? options;
+
+  if (db != null) {
+    // Query the table for the first (and only) result.
+    final List<Map<String, dynamic>> maps = await db!.query(
+      'options',
+      limit: 1, // Limitar la consulta a un solo resultado.
+    );
+
+    // Si se encontró un resultado, convierte el mapa en un objeto GlobalOptions.
+    if (maps.isNotEmpty) {
+      options = GlobalOptions.fromMap(maps.first);
+    }
+  }
+
+  return options;
 }
 
 /* ---------------------------- Check Api by name --------------------------- */
@@ -398,6 +437,15 @@ Future<void> updateOstInMedia(String audioName, int? id) async {
     where: 'id = ?',
     whereArgs: [id],
   );
+
+  // Now you can close the database after the update.
+  //await Constants.database?.close();
+}
+
+/* ----------------------------- Update Options ----------------------------- */
+Future<void> updateOptions(GlobalOptions globalOptions) async {
+  await Constants.database?.update('options', globalOptions.toMap(),
+      where: 'id = ?', whereArgs: [globalOptions.id]);
 
   // Now you can close the database after the update.
   //await Constants.database?.close();

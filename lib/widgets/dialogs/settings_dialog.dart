@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:synchronyx/models/global_options.dart';
+import 'package:synchronyx/providers/app_state.dart';
+import 'package:synchronyx/screens/options/game_visual_options.dart';
+import 'package:synchronyx/utilities/audio_singleton.dart';
 import 'package:synchronyx/utilities/constants.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:synchronyx/utilities/generic_database_functions.dart';
+import 'package:synchronyx/widgets/options_tree_view.dart';
 
 class SettingsDialog extends StatefulWidget {
   final IconData titleIcon;
   final String title;
   final Color iconColor;
-  final AppLocalizations appLocalizations; // Agregar este campo
+  final AppLocalizations appLocalizations;
+  final AppState appState;
   final Function(Map<String, dynamic>)? onFinish;
 
   const SettingsDialog({
@@ -16,6 +24,7 @@ class SettingsDialog extends StatefulWidget {
     required this.appLocalizations,
     this.onFinish,
     this.iconColor = Colors.white,
+    required this.appState,
   }) : super(key: key);
 
   @override
@@ -25,22 +34,22 @@ class SettingsDialog extends StatefulWidget {
 class _SettingsDialogState extends State<SettingsDialog> {
   Offset _offset = Offset(0, 0);
   final List<String> options = ['Option 1', 'Option 2', 'Option 3'];
-  Widget _propertiesWidget = Container();
+  final AudioManager audioManager = AudioManager();
 
-  void _onOptionSelected(int index) {
-    setState(() {
-      //_currentStep = index + 1;
-      // Aquí configura las propiedades para la opción seleccionada
-      _propertiesWidget = Container(
-        width: 80,
-        height: 80,
-        child: Text('Properties for ${options[index]}'),
-      );
-    });
+  void initState() {
+    super.initState();
+    audioManager.pause();
+  }
+
+  @override
+  void dispose() {
+    audioManager.resume();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final appState = Provider.of<AppState>(context);
     return GestureDetector(
       onPanUpdate: (details) {
         setState(() {
@@ -50,7 +59,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
       child: CustomDialog(
         offset: _offset,
         child: Container(
-          width: MediaQuery.of(context).size.width * 0.5,
+          width: MediaQuery.of(context).size.width * 0.8,
           height: MediaQuery.of(context).size.height * 0.7,
           decoration: BoxDecoration(
             border: Border.all(
@@ -67,52 +76,108 @@ class _SettingsDialogState extends State<SettingsDialog> {
               ],
             ),
           ),
-          child: Column(
-            children: [
-              AppBar(
-                backgroundColor: Constants.SIDE_BAR_COLOR,
-                elevation: 0.0,
-                toolbarHeight: 35.0,
-                titleSpacing: -20.0,
-                leading: Padding(
-                  padding: const EdgeInsets.only(right: 20.0),
-                  child: Icon(
-                    widget.titleIcon,
-                    color: widget.iconColor,
-                  ),
+          child: Column(children: [
+            AppBar(
+              backgroundColor: Constants.SIDE_BAR_COLOR,
+              elevation: 0.0,
+              toolbarHeight: 35.0,
+              titleSpacing: -20.0,
+              leading: Padding(
+                padding: const EdgeInsets.only(right: 20.0),
+                child: Icon(
+                  widget.titleIcon,
+                  color: widget.iconColor,
                 ),
-                title: Text(
-                  widget.title,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                  ),
+              ),
+              title: Text(
+                widget.title,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
                 ),
-                actions: [
-                  IconButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    icon: const Icon(Icons.close),
-                    color: Colors.white,
-                  ),
-                ],
               ),
-              Row(
-                children: [
-                  LeftColumn(
-                    options: options,
-                    onOptionSelected: _onOptionSelected,
-                  ),
-                  SizedBox(width: 16),
-                  RightColumn(
-                    propertiesWidget: _propertiesWidget,
-                  ),
-                ],
+              actions: [
+                IconButton(
+                  onPressed: () {
+                    appState.optionsResponse =
+                        GlobalOptions.copy(appState.selectedOptions);
+                    Navigator.of(context).pop();
+                    audioManager.resume();
+                  },
+                  icon: const Icon(Icons.close),
+                  color: Colors.white,
+                ),
+              ],
+            ),
+            Padding(
+                padding: const EdgeInsets.only(left: 16.0), // Padding izquierdo
+                child: Row(
+                  children: [
+                    LeftColumn(
+                      options: options,
+                      appLocalizations: widget.appLocalizations,
+                    ),
+                    SizedBox(width: 16),
+                    ValueListenableBuilder<String>(
+                        valueListenable: appState.selectedOptionClicked,
+                        builder: (context, selectedOption, child) {
+                          return RightColumn(
+                            appLocalizations: widget.appLocalizations,
+                            optionClicked: selectedOption,
+                          );
+                        }),
+                    SizedBox(width: 16),
+                  ],
+                )),
+            Align(
+              alignment: Alignment.bottomLeft,
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                color: Color.fromARGB(255, 48, 87, 3),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 8.0,
+                  vertical: 4.0,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        //I update the data base with the data obtained from the configuration.
+                        updateOptions(appState.optionsResponse);
+                        //I am updating the general data of this session with the new
+                        appState.selectedOptions =
+                            GlobalOptions.copy(appState.optionsResponse);
+                        Navigator.of(context).pop();
+                        audioManager.resume();
+                        appState.refreshGridView();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor:
+                            Colors.blue, // Change the button color to red
+                      ),
+                      child: Text(widget.appLocalizations.accept),
+                    ),
+                    const SizedBox(width: 8),
+                    ElevatedButton(
+                      onPressed: () {
+                        appState.optionsResponse =
+                            GlobalOptions.copy(appState.selectedOptions);
+                        Navigator.of(context).pop();
+                        audioManager.resume();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor:
+                            Colors.red, // Change the button color to red
+                      ),
+                      child: Text(widget.appLocalizations.cancel),
+                    ),
+                  ],
+                ),
               ),
-            ],
-          ),
+            ),
+          ]),
         ),
       ),
     );
@@ -121,13 +186,15 @@ class _SettingsDialogState extends State<SettingsDialog> {
 
 class LeftColumn extends StatelessWidget {
   final List<String> options;
-  final Function(int) onOptionSelected;
+  final AppLocalizations appLocalizations;
 
-  LeftColumn({required this.options, required this.onOptionSelected});
+  LeftColumn({required this.options, required this.appLocalizations});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return Expanded(
+      flex:1,
+        child: Container(
       decoration: BoxDecoration(
         border: Border.all(
           color: const Color.fromARGB(255, 2, 34, 14), // Color del borde
@@ -137,47 +204,55 @@ class LeftColumn extends StatelessWidget {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            Constants.SIDE_BAR_COLOR,
-            Color.fromARGB(255, 33, 109, 72),
+            Colors.green,
+            Color.fromARGB(255, 41, 190, 66),
             Color.fromARGB(255, 48, 87, 3)
           ],
         ),
       ),
-      width: MediaQuery.of(context).size.width * 0.18,
-      child: Column(
-        children: options
-            .asMap()
-            .map((index, option) => MapEntry(
-                  index,
-                  ElevatedButton(
-                    onPressed: () => onOptionSelected(index),
-                    child: Container(
-                      width: 150, // Tamaño fijo para el botón
-                      child: Center(child: Text(option)),
-                    ),
-                  ),
-                ))
-            .values
-            .toList(),
+      height: MediaQuery.of(context).size.width * 0.45,
+      width: MediaQuery.of(context).size.width * 0.15,
+      child: OptionsTreeView(
+        appLocalizations: appLocalizations,
       ),
-    );
+    ));
   }
 }
 
 class RightColumn extends StatelessWidget {
-  final Widget propertiesWidget;
-
-  RightColumn({required this.propertiesWidget});
+  final AppLocalizations appLocalizations;
+  RightColumn({required String optionClicked, required this.appLocalizations});
 
   @override
   Widget build(BuildContext context) {
+    final appState = Provider.of<AppState>(context);
     return Expanded(
+      flex:3,
       child: Container(
-        color: Colors.grey.shade200,
+        height: MediaQuery.of(context).size.height * 0.60,
+        width: MediaQuery.of(context).size.width * 0.27,
         padding: EdgeInsets.all(16),
-        child: propertiesWidget,
+        decoration: BoxDecoration(
+          color: const Color.fromARGB(17, 238, 238, 238),
+          border: Border.all(
+            color: Colors.grey, // Color del borde
+            width: 1.0, // Ancho del borde
+          ),
+          borderRadius:
+              BorderRadius.all(Radius.circular(2.0)), // Radio del borde
+        ),
+        child: buildOptions(appState, appLocalizations),
       ),
     );
+  }
+
+  Widget buildOptions(AppState appState, appLocalizations) {
+    switch (appState.selectedOptionClicked.value) {
+      case "games":
+        return GameVisualOptions(appLocalizations: appLocalizations);
+      default:
+        return Text("data");
+    }
   }
 }
 

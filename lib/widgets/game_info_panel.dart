@@ -103,7 +103,9 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
           textAlign: TextAlign.start,
           '- $publisher');
     }).toList();
-    playOst(appState);
+    if (appState.selectedOptions.playOSTOnSelectGame == 1) {
+      playOst(appState);
+    }
 
     return Column(children: [
       Expanded(

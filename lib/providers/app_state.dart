@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:synchronyx/models/game.dart';
+import 'package:synchronyx/models/global_options.dart';
 import 'package:synchronyx/models/responses/gameMedia_response.dart';
 
 class AppState extends ChangeNotifier {
   GameMediaResponse? selectedGame;
+  late GlobalOptions selectedOptions; //Current using options
+  late GlobalOptions optionsResponse; //Temporary Response for options until saved
   List<GameMediaResponse> gamesInGrid = [];
   bool shouldRefreshGridView = false;
   String _isImporting = 'no'; //Three states, no, importing and finished
@@ -17,6 +19,7 @@ class AppState extends ChangeNotifier {
   String filterValue = '';
   bool _showMoreContent = false;
   bool get showMoreContent => _showMoreContent;
+  final ValueNotifier<String> selectedOptionClicked = ValueNotifier<String>('');//Option selected in the options menu to display one menu or the other.
 
   //Show more tracks in ost import dialog
   void toggleShowMoreContent() {

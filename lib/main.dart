@@ -2,14 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart' as provider;
 import 'package:provider/provider.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:synchronyx/models/global_options.dart';
 import 'package:synchronyx/providers/app_state.dart';
+import 'package:synchronyx/utilities/audio_singleton.dart';
+import 'package:synchronyx/utilities/generic_database_functions.dart'
+    as database;
 import 'package:synchronyx/utilities/generic_database_functions.dart';
 import 'package:synchronyx/widgets/filter_info_panel.dart';
 import 'package:synchronyx/widgets/filters/favorite_filter.dart';
 import 'package:synchronyx/widgets/game_info_panel.dart';
 import 'package:synchronyx/widgets/platform_tree_view.dart';
 import 'package:synchronyx/widgets/top_menu_bar.dart';
-import 'widgets/arcade_box_button.dart';
+import 'widgets/buttons/arcade_box_button.dart';
 import 'widgets/drop_down_filter_order_games.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:synchronyx/utilities/constants.dart';
@@ -18,7 +22,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   await Constants.initialize().then((_) {
     runApp(MultiProvider(providers: [
       //ChangeNotifierProvider(create: (_) => TrackListState()),
@@ -77,6 +80,11 @@ class MainGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AppLocalizations appLocalizations = AppLocalizations.of(context);
+    final appState = Provider.of<AppState>(context);
+    final AudioManager audioManager = AudioManager();
+    if (appState.selectedGame == null) {
+      audioManager.stop();
+    }
     return Container(
       color: Constants.SIDE_BAR_COLOR,
       child: Column(
@@ -223,8 +231,9 @@ class CenterSide extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final appState = Provider.of<AppState>(context);
     return FutureBuilder<Database?>(
-      future: createAndOpenDB(),
+      future: database.createAndOpenDB(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return CircularProgressIndicator();
@@ -234,6 +243,14 @@ class CenterSide extends StatelessWidget {
           return Text('La base de datos no se inicializó correctamente.');
         } else {
           Constants.database = snapshot.data;
+          Future<GlobalOptions?> optionsFuture = getOptions().then((value) {
+            if (value != null) {
+              appState.selectedOptions = value;
+              appState.optionsResponse = GlobalOptions.copy(
+                  value); //Answer that will be the temporary one for the change of options
+              //print(appState.selectedOptions);
+            }
+          });
           return Expanded(
             child: Container(
               decoration: const BoxDecoration(

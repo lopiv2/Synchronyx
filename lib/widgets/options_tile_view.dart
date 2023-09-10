@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_fancy_tree_view/flutter_fancy_tree_view.dart';
-import 'package:synchronyx/models/platforms.dart';
-import 'package:synchronyx/widgets/buttons/custom_folder_button.dart';
+import 'package:synchronyx/models/Options.dart';
+import 'package:synchronyx/widgets/buttons/custom_options_button.dart';
 
-class PlatformTreeTile extends StatelessWidget {
-  const PlatformTreeTile({
+class OptionsTreeTile extends StatelessWidget {
+  const OptionsTreeTile({
     super.key,
     required this.entry,
     required this.onTap,
@@ -13,7 +13,7 @@ class PlatformTreeTile extends StatelessWidget {
     required this.isMouseOver,
   });
 
-  final TreeEntry<Platforms> entry;
+  final TreeEntry<Options> entry;
   final VoidCallback onTap;
   final VoidCallback onMouseEnter;
   final VoidCallback onMouseExit;
@@ -45,7 +45,7 @@ class PlatformTreeTile extends StatelessWidget {
             // add decorations to the indentation of tree nodes.
             // This could also be provided through a DefaultTreeIndentGuide
             // inherited widget placed above the tree view.
-            guide: const IndentGuide.connectingLines(indent: 25),
+            guide: const IndentGuide.connectingLines(indent: 45),
             // The widget to render next to the indentation. TreeIndentation
             // respects the text direction of `Directionality.maybeOf(context)`
             // and defaults to left-to-right.
@@ -65,7 +65,7 @@ class PlatformTreeTile extends StatelessWidget {
                           borderRadius: BorderRadius.circular(
                               8), // Ajusta el radio del borde según tus necesidades
                         ),
-                        child: CustomFolderButton(
+                        child: CustomOptionsButton(
                           hoverColor: Colors.blue,
                           icon: entry.node.icon,
                           title: RichText(
@@ -73,12 +73,11 @@ class PlatformTreeTile extends StatelessWidget {
                               style: TextStyle(
                                 color:
                                     isMouseOver ? Colors.white : Colors.black,
-                                fontSize: 16,
+                                fontSize: 14,
                               ),
                               text: entry.node.title,
                             ),
                           ),
-                          //iconSize: 80,
                           padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
                           closedIcon: const Icon(
                             Icons.arrow_right,

@@ -444,6 +444,7 @@ class MyMenuBar extends StatelessWidget {
                         barrierDismissible: false,
                         builder: (context) {
                           return SettingsDialog(
+                            appState: appState,
                             appLocalizations: appLocalizations,
                             iconColor: Colors.white,
                             titleIcon: Icons.settings,
