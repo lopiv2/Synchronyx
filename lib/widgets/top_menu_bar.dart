@@ -51,7 +51,7 @@ class MyMenuBar extends StatelessWidget {
               Constants.foundApiBeforeImport!.getMetadata()['steamId'];
         } //If not, create api data from zero
         else {
-          print("prueba");
+          //print("prueba");
           api.name = 'Steam';
           api.url =
               'https://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=';

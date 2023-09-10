@@ -380,7 +380,7 @@ Future<void> insertMedia(Media media, Game game) async {
   if (existingGames != null && existingGames.isNotEmpty) {
     // Obtén el valor de mediaId del primer juego encontrado y actualiza ese id con las nuevas medias
     int mediaId = existingGames[0]['mediaId'] as int;
-    print(mediaId);
+    //print(mediaId);
 
     //Obtengo el id de insercion para agregarselo al juego
     final id = await db?.insert(
