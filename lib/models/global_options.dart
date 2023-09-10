@@ -3,12 +3,14 @@ class GlobalOptions {
   late int twoDThreeDCovers;
   late int playOSTOnSelectGame;
   late int showLogoNameOnGrid;
+  late int showEditorOnGrid;
 
   GlobalOptions({
     this.id,
     required this.twoDThreeDCovers,
     required this.playOSTOnSelectGame,
     required this.showLogoNameOnGrid,
+    required this.showEditorOnGrid,
   });
 
   Map<String, dynamic> toMap() {
@@ -17,6 +19,7 @@ class GlobalOptions {
       'twoDThreeDCovers': twoDThreeDCovers,
       'playOSTOnSelectGame': playOSTOnSelectGame,
       'showLogoNameOnGrid': showLogoNameOnGrid,
+      'showEditorOnGrid': showEditorOnGrid,
     };
   }
 
@@ -26,11 +29,12 @@ class GlobalOptions {
     twoDThreeDCovers = other.twoDThreeDCovers;
     playOSTOnSelectGame = other.playOSTOnSelectGame;
     showLogoNameOnGrid = other.showLogoNameOnGrid;
+    showEditorOnGrid = other.showEditorOnGrid;
   }
 
   @override
   String toString() {
-    return 'Options{id: $id, twoDThreeDCovers: $twoDThreeDCovers,playOSTOnSelectGame: $playOSTOnSelectGame, showLogoNameOnGrid: $showLogoNameOnGrid}';
+    return 'Options{id: $id, twoDThreeDCovers: $twoDThreeDCovers,playOSTOnSelectGame: $playOSTOnSelectGame, showLogoNameOnGrid: $showLogoNameOnGrid, showEditorOnGrid: $showEditorOnGrid}';
   }
 
   static GlobalOptions fromMap(Map<String, dynamic> map) {
@@ -39,6 +43,7 @@ class GlobalOptions {
       twoDThreeDCovers: map['twoDThreeDCovers'] ?? '1',
       playOSTOnSelectGame: map['playOSTOnSelectGame'] ?? '1',
       showLogoNameOnGrid: map['showLogoNameOnGrid'] ?? '1',
+      showEditorOnGrid: map['showEditorOnGrid'] ?? '1',
     );
   }
 }

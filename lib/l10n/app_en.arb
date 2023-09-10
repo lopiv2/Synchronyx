@@ -61,6 +61,7 @@
   "options3dViewGames": "View game covers in 3d/2d",
   "optionsPlayOstSelectGame": "Play OST when selecting video game",
   "optionsShowLogoOnGrid": "Show game logo instead name on grid",
+  "optionsShowEditorOnGrid": "Show editor under the name in the grid",
   "originWindowAssistant": "Origin Games Import Wizard",
   "ostDownloadClick": "Click to download OST audio",
   "ostDownloadedClick": "OST audio downloaded",

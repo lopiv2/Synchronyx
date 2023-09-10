@@ -94,6 +94,26 @@ class _GameVisualOptionsState extends State<GameVisualOptions> {
                     });
               },
             ),
+            Selector<AppState, int>(
+              selector: (_, provider) =>
+                  provider.optionsResponse.showEditorOnGrid,
+              builder: (context, showEditorOnGrid, child) {
+                return ToggleSwitch(
+                    databaseValue: showEditorOnGrid,
+                    text: widget.appLocalizations.optionsShowEditorOnGrid,
+                    initialValue: widget.appLocalizations.no,
+                    toggleValue: widget.appLocalizations.yes,
+                    onChanged: (value) {
+                      if (value == true) {
+                        showEditorOnGrid = 1;
+                      } else {
+                        showEditorOnGrid = 0;
+                      }
+                      appState.optionsResponse.showEditorOnGrid =
+                          showEditorOnGrid;
+                    });
+              },
+            ),
           ],
         ),
       ),

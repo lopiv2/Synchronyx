@@ -116,70 +116,92 @@ class OstDownloadDialog extends StatelessWidget {
                           ),
                         ),
                         SizedBox(height: 16.0),
-                        FutureBuilder<List<KhinsiderResponse>>(
-                          future: DioClient().scrapeKhinsider(title: title),
-                          builder: (BuildContext context,
-                              AsyncSnapshot<List<KhinsiderResponse>> snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return CircularProgressIndicator();
-                            } else if (snapshot.hasError) {
-                              return Text(snapshot.error.toString());
-                            } else if (!snapshot.hasData ||
-                                snapshot.data!.isEmpty) {
-                              return Text('No se encontraron resultados');
-                            } else {
-                              responses = snapshot.data!;
-                              return SingleChildScrollView(
-                                  child: Table(
-                                border: TableBorder.all(color: Colors.grey),
-                                defaultColumnWidth: FixedColumnWidth(150.0),
-                                children: responses.map((khinsiderResponse) {
-                                  final currentIndex =
-                                      responses.indexOf(khinsiderResponse);
-                                  return TableRow(
-                                    children: [
-                                      TableCell(
-                                        verticalAlignment:
-                                            TableCellVerticalAlignment.middle,
-                                        child:
-                                            Text(khinsiderResponse.nameAlbum),
+                        SingleChildScrollView(
+                            child: Column(children: [
+                          Container(
+                            height: MediaQuery.of(context).size.height * 0.225,
+                            child: FutureBuilder<List<KhinsiderResponse>>(
+                              future: DioClient().scrapeKhinsider(title: title),
+                              builder: (BuildContext context,
+                                  AsyncSnapshot<List<KhinsiderResponse>>
+                                      snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return Container(
+                                    child: Center(
+                                      child: Transform.scale(
+                                        scale:
+                                            1, // Adjusts the scaling value to make the CircularProgressIndicator smaller.
+                                        child: CircularProgressIndicator(),
                                       ),
-                                      TableCell(
-                                        verticalAlignment:
-                                            TableCellVerticalAlignment.middle,
-                                        child:
-                                            Text(khinsiderResponse.platform!),
-                                      ),
-                                      TableCell(
-                                        verticalAlignment:
-                                            TableCellVerticalAlignment.middle,
-                                        child: Text(
-                                          khinsiderResponse.year.toString(),
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      ),
-                                      TableCell(
-                                        verticalAlignment:
-                                            TableCellVerticalAlignment.middle,
-                                        child: ElevatedButton(
-                                          child: Text(
-                                              appState.showMoreContent == false
-                                                  ? 'Seleccionar'
-                                                  : 'Más'),
-                                          onPressed: () {
-                                            indexSelected.value = currentIndex;
-                                            toggleVisibility();
-                                          }, // Agrega el botón "Más" aquí
-                                        ),
-                                      ),
-                                    ],
+                                    ),
                                   );
-                                }).toList(),
-                              ));
-                            }
-                          },
-                        ),
+                                } else if (snapshot.hasError) {
+                                  return Text(snapshot.error.toString());
+                                } else if (!snapshot.hasData ||
+                                    snapshot.data!.isEmpty) {
+                                  return Text('No se encontraron resultados');
+                                } else {
+                                  responses = snapshot.data!;
+                                  return SingleChildScrollView(
+                                      child: Table(
+                                    border: TableBorder.all(color: Colors.grey),
+                                    defaultColumnWidth: FixedColumnWidth(150.0),
+                                    children:
+                                        responses.map((khinsiderResponse) {
+                                      final currentIndex =
+                                          responses.indexOf(khinsiderResponse);
+                                      return TableRow(
+                                        children: [
+                                          TableCell(
+                                            verticalAlignment:
+                                                TableCellVerticalAlignment
+                                                    .middle,
+                                            child: Text(
+                                                khinsiderResponse.nameAlbum),
+                                          ),
+                                          TableCell(
+                                            verticalAlignment:
+                                                TableCellVerticalAlignment
+                                                    .middle,
+                                            child: Text(
+                                                khinsiderResponse.platform!),
+                                          ),
+                                          TableCell(
+                                            verticalAlignment:
+                                                TableCellVerticalAlignment
+                                                    .middle,
+                                            child: Text(
+                                              khinsiderResponse.year.toString(),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                          ),
+                                          TableCell(
+                                            verticalAlignment:
+                                                TableCellVerticalAlignment
+                                                    .middle,
+                                            child: ElevatedButton(
+                                              child: Text(
+                                                  appState.showMoreContent ==
+                                                          false
+                                                      ? 'Seleccionar'
+                                                      : 'Más'),
+                                              onPressed: () {
+                                                indexSelected.value =
+                                                    currentIndex;
+                                                toggleVisibility();
+                                              }, // Agrega el botón "Más" aquí
+                                            ),
+                                          ),
+                                        ],
+                                      );
+                                    }).toList(),
+                                  ));
+                                }
+                              },
+                            ),
+                          )
+                        ])),
                         SizedBox(
                           height: 16,
                         ),

@@ -120,6 +120,7 @@ Future<Database?> createAndOpenDB() async {
           'id INTEGER PRIMARY KEY AUTOINCREMENT,'
           'twoDThreeDCovers INTEGER,'
           'playOSTOnSelectGame INTEGER,'
+          'showEditorOnGrid INTEGER,'
           ')',
         );
         await db.insert(
@@ -127,7 +128,8 @@ Future<Database?> createAndOpenDB() async {
           {
             'twoDThreeDCovers': 1,
             'playOSTOnSelectGame': 1,
-            'showLogoNameOnGrid': 0
+            'showLogoNameOnGrid': 0,
+            'showEditorOnGrid': 1,
           },
         );
       },
@@ -301,10 +303,13 @@ Future<void> deleteMediaByName(GameMediaResponse game) async {
   deleteFile(game.media!.logoUrl);
   //Deleting screenshots folder
   List<String> fileNames = game.media!.screenshots.split(',');
-  String id = fileNames[0].split('_')[0];
+  String id = fileNames[0].split('_')[0]; //Game ID according to Steam
   String folder = '\\Synchronyx\\media\\screenshots\\$id\\';
+  String aFolder = '\\Synchronyx\\media\\audio\\$id\\';
   String screenFolder = '${Constants.appDocumentsDirectory.path}$folder';
+  String audioFolder = '${Constants.appDocumentsDirectory.path}$aFolder';
   deleteDirectory(screenFolder);
+  deleteDirectory(audioFolder);
   // Remove the Game from the database.
   await db!.delete(
     'medias',

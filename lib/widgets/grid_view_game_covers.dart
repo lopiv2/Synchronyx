@@ -48,8 +48,8 @@ class _GridViewGameCoversState extends State<GridViewGameCovers> {
                 return GridView.count(
                   crossAxisCount: 4,
                   padding: const EdgeInsets.all(4),
-                  mainAxisSpacing: 12,
-                  crossAxisSpacing: 8,
+                  mainAxisSpacing: 75,
+                  crossAxisSpacing: 4,
                   children: containers,
                 );
               }
@@ -74,7 +74,6 @@ class _GridViewGameCoversState extends State<GridViewGameCovers> {
         appState.elementsAnimations.add(false);
         containers.add(
           Container(
-            //color: Colors.red,
             child: Transform.scale(
               scale: 2.2,
               child: ImageCoverModel(

@@ -38,6 +38,7 @@ class DioClient {
   Future<void> getAndImportSteamGames(
       {required String key, required String steamId}) async {
     int requestCount = 0; //Number of request per progress bar counting
+    await Constants.initialize();
     Response userData = await _dio.get(
         _steamApiUrl + '$key&steamid=$steamId&format=json&include_appinfo=1');
     String jsonData = jsonEncode(userData.data);
@@ -89,7 +90,7 @@ class DioClient {
 
       //Get video for Media insert
       String videoUrl = await searchVideosAndReturnUrl('$name trailer');
-      //Primero inserto el juego
+      //First I insert the game
       List<String> tag = List.empty(growable: true);
       tag.add("prueba");
       tag.add("adios");
@@ -107,7 +108,7 @@ class DioClient {
           tags: tag.join(','));
       await databaseFunctions.insertGame(gameInsert);
 
-      //Luego inserto los medios
+      //Then I insert the media
       var mediaInsert = Media(
           iconUrl: iconUrl,
           name: name,
@@ -120,7 +121,7 @@ class DioClient {
       await databaseFunctions.insertMedia(mediaInsert, gameInsert);
 
       updateProgress(requestCount, gamesList.length);
-      if (requestCount > 1) break;
+      if (requestCount > 5) break;
     }
   }
 
@@ -198,10 +199,15 @@ class DioClient {
           final year = row.querySelectorAll(
               'td')[4]; // Select the forth <td> in the row - year
           if (title != null) {
+            int num = 0;
+            try {
+              num = int.parse(year.text);              
+              //print("It is a number: $num");
+            } catch (e) {            
+              //print("It is not a parseable number.");
+            }
             kResponse = KhinsiderResponse(
-                nameAlbum: title.text,
-                platform: platform.text,
-                year: int.parse(year.text));
+                nameAlbum: title.text, platform: platform.text, year: num);
           }
           final urlElement =
               'https://downloads.khinsider.com${title.querySelector('a')!.attributes['href']}';

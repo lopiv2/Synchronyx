@@ -43,7 +43,9 @@ class _SettingsDialogState extends State<SettingsDialog> {
 
   @override
   void dispose() {
-    audioManager.resume();
+    if (widget.appState.selectedOptions.playOSTOnSelectGame == 1) {
+      audioManager.resume();
+    }
     super.dispose();
   }
 
@@ -103,7 +105,9 @@ class _SettingsDialogState extends State<SettingsDialog> {
                     appState.optionsResponse =
                         GlobalOptions.copy(appState.selectedOptions);
                     Navigator.of(context).pop();
-                    audioManager.resume();
+                    if (appState.selectedOptions.playOSTOnSelectGame == 1) {
+                      audioManager.resume();
+                    }
                   },
                   icon: const Icon(Icons.close),
                   color: Colors.white,
@@ -165,7 +169,9 @@ class _SettingsDialogState extends State<SettingsDialog> {
                         appState.optionsResponse =
                             GlobalOptions.copy(appState.selectedOptions);
                         Navigator.of(context).pop();
-                        audioManager.resume();
+                        if (appState.selectedOptions.playOSTOnSelectGame == 1) {
+                          audioManager.resume();
+                        }
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor:
@@ -193,29 +199,31 @@ class LeftColumn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      flex:1,
-        child: Container(
-      decoration: BoxDecoration(
-        border: Border.all(
-          color: const Color.fromARGB(255, 2, 34, 14), // Color del borde
-          width: 0.2, // Ancho del borde
+        child:
+            Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+      Container(
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: const Color.fromARGB(255, 2, 34, 14), // Color del borde
+            width: 0.2, // Ancho del borde
+          ),
+          gradient: const LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Colors.green,
+              Color.fromARGB(255, 41, 190, 66),
+              Color.fromARGB(255, 48, 87, 3)
+            ],
+          ),
         ),
-        gradient: const LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Colors.green,
-            Color.fromARGB(255, 41, 190, 66),
-            Color.fromARGB(255, 48, 87, 3)
-          ],
+        height: MediaQuery.of(context).size.height * 0.60,
+        width: MediaQuery.of(context).size.width * 0.15,
+        child: OptionsTreeView(
+          appLocalizations: appLocalizations,
         ),
-      ),
-      height: MediaQuery.of(context).size.width * 0.45,
-      width: MediaQuery.of(context).size.width * 0.15,
-      child: OptionsTreeView(
-        appLocalizations: appLocalizations,
-      ),
-    ));
+      )
+    ]));
   }
 }
 
@@ -227,23 +235,27 @@ class RightColumn extends StatelessWidget {
   Widget build(BuildContext context) {
     final appState = Provider.of<AppState>(context);
     return Expanded(
-      flex:3,
-      child: Container(
-        height: MediaQuery.of(context).size.height * 0.60,
-        width: MediaQuery.of(context).size.width * 0.27,
-        padding: EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: const Color.fromARGB(17, 238, 238, 238),
-          border: Border.all(
-            color: Colors.grey, // Color del borde
-            width: 1.0, // Ancho del borde
-          ),
-          borderRadius:
-              BorderRadius.all(Radius.circular(2.0)), // Radio del borde
-        ),
-        child: buildOptions(appState, appLocalizations),
-      ),
-    );
+        flex: 4,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Container(
+              height: MediaQuery.of(context).size.height * 0.60,
+              width: MediaQuery.of(context).size.width * 0.27,
+              padding: EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: const Color.fromARGB(17, 238, 238, 238),
+                border: Border.all(
+                  color: Colors.grey, // Color del borde
+                  width: 1.0, // Ancho del borde
+                ),
+                borderRadius:
+                    BorderRadius.all(Radius.circular(2.0)), // Radio del borde
+              ),
+              child: buildOptions(appState, appLocalizations),
+            )
+          ],
+        ));
   }
 
   Widget buildOptions(AppState appState, appLocalizations) {
