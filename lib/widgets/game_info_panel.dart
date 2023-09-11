@@ -617,9 +617,9 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
   void didUpdateWidget(GameInfoPanel oldWidget) {
     super.didUpdateWidget(oldWidget);
     updateFavIcon(Provider.of<AppState>(context).selectedGame?.game.favorite);
-    _controller
+    /*_controller
       ..reset()
-      ..forward();
+      ..forward();*/
   }
 
   @override

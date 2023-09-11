@@ -47,6 +47,14 @@
   "importXbox": "Juegos XBox/Tienda Microsoft...",
   "importXboxWindowTitle": "Importar juegos desde XBox/Tienda Microsoft",
   "importOstWindowTitle": "Importar audio para juego",
+  "importOstForGame": "Importar audio para {game}",
+  "@importOstForGame": {
+    "placeholders": {
+      "game": {
+        "type": "String"
+      }
+    }
+  },
   "install": "Instalar",
   "installed": "Instalado",
   "itchWindowAssistant": "Asistente de importación de juegos de Itch.IO",

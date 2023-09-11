@@ -95,7 +95,8 @@ class OstDownloadDialog extends StatelessWidget {
                   Padding(
                     padding: EdgeInsets.fromLTRB(20, 0, 10, 0),
                     child: Text(
-                      "Importar audio para ${appState.selectedGame!.game.title}",
+                      appLocalizations
+                          .importOstForGame(appState.selectedGame!.game.title),
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 20,

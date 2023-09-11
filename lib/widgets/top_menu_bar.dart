@@ -8,6 +8,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:synchronyx/utilities/generic_database_functions.dart'
     as databaseFunctions;
 import 'package:synchronyx/utilities/generic_api_functions.dart';
+import 'package:synchronyx/widgets/dialogs/emulators_list_dialog.dart';
 import 'package:synchronyx/widgets/dialogs/import_dialog.dart';
 import 'package:synchronyx/widgets/dialogs/settings_dialog.dart';
 import '../models/api.dart';
@@ -441,34 +442,21 @@ class MyMenuBar extends StatelessWidget {
                         size: 20, color: Color.fromARGB(255, 29, 121, 57)),
                     menuChildren: <Widget>[
                       MenuItemButton(
-                        leadingIcon: const Icon(CustomIcons.emulators,
-                            size: 20),
+                        leadingIcon:
+                            const Icon(CustomIcons.emulators, size: 20),
                         onPressed: () {
                           showDialog(
                             context: context,
                             barrierDismissible: false,
                             builder: (context) {
-                              return ImportDialog(
-                                appLocalizations: appLocalizations,
-                                iconColor: Colors.orange,
-                                titleIcon: CustomIcons.amazon_games,
-                                title: appLocalizations.download,
-                                steps: [
-                                  // Aquí colocas los widgets que representan el contenido de cada paso
-                                  SteamImportSteps.step1(
-                                    appLocalizations,
-                                  ),
-                                  //SteamImportSteps.step2(appLocalizations),
-                                  // Add more steps as needed
-                                ],
-                              );
+                              return EmulatorListDialog(
+                                  appLocalizations: appLocalizations);
                             },
                           );
                         },
-                        child:
-                            MenuAcceleratorLabel(appLocalizations.emulators),
+                        child: MenuAcceleratorLabel(appLocalizations.emulators),
                       ),
-                      ],
+                    ],
                     child: MenuAcceleratorLabel(appLocalizations.download),
                   ),
                   MenuItemButton(

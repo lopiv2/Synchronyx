@@ -201,9 +201,9 @@ class DioClient {
           if (title != null) {
             int num = 0;
             try {
-              num = int.parse(year.text);              
+              num = int.parse(year.text);
               //print("It is a number: $num");
-            } catch (e) {            
+            } catch (e) {
               //print("It is not a parseable number.");
             }
             kResponse = KhinsiderResponse(
@@ -218,7 +218,7 @@ class DioClient {
             //Cuento las columnas que tiene cada columna
             if (table != null) {
               final rows = table.querySelectorAll('tr');
-              //print(rows.length-2);
+              //Looping tr
               for (var i = 1; i < rows.length - 1; i++) {
                 // Start from the second element
                 final row = rows[i];
