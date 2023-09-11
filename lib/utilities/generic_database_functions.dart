@@ -120,6 +120,7 @@ Future<Database?> createAndOpenDB() async {
           'id INTEGER PRIMARY KEY AUTOINCREMENT,'
           'twoDThreeDCovers INTEGER,'
           'playOSTOnSelectGame INTEGER,'
+          'showLogoNameOnGrid INTEGER,'
           'showEditorOnGrid INTEGER,'
           ')',
         );

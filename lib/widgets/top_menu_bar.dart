@@ -436,6 +436,41 @@ class MyMenuBar extends StatelessWidget {
                     ],
                     child: MenuAcceleratorLabel(appLocalizations.import),
                   ),
+                  SubmenuButton(
+                    leadingIcon: Icon(Icons.file_download,
+                        size: 20, color: Color.fromARGB(255, 29, 121, 57)),
+                    menuChildren: <Widget>[
+                      MenuItemButton(
+                        leadingIcon: const Icon(CustomIcons.emulators,
+                            size: 20),
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (context) {
+                              return ImportDialog(
+                                appLocalizations: appLocalizations,
+                                iconColor: Colors.orange,
+                                titleIcon: CustomIcons.amazon_games,
+                                title: appLocalizations.download,
+                                steps: [
+                                  // Aquí colocas los widgets que representan el contenido de cada paso
+                                  SteamImportSteps.step1(
+                                    appLocalizations,
+                                  ),
+                                  //SteamImportSteps.step2(appLocalizations),
+                                  // Add more steps as needed
+                                ],
+                              );
+                            },
+                          );
+                        },
+                        child:
+                            MenuAcceleratorLabel(appLocalizations.emulators),
+                      ),
+                      ],
+                    child: MenuAcceleratorLabel(appLocalizations.download),
+                  ),
                   MenuItemButton(
                     leadingIcon: Icon(Icons.settings, size: 20),
                     onPressed: () {

@@ -319,7 +319,6 @@ class ThreeDGameCover extends StatelessWidget {
 
   void createGameFromTitle(GameMediaResponse game, AppState appState) {
     appState.updateSelectedGame(game);
-    //print(appState.selectedGame);
   }
 }
 

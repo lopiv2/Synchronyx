@@ -2,11 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:getwidget/components/accordion/gf_accordion.dart';
 import 'package:getwidget/getwidget.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:pushable_button/pushable_button.dart';
 import 'package:synchronyx/models/responses/gameMedia_response.dart';
 import 'package:synchronyx/utilities/Constants.dart';
@@ -484,16 +481,16 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: developerWidgets),
-                                    collapsedIcon: Icon(Icons.add),
-                                    expandedIcon: Icon(Icons.minimize)),
+                                    collapsedIcon: const Icon(Icons.add),
+                                    expandedIcon: const Icon(Icons.minimize)),
                               ],
                             ),
                           ),
                         ],
                       )),
-                  Padding(
-                      padding: const EdgeInsets.fromLTRB(26, 0, 26, 0),
-                      child: const Divider()),
+                  const Padding(
+                      padding: EdgeInsets.fromLTRB(26, 0, 26, 0),
+                      child: Divider()),
                   Padding(
                       padding: const EdgeInsets.fromLTRB(26, 0, 26, 0),
                       child: Row(
@@ -503,8 +500,8 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold),
                                     widget.appLocalizations.publisher),
                               ],
                             ),
@@ -516,7 +513,7 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
                                 GFAccordion(
                                     title: 'Pulse para abrir',
                                     contentPadding:
-                                        EdgeInsets.fromLTRB(10, 2, 0, 0),
+                                        const EdgeInsets.fromLTRB(10, 2, 0, 0),
                                     collapsedTitleBackgroundColor:
                                         const Color.fromARGB(0, 250, 205, 202),
                                     expandedTitleBackgroundColor:
@@ -535,10 +532,10 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
                           ),
                         ],
                       )),
-                  Padding(
-                      padding: const EdgeInsets.fromLTRB(
+                  const Padding(
+                      padding: EdgeInsets.fromLTRB(
                           26, 0, 26, 0), // Agrega el padding deseado
-                      child: const Divider()),
+                      child: Divider()),
                   Padding(
                       padding: const EdgeInsets.fromLTRB(
                           26, 0, 26, 0), // Agrega el padding deseado
@@ -549,8 +546,8 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold),
                                     widget.appLocalizations.playTime),
                               ],
                             ),
@@ -560,7 +557,7 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 Text(
-                                    style: TextStyle(color: Colors.white),
+                                    style: const TextStyle(color: Colors.white),
                                     formatMinutesToHMS(
                                         appState.selectedGame!.game.playTime)),
                               ],
@@ -568,10 +565,10 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
                           ),
                         ],
                       )),
-                  Padding(
-                      padding: const EdgeInsets.fromLTRB(
+                  const Padding(
+                      padding: EdgeInsets.fromLTRB(
                           26, 0, 26, 0), // Agrega el padding deseado
-                      child: const Divider()),
+                      child: Divider()),
                 ])))
       ])))
     ]);
@@ -591,8 +588,10 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
     String id = parts!.first;
     String soundFolder = '\\Synchronyx\\media\\audio\\$id\\';
     audioManager.audioPlayer.setReleaseMode(ReleaseMode.loop);
-    await audioManager.playFile(
-        '${Constants.appDocumentsDirectory.path}$soundFolder${appState.selectedGame?.media.musicUrl}');
+    if (appState.selectedGame?.media.musicUrl != '') {
+      await audioManager.playFile(
+          '${Constants.appDocumentsDirectory.path}$soundFolder${appState.selectedGame?.media.musicUrl}');
+    }
   }
 
   void reload() {
@@ -702,11 +701,11 @@ class PlayPauseSong extends StatelessWidget {
                                 };
                         },
                         child: Container(
-                          padding: EdgeInsets.all(
+                          padding: const EdgeInsets.all(
                               8.0), // Espacio de relleno alrededor del icono
-                          decoration: BoxDecoration(
+                          decoration: const BoxDecoration(
                             shape: BoxShape.circle,
-                            color: const Color.fromARGB(
+                            color: Color.fromARGB(
                                 0, 33, 149, 243), // Color de fondo del botón
                           ),
                           child: isPlaying
@@ -758,11 +757,11 @@ class ToggleMusicIcon extends StatelessWidget {
                     );
                   },
                   child: Container(
-                    padding: EdgeInsets.all(
+                    padding: const EdgeInsets.all(
                         8.0), // Espacio de relleno alrededor del icono
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       shape: BoxShape.circle,
-                      color: const Color.fromARGB(
+                      color: Color.fromARGB(
                           0, 33, 149, 243), // Color de fondo del botón
                     ),
                     child: Icon(
@@ -848,7 +847,8 @@ class _GameDeleteConfirmationDialogState
             Navigator.of(context).pop(); // Cierra el diálogo
           },
           child: Text(
-              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red),
+              style: const TextStyle(
+                  fontWeight: FontWeight.bold, color: Colors.red),
               widget.appLocalizations.delete),
         ),
       ],
@@ -857,7 +857,10 @@ class _GameDeleteConfirmationDialogState
 }
 
 class ToggleFavoriteButton extends StatefulWidget {
+  const ToggleFavoriteButton({super.key});
+
   @override
+  // ignore: library_private_types_in_public_api
   _ToggleFavoriteButtonState createState() => _ToggleFavoriteButtonState();
 }
 

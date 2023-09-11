@@ -3,8 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:synchronyx/providers/app_state.dart';
 import 'package:synchronyx/utilities/constants.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:synchronyx/utilities/generic_database_functions.dart'
-    as databaseFunctions;
 
 class ImportDialog extends StatefulWidget {
   final IconData titleIcon;
@@ -30,7 +28,7 @@ class ImportDialog extends StatefulWidget {
 
 class _ImportDialogState extends State<ImportDialog> {
   int _currentStep = 0; // Current step state (initialized at 0)
-  Offset _offset = Offset(0, 0);
+  Offset _offset = const Offset(0, 0);
 
   @override
   Widget build(BuildContext context) {
@@ -192,7 +190,7 @@ class CustomDialog extends StatelessWidget {
   final Widget child;
   final Offset offset;
 
-  const CustomDialog({required this.child, required this.offset});
+  const CustomDialog({super.key, required this.child, required this.offset});
 
   @override
   Widget build(BuildContext context) {
