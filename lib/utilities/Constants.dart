@@ -7,6 +7,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sqflite_common/sqlite_api.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:synchronyx/icons/custom_icons_icons.dart';
+import 'package:synchronyx/models/emulators.dart';
 import '../models/api.dart';
 
 enum PlatformStore {
@@ -356,6 +357,13 @@ class Constants {
   static Database? database;
   static double importProgress = 0.0;
   static late Directory appDocumentsDirectory;
+
+  static List<Emulators> emulatorsList = [
+  Emulators(id: 1, name: 'PCSX2', url: 'https://example.com/emulator1', systems: 'Playstation 2', icon: 'icon1.png', description: 'Description 1', installed: 0),
+  Emulators(id: 2, name: 'PPSSPP', url: 'https://example.com/emulator2', systems: 'PSP', icon: 'icon2.png', description: 'Description 2', installed: 0),
+  // Agrega más objetos Emulators según sea necesario
+];
+
 
   static Future<void> initialize() async {
     try {

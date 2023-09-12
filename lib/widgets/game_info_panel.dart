@@ -465,7 +465,7 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 GFAccordion(
-                                    title: 'Pulse para abrir',
+                                    title: widget.appLocalizations.clickToOpen,
                                     contentPadding:
                                         EdgeInsets.fromLTRB(0, 0, 0, 0),
                                     collapsedTitleBackgroundColor:
@@ -511,7 +511,7 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 GFAccordion(
-                                    title: 'Pulse para abrir',
+                                    title: widget.appLocalizations.clickToOpen,
                                     contentPadding:
                                         const EdgeInsets.fromLTRB(10, 2, 0, 0),
                                     collapsedTitleBackgroundColor:

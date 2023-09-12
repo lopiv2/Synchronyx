@@ -13,11 +13,19 @@ import 'package:synchronyx/utilities/generic_api_functions.dart';
 import 'package:synchronyx/utilities/generic_database_functions.dart';
 import 'package:synchronyx/utilities/generic_functions.dart';
 import 'package:synchronyx/widgets/buttons/icon_button_colored.dart';
+import 'package:synchronyx/widgets/dialogs/import_dialog.dart';
 
-class OstDownloadDialog extends StatelessWidget {
+class OstDownloadDialog extends StatefulWidget {
   OstDownloadDialog({super.key, required this.appLocalizations});
   final AppLocalizations appLocalizations;
+
+  @override
+  State<OstDownloadDialog> createState() => _OstDownloadDialogState();
+}
+
+class _OstDownloadDialogState extends State<OstDownloadDialog> {
   final AudioManager audioManager = AudioManager();
+  Offset _offset = Offset(0, 0);
 
   @override
   Widget build(BuildContext context) {
@@ -34,442 +42,461 @@ class OstDownloadDialog extends StatelessWidget {
       tog.value = !tog.value; // Cambia el valor de tog y notifica a los oyentes
     }
 
-    return Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0),
-      ),
-      child: Container(
-        alignment: Alignment.center,
-        width: MediaQuery.of(context).size.width * 0.7,
-        height: MediaQuery.of(context).size.height * 0.7,
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: const Color.fromARGB(255, 2, 34, 14),
-            width: 0.2,
-          ),
-          gradient: const LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Constants.SIDE_BAR_COLOR,
-              Color.fromARGB(255, 33, 109, 72),
-              Color.fromARGB(255, 48, 87, 3),
-            ],
-          ),
-        ),
-        child: Stack(
-          children: [
-            Positioned.fill(
-              child: Column(
-                children: [
-                  AppBar(
-                    backgroundColor: Constants.SIDE_BAR_COLOR,
-                    elevation: 0.0,
-                    toolbarHeight: 35.0,
-                    titleSpacing: -20.0,
-                    leading: const Padding(
-                      padding: EdgeInsets.only(right: 20.0),
-                      child: Icon(
-                        Icons.audiotrack,
-                        color: Colors.white,
-                      ),
-                    ),
-                    title: Text(
-                      appLocalizations.importOstWindowTitle,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    actions: [
-                      IconButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        icon: const Icon(Icons.close),
-                        color: Colors.white,
-                      ),
-                    ],
-                  ),
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(20, 0, 10, 0),
-                    child: Text(
-                      appLocalizations
-                          .importOstForGame(appState.selectedGame!.game.title),
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    padding: EdgeInsets.all(16.0),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          appLocalizations.results,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18.0,
+    return GestureDetector(
+        onPanUpdate: (details) {
+          setState(() {
+            _offset += details.delta;
+          });
+        },
+        child: CustomDialog(
+          offset: _offset,
+          child: Container(
+            alignment: Alignment.center,
+            width: MediaQuery.of(context).size.width * 0.7,
+            height: MediaQuery.of(context).size.height * 0.7,
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: const Color.fromARGB(255, 2, 34, 14),
+                width: 0.2,
+              ),
+              gradient: const LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Constants.SIDE_BAR_COLOR,
+                  Color.fromARGB(255, 33, 109, 72),
+                  Color.fromARGB(255, 48, 87, 3),
+                ],
+              ),
+            ),
+            child: Stack(
+              children: [
+                Positioned.fill(
+                  child: Column(
+                    children: [
+                      AppBar(
+                        backgroundColor: Constants.SIDE_BAR_COLOR,
+                        elevation: 0.0,
+                        toolbarHeight: 35.0,
+                        titleSpacing: -20.0,
+                        leading: const Padding(
+                          padding: EdgeInsets.only(right: 20.0),
+                          child: Icon(
+                            Icons.audiotrack,
+                            color: Colors.white,
                           ),
                         ),
-                        SizedBox(height: 16.0),
-                        SingleChildScrollView(
-                            child: Column(children: [
-                          Container(
-                            height: MediaQuery.of(context).size.height * 0.225,
-                            child: FutureBuilder<List<KhinsiderResponse>>(
-                              future: DioClient().scrapeKhinsider(title: title),
-                              builder: (BuildContext context,
-                                  AsyncSnapshot<List<KhinsiderResponse>>
-                                      snapshot) {
-                                if (snapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return Container(
-                                    child: Center(
-                                      child: Transform.scale(
-                                        scale:
-                                            1, // Adjusts the scaling value to make the CircularProgressIndicator smaller.
-                                        child: CircularProgressIndicator(),
-                                      ),
-                                    ),
-                                  );
-                                } else if (snapshot.hasError) {
-                                  return Text(snapshot.error.toString());
-                                } else if (!snapshot.hasData ||
-                                    snapshot.data!.isEmpty) {
-                                  return Text('No se encontraron resultados');
-                                } else {
-                                  responses = snapshot.data!;
-                                  return SingleChildScrollView(
-                                      child: Table(
-                                    border: TableBorder.all(color: Colors.grey),
-                                    defaultColumnWidth: FixedColumnWidth(150.0),
-                                    children:
-                                        responses.map((khinsiderResponse) {
-                                      final currentIndex =
-                                          responses.indexOf(khinsiderResponse);
-                                      return TableRow(
-                                        children: [
-                                          TableCell(
-                                            verticalAlignment:
-                                                TableCellVerticalAlignment
-                                                    .middle,
-                                            child: Text(
-                                                khinsiderResponse.nameAlbum),
-                                          ),
-                                          TableCell(
-                                            verticalAlignment:
-                                                TableCellVerticalAlignment
-                                                    .middle,
-                                            child: Text(
-                                                khinsiderResponse.platform!),
-                                          ),
-                                          TableCell(
-                                            verticalAlignment:
-                                                TableCellVerticalAlignment
-                                                    .middle,
-                                            child: Text(
-                                              khinsiderResponse.year.toString(),
-                                              textAlign: TextAlign.center,
-                                            ),
-                                          ),
-                                          TableCell(
-                                            verticalAlignment:
-                                                TableCellVerticalAlignment
-                                                    .middle,
-                                            child: ElevatedButton(
-                                              child: Text(
-                                                  appState.showMoreContent ==
-                                                          false
-                                                      ? 'Seleccionar'
-                                                      : 'Más'),
-                                              onPressed: () {
-                                                indexSelected.value =
-                                                    currentIndex;
-                                                toggleVisibility();
-                                              }, // Agrega el botón "Más" aquí
-                                            ),
-                                          ),
-                                        ],
-                                      );
-                                    }).toList(),
-                                  ));
-                                }
-                              },
-                            ),
-                          )
-                        ])),
-                        SizedBox(
-                          height: 16,
+                        title: Text(
+                          widget.appLocalizations.importOstWindowTitle,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                        ValueListenableBuilder<int>(
-                          valueListenable: indexSelected,
-                          builder: (context, selectedIndex, child) {
-                            return Visibility(
-                              visible: selectedIndex != -1,
-                              child: Container(
-                                padding: EdgeInsets.fromLTRB(10, 10, 0, 0),
-                                child: Column(
-                                  children: [
-                                    Text(
-                                      appLocalizations.trackList,
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 18.0,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 8,
-                                    ),
-                                    Table(
-                                        border: TableBorder.all(
-                                            borderRadius:
-                                                BorderRadius.circular(5)),
-                                        columnWidths: const {
-                                          0: FlexColumnWidth(0.5),
-                                          1: FlexColumnWidth(1),
-                                          2: FlexColumnWidth(0.5),
-                                          3: FlexColumnWidth(0.5),
-                                          4: FlexColumnWidth(1),
-                                        },
-                                        children: [
-                                          TableRow(
+                        actions: [
+                          IconButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            icon: const Icon(Icons.close),
+                            color: Colors.white,
+                          ),
+                        ],
+                      ),
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(20, 0, 10, 0),
+                        child: Text(
+                          widget.appLocalizations.importOstForGame(
+                              appState.selectedGame!.game.title),
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      Container(
+                        padding: EdgeInsets.all(16.0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              widget.appLocalizations.results,
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18.0,
+                              ),
+                            ),
+                            SizedBox(height: 16.0),
+                            SingleChildScrollView(
+                                child: Column(children: [
+                              Container(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.225,
+                                child: FutureBuilder<List<KhinsiderResponse>>(
+                                  future:
+                                      DioClient().scrapeKhinsider(title: title),
+                                  builder: (BuildContext context,
+                                      AsyncSnapshot<List<KhinsiderResponse>>
+                                          snapshot) {
+                                    if (snapshot.connectionState ==
+                                        ConnectionState.waiting) {
+                                      return Container(
+                                        child: Center(
+                                          child: Transform.scale(
+                                            scale:
+                                                1, // Adjusts the scaling value to make the CircularProgressIndicator smaller.
+                                            child: CircularProgressIndicator(),
+                                          ),
+                                        ),
+                                      );
+                                    } else if (snapshot.hasError) {
+                                      return Text(snapshot.error.toString());
+                                    } else if (!snapshot.hasData ||
+                                        snapshot.data!.isEmpty) {
+                                      return Text(
+                                          'No se encontraron resultados');
+                                    } else {
+                                      responses = snapshot.data!;
+                                      return SingleChildScrollView(
+                                          child: Table(
+                                        border:
+                                            TableBorder.all(color: Colors.grey),
+                                        defaultColumnWidth:
+                                            FixedColumnWidth(150.0),
+                                        children:
+                                            responses.map((khinsiderResponse) {
+                                          final currentIndex = responses
+                                              .indexOf(khinsiderResponse);
+                                          return TableRow(
                                             children: [
-                                              TableCell(
-                                                  verticalAlignment:
-                                                      TableCellVerticalAlignment
-                                                          .middle,
-                                                  child: Center(
-                                                      child: Text(
-                                                          appLocalizations
-                                                              .number))),
-                                              TableCell(
-                                                  verticalAlignment:
-                                                      TableCellVerticalAlignment
-                                                          .middle,
-                                                  child: Center(
-                                                      child: Text(
-                                                          appLocalizations
-                                                              .title))),
-                                              TableCell(
-                                                  child: Text(
-                                                      appLocalizations.length)),
-                                              TableCell(
-                                                  verticalAlignment:
-                                                      TableCellVerticalAlignment
-                                                          .middle,
-                                                  child: Center(
-                                                      child: Text(
-                                                          appLocalizations
-                                                              .size))),
-                                              TableCell(
-                                                  verticalAlignment:
-                                                      TableCellVerticalAlignment
-                                                          .middle,
-                                                  child:
-                                                      Center(child: Text(''))),
                                               TableCell(
                                                 verticalAlignment:
                                                     TableCellVerticalAlignment
                                                         .middle,
-                                                child: Center(
+                                                child: Text(khinsiderResponse
+                                                    .nameAlbum),
+                                              ),
+                                              TableCell(
+                                                verticalAlignment:
+                                                    TableCellVerticalAlignment
+                                                        .middle,
+                                                child: Text(khinsiderResponse
+                                                    .platform!),
+                                              ),
+                                              TableCell(
+                                                verticalAlignment:
+                                                    TableCellVerticalAlignment
+                                                        .middle,
+                                                child: Text(
+                                                  khinsiderResponse.year
+                                                      .toString(),
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                              ),
+                                              TableCell(
+                                                verticalAlignment:
+                                                    TableCellVerticalAlignment
+                                                        .middle,
+                                                child: ElevatedButton(
                                                   child: Text(
-                                                      appLocalizations.actions),
+                                                      appState.showMoreContent ==
+                                                              false
+                                                          ? 'Seleccionar'
+                                                          : 'Más'),
+                                                  onPressed: () {
+                                                    indexSelected.value =
+                                                        currentIndex;
+                                                    toggleVisibility();
+                                                  }, // Agrega el botón "Más" aquí
                                                 ),
                                               ),
                                             ],
-                                          )
-                                        ]),
-                                  ],
+                                          );
+                                        }).toList(),
+                                      ));
+                                    }
+                                  },
                                 ),
-                              ),
-                            );
-                          },
-                        ),
-                        ValueListenableBuilder<int>(
-                          valueListenable: indexSelected,
-                          builder: (context, selectedIndex, child) {
-                            return Visibility(
-                              visible: selectedIndex != -1,
-                              child: Container(
-                                padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
-                                height:
-                                    MediaQuery.of(context).size.height * 0.16,
-                                child: ListView(
-                                  children: [
-                                    Table(
-                                      border: TableBorder.all(
-                                          color: Colors.black,
-                                          borderRadius:
-                                              BorderRadius.circular(10)),
-                                      columnWidths: const {
-                                        0: FlexColumnWidth(0.5),
-                                        1: FlexColumnWidth(1),
-                                        2: FlexColumnWidth(0.5),
-                                        3: FlexColumnWidth(0.5),
-                                        4: FlexColumnWidth(1),
-                                      },
+                              )
+                            ])),
+                            SizedBox(
+                              height: 16,
+                            ),
+                            ValueListenableBuilder<int>(
+                              valueListenable: indexSelected,
+                              builder: (context, selectedIndex, child) {
+                                return Visibility(
+                                  visible: selectedIndex != -1,
+                                  child: Container(
+                                    padding: EdgeInsets.fromLTRB(10, 10, 0, 0),
+                                    child: Column(
                                       children: [
-                                        if (selectedIndex != -1)
-                                          for (int i = 0;
-                                              i <
-                                                  responses[selectedIndex]
-                                                      .tracks
-                                                      .length;
-                                              i++)
-                                            TableRow(
-                                              decoration: BoxDecoration(
-                                                color: i % 2 == 0
-                                                    ? Color.fromARGB(
-                                                        143, 14, 73, 27)
-                                                    : Color.fromARGB(
-                                                        255,
-                                                        64,
-                                                        124,
-                                                        69), // Alterna los colores de fondo
-                                              ),
-                                              children: [
-                                                TableCell(
+                                        Text(
+                                          widget.appLocalizations.trackList,
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 18.0,
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: 8,
+                                        ),
+                                        Table(
+                                            border: TableBorder.all(
+                                                borderRadius:
+                                                    BorderRadius.circular(5)),
+                                            columnWidths: const {
+                                              0: FlexColumnWidth(0.5),
+                                              1: FlexColumnWidth(1),
+                                              2: FlexColumnWidth(0.5),
+                                              3: FlexColumnWidth(0.5),
+                                              4: FlexColumnWidth(1),
+                                            },
+                                            children: [
+                                              TableRow(
+                                                children: [
+                                                  TableCell(
+                                                      verticalAlignment:
+                                                          TableCellVerticalAlignment
+                                                              .middle,
+                                                      child: Center(
+                                                          child: Text(widget
+                                                              .appLocalizations
+                                                              .number))),
+                                                  TableCell(
+                                                      verticalAlignment:
+                                                          TableCellVerticalAlignment
+                                                              .middle,
+                                                      child: Center(
+                                                          child: Text(widget
+                                                              .appLocalizations
+                                                              .title))),
+                                                  TableCell(
+                                                      child: Text(widget
+                                                          .appLocalizations
+                                                          .length)),
+                                                  TableCell(
+                                                      verticalAlignment:
+                                                          TableCellVerticalAlignment
+                                                              .middle,
+                                                      child: Center(
+                                                          child: Text(widget
+                                                              .appLocalizations
+                                                              .size))),
+                                                  TableCell(
+                                                      verticalAlignment:
+                                                          TableCellVerticalAlignment
+                                                              .middle,
+                                                      child: Center(
+                                                          child: Text(''))),
+                                                  TableCell(
                                                     verticalAlignment:
                                                         TableCellVerticalAlignment
                                                             .middle,
                                                     child: Center(
-                                                      child: Text(
-                                                        responses[selectedIndex]
-                                                            .tracks[i]
-                                                            .songNumber
-                                                            .toString(),
-                                                      ),
-                                                    )),
-                                                TableCell(
-                                                    verticalAlignment:
-                                                        TableCellVerticalAlignment
-                                                            .middle,
-                                                    child: Center(
-                                                      child: Text(responses[
-                                                              selectedIndex]
-                                                          .tracks[i]
-                                                          .title),
-                                                    )),
-                                                TableCell(
-                                                    verticalAlignment:
-                                                        TableCellVerticalAlignment
-                                                            .middle,
-                                                    child: Center(
-                                                      child: Text(responses[
-                                                              selectedIndex]
-                                                          .tracks[i]
-                                                          .length),
-                                                    )),
-                                                TableCell(
-                                                    verticalAlignment:
-                                                        TableCellVerticalAlignment
-                                                            .middle,
-                                                    child: Center(
-                                                      child: Text(responses[
-                                                              selectedIndex]
-                                                          .tracks[i]
-                                                          .size),
-                                                    )),
-                                                ValueListenableBuilder<int>(
-                                                    valueListenable:
-                                                        trackIndexSelected,
-                                                    builder: (context,
-                                                        selectedIndex, child) {
-                                                      return Visibility(
-                                                          visible: i ==
-                                                              selectedIndex,
-                                                          child: TableCell(
-                                                            verticalAlignment:
-                                                                TableCellVerticalAlignment
-                                                                    .middle,
-                                                            child: Center(
-                                                              child: MusicBarControl(
-                                                                  audioManager:
-                                                                      audioManager),
-                                                            ),
-                                                          ));
-                                                    }),
-                                                TableCell(
-                                                  verticalAlignment:
-                                                      TableCellVerticalAlignment
-                                                          .middle,
-                                                  child: AudioControlButtons(
-                                                    rowIndex: i,
-                                                    audioManager: audioManager,
-                                                    audioUrl:
-                                                        responses[selectedIndex]
-                                                            .tracks[i]
-                                                            .url,
-                                                    onPlayPressed: (rowIndex) {
-                                                      audioManager.setTotalTrackLength(
-                                                          stringToSeconds(responses[
-                                                                          selectedIndex]
-                                                                      .tracks[i]
-                                                                      .length)
-                                                                  .toDouble() *
-                                                              1000);
-                                                      // Llama a la función de devolución de llamada cuando se presiona "play"
-                                                      trackIndexSelected.value =
-                                                          rowIndex; // Actualiza el índice de fila seleccionado
-                                                    },
+                                                      child: Text(widget
+                                                          .appLocalizations
+                                                          .actions),
+                                                    ),
                                                   ),
-                                                ),
-                                              ],
-                                            ),
+                                                ],
+                                              )
+                                            ]),
                                       ],
                                     ),
-                                  ],
-                                ),
-                              ),
-                            );
+                                  ),
+                                );
+                              },
+                            ),
+                            ValueListenableBuilder<int>(
+                              valueListenable: indexSelected,
+                              builder: (context, selectedIndex, child) {
+                                return Visibility(
+                                  visible: selectedIndex != -1,
+                                  child: Container(
+                                    padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
+                                    height: MediaQuery.of(context).size.height *
+                                        0.16,
+                                    child: ListView(
+                                      children: [
+                                        Table(
+                                          border: TableBorder.all(
+                                              color: Colors.black,
+                                              borderRadius:
+                                                  BorderRadius.circular(10)),
+                                          columnWidths: const {
+                                            0: FlexColumnWidth(0.5),
+                                            1: FlexColumnWidth(1),
+                                            2: FlexColumnWidth(0.5),
+                                            3: FlexColumnWidth(0.5),
+                                            4: FlexColumnWidth(1),
+                                          },
+                                          children: [
+                                            if (selectedIndex != -1)
+                                              for (int i = 0;
+                                                  i <
+                                                      responses[selectedIndex]
+                                                          .tracks
+                                                          .length;
+                                                  i++)
+                                                TableRow(
+                                                  decoration: BoxDecoration(
+                                                    color: i % 2 == 0
+                                                        ? Color.fromARGB(
+                                                            143, 14, 73, 27)
+                                                        : Color.fromARGB(
+                                                            255,
+                                                            64,
+                                                            124,
+                                                            69), // Alterna los colores de fondo
+                                                  ),
+                                                  children: [
+                                                    TableCell(
+                                                        verticalAlignment:
+                                                            TableCellVerticalAlignment
+                                                                .middle,
+                                                        child: Center(
+                                                          child: Text(
+                                                            responses[
+                                                                    selectedIndex]
+                                                                .tracks[i]
+                                                                .songNumber
+                                                                .toString(),
+                                                          ),
+                                                        )),
+                                                    TableCell(
+                                                        verticalAlignment:
+                                                            TableCellVerticalAlignment
+                                                                .middle,
+                                                        child: Center(
+                                                          child: Text(responses[
+                                                                  selectedIndex]
+                                                              .tracks[i]
+                                                              .title),
+                                                        )),
+                                                    TableCell(
+                                                        verticalAlignment:
+                                                            TableCellVerticalAlignment
+                                                                .middle,
+                                                        child: Center(
+                                                          child: Text(responses[
+                                                                  selectedIndex]
+                                                              .tracks[i]
+                                                              .length),
+                                                        )),
+                                                    TableCell(
+                                                        verticalAlignment:
+                                                            TableCellVerticalAlignment
+                                                                .middle,
+                                                        child: Center(
+                                                          child: Text(responses[
+                                                                  selectedIndex]
+                                                              .tracks[i]
+                                                              .size),
+                                                        )),
+                                                    ValueListenableBuilder<int>(
+                                                        valueListenable:
+                                                            trackIndexSelected,
+                                                        builder: (context,
+                                                            selectedIndex,
+                                                            child) {
+                                                          return Visibility(
+                                                              visible: i ==
+                                                                  selectedIndex,
+                                                              child: TableCell(
+                                                                verticalAlignment:
+                                                                    TableCellVerticalAlignment
+                                                                        .middle,
+                                                                child: Center(
+                                                                  child: MusicBarControl(
+                                                                      audioManager:
+                                                                          audioManager),
+                                                                ),
+                                                              ));
+                                                        }),
+                                                    TableCell(
+                                                      verticalAlignment:
+                                                          TableCellVerticalAlignment
+                                                              .middle,
+                                                      child:
+                                                          AudioControlButtons(
+                                                        rowIndex: i,
+                                                        audioManager:
+                                                            audioManager,
+                                                        audioUrl: responses[
+                                                                selectedIndex]
+                                                            .tracks[i]
+                                                            .url,
+                                                        onPlayPressed:
+                                                            (rowIndex) {
+                                                          audioManager.setTotalTrackLength(
+                                                              stringToSeconds(responses[
+                                                                              selectedIndex]
+                                                                          .tracks[
+                                                                              i]
+                                                                          .length)
+                                                                      .toDouble() *
+                                                                  1000);
+                                                          // Llama a la función de devolución de llamada cuando se presiona "play"
+                                                          trackIndexSelected
+                                                                  .value =
+                                                              rowIndex; // Actualiza el índice de fila seleccionado
+                                                        },
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                            )
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.bottomLeft,
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    color: Color.fromARGB(255, 48, 87, 3),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8.0,
+                      vertical: 4.0,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                            audioManager.currentUrlNotifier.value = '';
+                            audioManager.isPlayingNotifier.value = false;
+                            audioManager.audioPlayer.dispose;
+                            audioManager.stop();
                           },
-                        )
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                Colors.red, // Change the button color to red
+                          ),
+                          child: Text(widget.appLocalizations.cancel),
+                        ),
+                        const SizedBox(width: 8),
                       ],
                     ),
                   ),
-                ],
-              ),
-            ),
-            Align(
-              alignment: Alignment.bottomLeft,
-              child: Container(
-                width: MediaQuery.of(context).size.width,
-                color: Color.fromARGB(255, 48, 87, 3),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 8.0,
-                  vertical: 4.0,
                 ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        audioManager.currentUrlNotifier.value = '';
-                        audioManager.isPlayingNotifier.value = false;
-                        audioManager.audioPlayer.dispose;
-                        audioManager.stop();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            Colors.red, // Change the button color to red
-                      ),
-                      child: Text(appLocalizations.cancel),
-                    ),
-                    const SizedBox(width: 8),
-                  ],
-                ),
-              ),
+              ],
             ),
-          ],
-        ),
-      ),
-    );
+          ),
+        ));
   }
 }
 

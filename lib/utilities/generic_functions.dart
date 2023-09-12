@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:synchronyx/models/emulators.dart';
 import 'package:synchronyx/models/media.dart';
 
 import '../widgets/platform_tree_view.dart';
@@ -129,7 +130,8 @@ Future<void> processScreenshots(
   try {
     var response = await http.get(Uri.parse(imageUrl));
     if (response.statusCode == 200) {
-      Directory imageFolder = Directory('${Constants.appDocumentsDirectory.path}$folder');
+      Directory imageFolder =
+          Directory('${Constants.appDocumentsDirectory.path}$folder');
 
       // Create the directory if it doesn't exist
       if (!imageFolder.existsSync()) {
@@ -153,7 +155,8 @@ Future<void> downloadAndSaveAudioOst(
   try {
     var response = await http.get(Uri.parse(audioUrl));
     if (response.statusCode == 200) {
-      Directory imageFolder = Directory('${Constants.appDocumentsDirectory.path}$folder');
+      Directory imageFolder =
+          Directory('${Constants.appDocumentsDirectory.path}$folder');
 
       // Create the directory if it doesn't exist
       if (!imageFolder.existsSync()) {
@@ -177,7 +180,8 @@ Future<void> downloadAndSaveImage(
   try {
     var response = await http.get(Uri.parse(imageUrl));
     if (response.statusCode == 200) {
-      Directory imageFolder = Directory('${Constants.appDocumentsDirectory.path}$folder');
+      Directory imageFolder =
+          Directory('${Constants.appDocumentsDirectory.path}$folder');
 
       // Create the directory if it doesn't exist
       if (!imageFolder.existsSync()) {
@@ -207,6 +211,29 @@ String generateRandomAlphanumeric() {
   }
 
   return randomString;
+}
+
+/* -------------- Splits a list of platforms from each emulator ------------- */
+/* ------------------- into a table and removes duplicates ------------------ */
+List<String> getUniquePlatforms() {
+  // Crear una lista para almacenar todas las plataformas
+  List<String> platformList = [];
+
+  // Iterar a través de la lista de emuladores y agregar sus plataformas a la lista
+  for (Emulators emulator in Constants.emulatorsList) {
+    List<String> platforms = emulator.systems.split(',');
+    // Eliminar espacios en blanco al principio y al final de cada valor
+    platforms = platforms.map((platform) => platform.trim()).toList();
+    // Agregar las plataformas a la lista principal
+    platformList.addAll(platforms);
+  }
+
+  // Eliminar duplicados
+  platformList = platformList.toSet().toList();
+
+  platformList.sort((a, b) => a.toLowerCase().compareTo(b.toLowerCase()));
+
+  return platformList;
 }
 
 /* ----------------------------- Creates a Slug ----------------------------- */

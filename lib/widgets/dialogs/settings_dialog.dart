@@ -9,6 +9,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:synchronyx/utilities/generic_database_functions.dart';
 import 'package:synchronyx/widgets/options_tree_view.dart';
 
+import 'custom_dialog.dart';
+
 class SettingsDialog extends StatefulWidget {
   final IconData titleIcon;
   final String title;
@@ -265,25 +267,5 @@ class RightColumn extends StatelessWidget {
       default:
         return Text("data");
     }
-  }
-}
-
-class CustomDialog extends StatelessWidget {
-  final Widget child;
-  final Offset offset;
-
-  const CustomDialog({required this.child, required this.offset});
-
-  @override
-  Widget build(BuildContext context) {
-    return Transform.translate(
-      offset: offset,
-      child: Center(
-        child: Material(
-          color: Colors.transparent,
-          child: child,
-        ),
-      ),
-    );
   }
 }

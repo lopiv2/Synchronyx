@@ -133,6 +133,18 @@ Future<Database?> createAndOpenDB() async {
             'showEditorOnGrid': 1,
           },
         );
+        // Create the Emulators table
+        await db.execute(
+          'CREATE TABLE IF NOT EXISTS emulators('
+          'id INTEGER PRIMARY KEY AUTOINCREMENT,'
+          'name TEXT,'
+          'url TEXT,'
+          'systems TEXT,'
+          'icon TEXT,'
+          'description TEXT,'
+          'installed INTEGER,'
+          ')',
+        );
       },
       version: 1,
     );
