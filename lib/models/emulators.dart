@@ -6,6 +6,7 @@ class Emulators {
   String icon='';
   String description='';
   int installed=0; //If installed or not
+  int likes=0;
 
   Emulators({
     this.id,

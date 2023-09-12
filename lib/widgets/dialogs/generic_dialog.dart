@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:synchronyx/icons/custom_icons_icons.dart';
 import 'package:synchronyx/providers/app_state.dart';
 import 'package:synchronyx/utilities/audio_singleton.dart';
 import 'package:synchronyx/utilities/constants.dart';
@@ -11,10 +12,12 @@ class GenericDialog extends StatefulWidget {
       {super.key,
       required this.appLocalizations,
       required this.content,
-      required this.dialogTitle});
+      required this.dialogTitle,
+      required this.icon});
   final AppLocalizations appLocalizations;
   final Widget content;
   final String dialogTitle;
+  final Icon icon;
 
   @override
   State<GenericDialog> createState() => _GenericDialogState();
@@ -66,12 +69,9 @@ class _GenericDialogState extends State<GenericDialog> {
                         toolbarHeight: 35.0,
                         titleSpacing: -20.0,
                         leading: const Padding(
-                          padding: EdgeInsets.only(right: 20.0),
-                          child: Icon(
-                            Icons.audiotrack,
-                            color: Colors.white,
-                          ),
-                        ),
+                            padding: EdgeInsets.only(right: 20.0),
+                            child: Icon(CustomIcons.emulators,
+                                color: Colors.white, size: 20),),
                         title: Text(
                           widget.dialogTitle,
                           style: TextStyle(
@@ -101,10 +101,11 @@ class _GenericDialogState extends State<GenericDialog> {
                           ),
                         ),
                       ),
-                      SingleChildScrollView(
-                        child: Column(
+                      Expanded(
+                        child: ListView(
                           children: [
-                            Container(height: 200, child: widget.content),
+                            // El contenido de widget.content aquí
+                            widget.content,
                           ],
                         ),
                       ),

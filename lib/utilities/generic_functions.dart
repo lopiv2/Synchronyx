@@ -215,12 +215,12 @@ String generateRandomAlphanumeric() {
 
 /* -------------- Splits a list of platforms from each emulator ------------- */
 /* ------------------- into a table and removes duplicates ------------------ */
-List<String> getUniquePlatforms() {
+List<String> getUniquePlatforms(List<Emulators> emulatorsList) {
   // Crear una lista para almacenar todas las plataformas
   List<String> platformList = [];
 
   // Iterar a través de la lista de emuladores y agregar sus plataformas a la lista
-  for (Emulators emulator in Constants.emulatorsList) {
+  for (Emulators emulator in emulatorsList) {
     List<String> platforms = emulator.systems.split(',');
     // Eliminar espacios en blanco al principio y al final de cada valor
     platforms = platforms.map((platform) => platform.trim()).toList();

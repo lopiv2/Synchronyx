@@ -358,13 +358,6 @@ class Constants {
   static double importProgress = 0.0;
   static late Directory appDocumentsDirectory;
 
-  static List<Emulators> emulatorsList = [
-  Emulators(id: 1, name: 'PCSX2', url: 'https://example.com/emulator1', systems: 'Playstation 2', icon: 'icon1.png', description: 'Description 1', installed: 0),
-  Emulators(id: 2, name: 'PPSSPP', url: 'https://example.com/emulator2', systems: 'PSP', icon: 'icon2.png', description: 'Description 2', installed: 0),
-  // Agrega más objetos Emulators según sea necesario
-];
-
-
   static Future<void> initialize() async {
     try {
       appDocumentsDirectory = await getApplicationDocumentsDirectory();

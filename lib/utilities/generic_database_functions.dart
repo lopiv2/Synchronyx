@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:synchronyx/models/emulators.dart';
 import 'package:synchronyx/models/global_options.dart';
 import 'package:synchronyx/models/responses/gameMedia_response.dart';
 import 'package:synchronyx/models/media.dart';
@@ -200,6 +201,21 @@ Future<List<Game>> getAllGamesWithFilter(String filter, String value) async {
   }
 
   return maps.map((map) => Game.fromMap(map)).toList();
+}
+
+/* ----------------------- Get all available emulators ---------------------- */
+Future<List<Emulators>> getAllEmulators() async {
+  // Get a reference to the database.
+  final db = await Constants.database;
+
+  List<Map<String, dynamic>> maps = List.empty(growable: true);
+
+  if (db != null) {
+    // Query the table for all The Games.
+    maps = await db!.query('emulators');
+  }
+
+  return maps.map((map) => Emulators.fromMap(map)).toList();
 }
 
 Future<GlobalOptions?> getOptions() async {
