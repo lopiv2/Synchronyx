@@ -1,0 +1,542 @@
+@font-face {
+  font-family: 'CustomIcons';
+  src:  url('fonts/CustomIcons.eot?oycuw1');
+  src:  url('fonts/CustomIcons.eot?oycuw1#iefix') format('embedded-opentype'),
+    url('fonts/CustomIcons.ttf?oycuw1') format('truetype'),
+    url('fonts/CustomIcons.woff?oycuw1') format('woff'),
+    url('fonts/CustomIcons.svg?oycuw1#CustomIcons') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'CustomIcons' !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-wii:before {
+  content: "\e970";
+  color: #999;
+}
+.icon-NES:before {
+  content: "\e90c";
+}
+.icon-mame:before {
+  content: "\e900";
+}
+.icon-nintendo-64 .path1:before {
+  content: "\e901";
+  color: rgb(123, 118, 146);
+}
+.icon-nintendo-64 .path2:before {
+  content: "\e902";
+  margin-left: -1.0791015625em;
+  color: rgb(2, 34, 169);
+}
+.icon-nintendo-64 .path3:before {
+  content: "\e903";
+  margin-left: -1.0791015625em;
+  color: rgb(1, 29, 169);
+}
+.icon-nintendo-64 .path4:before {
+  content: "\e904";
+  margin-left: -1.0791015625em;
+  color: rgb(2, 34, 169);
+}
+.icon-nintendo-64 .path5:before {
+  content: "\e905";
+  margin-left: -1.0791015625em;
+  color: rgb(6, 147, 48);
+}
+.icon-nintendo-64 .path6:before {
+  content: "\e906";
+  margin-left: -1.0791015625em;
+  color: rgb(6, 147, 48);
+}
+.icon-nintendo-64 .path7:before {
+  content: "\e907";
+  margin-left: -1.0791015625em;
+  color: rgb(254, 32, 21);
+}
+.icon-nintendo-64 .path8:before {
+  content: "\e908";
+  margin-left: -1.0791015625em;
+  color: rgb(255, 192, 1);
+}
+.icon-nintendo-64 .path9:before {
+  content: "\e909";
+  margin-left: -1.0791015625em;
+  color: rgb(1, 36, 166);
+}
+.icon-nintendo-64 .path10:before {
+  content: "\e90a";
+  margin-left: -1.0791015625em;
+  color: rgb(1, 36, 166);
+}
+.icon-nintendo-64 .path11:before {
+  content: "\e90b";
+  margin-left: -1.0791015625em;
+  color: rgb(255, 45, 30);
+}
+.icon-snes:before {
+  content: "\e90d";
+  color: #fc0c18;
+}
+.icon-psp:before {
+  content: "\e90e";
+}
+.icon-ps3:before {
+  content: "\e90f";
+}
+.icon-psvita:before {
+  content: "\e910";
+}
+.icon-ds:before {
+  content: "\e96f";
+}
+.icon-dreamcast .path1:before {
+  content: "\e911";
+  color: rgb(255, 255, 255);
+}
+.icon-dreamcast .path2:before {
+  content: "\e912";
+  margin-left: -1em;
+  color: rgb(0, 0, 0);
+}
+.icon-dreamcast .path3:before {
+  content: "\e913";
+  margin-left: -1em;
+  color: rgb(81, 106, 154);
+}
+.icon-game-boy .path1:before {
+  content: "\e914";
+  color: rgb(255, 255, 255);
+}
+.icon-game-boy .path2:before {
+  content: "\e915";
+  margin-left: -1em;
+  color: rgb(0, 0, 0);
+}
+.icon-game-boy .path3:before {
+  content: "\e916";
+  margin-left: -1em;
+  color: rgb(255, 255, 255);
+}
+.icon-game-boy .path4:before {
+  content: "\e917";
+  margin-left: -1em;
+  color: rgb(0, 0, 0);
+}
+.icon-game-boy .path5:before {
+  content: "\e918";
+  margin-left: -1em;
+  color: rgb(255, 255, 255);
+}
+.icon-game-boy .path6:before {
+  content: "\e919";
+  margin-left: -1em;
+  color: rgb(0, 0, 0);
+}
+.icon-game-boy .path7:before {
+  content: "\e91a";
+  margin-left: -1em;
+  color: rgb(255, 255, 255);
+}
+.icon-game-boy .path8:before {
+  content: "\e91b";
+  margin-left: -1em;
+  color: rgb(0, 0, 0);
+}
+.icon-game-boy .path9:before {
+  content: "\e91c";
+  margin-left: -1em;
+  color: rgb(255, 255, 255);
+}
+.icon-game-boy .path10:before {
+  content: "\e91d";
+  margin-left: -1em;
+  color: rgb(0, 0, 0);
+}
+.icon-game-boy .path11:before {
+  content: "\e91e";
+  margin-left: -1em;
+  color: rgb(0, 0, 0);
+}
+.icon-game-boy .path12:before {
+  content: "\e91f";
+  margin-left: -1em;
+  color: rgb(0, 0, 0);
+}
+.icon-game-boy .path13:before {
+  content: "\e920";
+  margin-left: -1em;
+  color: rgb(0, 0, 0);
+}
+.icon-game-boy-advance .path1:before {
+  content: "\e921";
+  color: rgb(255, 255, 255);
+}
+.icon-game-boy-advance .path2:before {
+  content: "\e922";
+  margin-left: -1em;
+  color: rgb(75, 54, 124);
+}
+.icon-game-boy-advance .path3:before {
+  content: "\e923";
+  margin-left: -1em;
+  color: rgb(255, 255, 255);
+}
+.icon-game-boy-advance .path4:before {
+  content: "\e924";
+  margin-left: -1em;
+  color: rgb(255, 255, 255);
+}
+.icon-game-boy-advance .path5:before {
+  content: "\e925";
+  margin-left: -1em;
+  color: rgb(255, 255, 255);
+}
+.icon-game-boy-color .path1:before {
+  content: "\e926";
+  color: rgb(255, 255, 255);
+}
+.icon-game-boy-color .path2:before {
+  content: "\e927";
+  margin-left: -1em;
+  color: rgb(84, 86, 161);
+}
+.icon-game-boy-color .path3:before {
+  content: "\e928";
+  margin-left: -1em;
+  color: rgb(209, 175, 44);
+}
+.icon-game-boy-color .path4:before {
+  content: "\e929";
+  margin-left: -1em;
+  color: rgb(27, 147, 137);
+}
+.icon-game-boy-color .path5:before {
+  content: "\e92a";
+  margin-left: -1em;
+  color: rgb(137, 172, 67);
+}
+.icon-game-boy-color .path6:before {
+  content: "\e92b";
+  margin-left: -1em;
+  color: rgb(157, 12, 70);
+}
+.icon-game-boy-color .path7:before {
+  content: "\e92c";
+  margin-left: -1em;
+  color: rgb(51, 52, 142);
+}
+.icon-game-boy-color .path8:before {
+  content: "\e92d";
+  margin-left: -1em;
+  color: rgb(51, 52, 142);
+}
+.icon-game-boy-color .path9:before {
+  content: "\e92e";
+  margin-left: -1em;
+  color: rgb(51, 52, 142);
+}
+.icon-game-boy-color .path10:before {
+  content: "\e92f";
+  margin-left: -1em;
+  color: rgb(0, 0, 0);
+}
+.icon-ps2 .path1:before {
+  content: "\e930";
+  color: rgb(0, 0, 0);
+}
+.icon-ps2 .path2:before {
+  content: "\e931";
+  margin-left: -1em;
+  color: rgb(92, 179, 155);
+}
+.icon-ps2 .path3:before {
+  content: "\e932";
+  margin-left: -1em;
+  color: rgb(236, 183, 49);
+}
+.icon-ps2 .path4:before {
+  content: "\e933";
+  margin-left: -1em;
+  color: rgb(81, 117, 184);
+}
+.icon-ps2 .path5:before {
+  content: "\e934";
+  margin-left: -1em;
+  color: rgb(204, 34, 41);
+}
+.icon-ps2 .path6:before {
+  content: "\e935";
+  margin-left: -1em;
+  color: rgb(255, 255, 255);
+}
+.icon-ps2 .path7:before {
+  content: "\e936";
+  margin-left: -1em;
+  color: rgb(255, 255, 255);
+}
+.icon-ps1 .path1:before {
+  content: "\e937";
+  color: rgb(255, 255, 255);
+}
+.icon-ps1 .path2:before {
+  content: "\e938";
+  margin-left: -1em;
+  color: rgb(255, 255, 255);
+}
+.icon-ps1 .path3:before {
+  content: "\e939";
+  margin-left: -1em;
+  color: rgb(0, 0, 0);
+}
+.icon-ps1 .path4:before {
+  content: "\e93a";
+  margin-left: -1em;
+  color: rgb(187, 224, 248);
+}
+.icon-ps1 .path5:before {
+  content: "\e93b";
+  margin-left: -1em;
+  color: rgb(255, 255, 255);
+}
+.icon-ps1 .path6:before {
+  content: "\e93c";
+  margin-left: -1em;
+  color: rgb(255, 255, 255);
+}
+.icon-ps1 .path7:before {
+  content: "\e93d";
+  margin-left: -1em;
+  color: rgb(255, 255, 255);
+}
+.icon-ps1 .path8:before {
+  content: "\e93e";
+  margin-left: -1em;
+  color: rgb(236, 183, 49);
+}
+.icon-ps1 .path9:before {
+  content: "\e93f";
+  margin-left: -1em;
+  color: rgb(59, 115, 184);
+}
+.icon-ps1 .path10:before {
+  content: "\e940";
+  margin-left: -1em;
+  color: rgb(67, 173, 156);
+}
+.icon-ps1 .path11:before {
+  content: "\e941";
+  margin-left: -1em;
+  color: rgb(59, 115, 184);
+}
+.icon-ps1 .path12:before {
+  content: "\e942";
+  margin-left: -1em;
+  color: rgb(67, 173, 156);
+}
+.icon-ps1 .path13:before {
+  content: "\e943";
+  margin-left: -1em;
+  color: rgb(204, 34, 41);
+}
+.icon-ps1 .path14:before {
+  content: "\e944";
+  margin-left: -1em;
+  color: rgb(0, 0, 0);
+}
+.icon-ps1 .path15:before {
+  content: "\e945";
+  margin-left: -1em;
+  color: rgb(255, 255, 255);
+}
+.icon-ps1 .path16:before {
+  content: "\e946";
+  margin-left: -1em;
+  color: rgb(236, 183, 49);
+}
+.icon-ps1 .path17:before {
+  content: "\e947";
+  margin-left: -1em;
+  color: rgb(67, 173, 156);
+}
+.icon-ps1 .path18:before {
+  content: "\e948";
+  margin-left: -1em;
+  color: rgb(59, 115, 184);
+}
+.icon-ps1 .path19:before {
+  content: "\e949";
+  margin-left: -1em;
+  color: rgb(67, 173, 156);
+}
+.icon-ps1 .path20:before {
+  content: "\e94a";
+  margin-left: -1em;
+  color: rgb(236, 183, 49);
+}
+.icon-ps1 .path21:before {
+  content: "\e94b";
+  margin-left: -1em;
+  color: rgb(204, 34, 41);
+}
+.icon-ps5:before {
+  content: "\e94c";
+}
+.icon-wii-u .path1:before {
+  content: "\e94d";
+  color: rgb(0, 154, 199);
+}
+.icon-wii-u .path2:before {
+  content: "\e94e";
+  margin-left: -3.3642578125em;
+  color: rgb(0, 154, 199);
+}
+.icon-wii-u .path3:before {
+  content: "\e94f";
+  margin-left: -3.3642578125em;
+  color: rgb(139, 139, 139);
+}
+.icon-wii-u .path4:before {
+  content: "\e950";
+  margin-left: -3.3642578125em;
+  color: rgb(139, 139, 139);
+}
+.icon-wii-u .path5:before {
+  content: "\e951";
+  margin-left: -3.3642578125em;
+  color: rgb(139, 139, 139);
+}
+.icon-wii-u .path6:before {
+  content: "\e952";
+  margin-left: -3.3642578125em;
+  color: rgb(139, 139, 139);
+}
+.icon-wii-u .path7:before {
+  content: "\e953";
+  margin-left: -3.3642578125em;
+  color: rgb(139, 139, 139);
+}
+.icon-sega-mega-drive:before {
+  content: "\e954";
+}
+.icon-Amazon-games:before {
+  content: "\e955";
+}
+.icon-Battle-net:before {
+  content: "\e956";
+  color: #148eff;
+}
+.icon-emulatorIcons .path1:before {
+  content: "\e957";
+  color: rgb(80, 88, 103);
+}
+.icon-emulatorIcons .path2:before {
+  content: "\e958";
+  margin-left: -1em;
+  color: rgb(4, 4, 4);
+}
+.icon-emulatorIcons .path3:before {
+  content: "\e959";
+  margin-left: -1em;
+  color: rgb(219, 219, 219);
+}
+.icon-emulatorIcons .path4:before {
+  content: "\e95a";
+  margin-left: -1em;
+  color: rgb(241, 118, 10);
+}
+.icon-emulatorIcons .path5:before {
+  content: "\e95b";
+  margin-left: -1em;
+  color: rgb(39, 187, 40);
+}
+.icon-emulatorIcons .path6:before {
+  content: "\e95c";
+  margin-left: -1em;
+  color: rgb(8, 95, 227);
+}
+.icon-emulatorIcons .path7:before {
+  content: "\e95d";
+  margin-left: -1em;
+  color: rgb(146, 146, 146);
+}
+.icon-emulatorIcons .path8:before {
+  content: "\e95e";
+  margin-left: -1em;
+  color: rgb(172, 172, 172);
+}
+.icon-epicgames:before {
+  content: "\e95f";
+}
+.icon-gog-dot-com:before {
+  content: "\e960";
+  color: #86328a;
+}
+.icon-itch-dot-io:before {
+  content: "\e961";
+  color: #fa5c5c;
+}
+.icon-origin:before {
+  content: "\e962";
+  color: #f56c2d;
+}
+.icon-steam:before {
+  content: "\e963";
+}
+.icon-ubisoft:before {
+  content: "\e964";
+}
+.icon-windows:before {
+  content: "\e965";
+  color: #0078d6;
+}
+.icon-xbox:before {
+  content: "\e966";
+  color: #107c10;
+}
+.icon-sega:before {
+  content: "\e967";
+  color: #0089cf;
+}
+.icon-nintendoswitch:before {
+  content: "\e968";
+  color: #e60012;
+}
+.icon-nintendogamecube:before {
+  content: "\e969";
+  color: #6a5fbb;
+}
+.icon-nintendo3ds:before {
+  content: "\e96a";
+  color: #d12228;
+}
+.icon-ps4:before {
+  content: "\e96b";
+}
+.icon-appleinc:before {
+  content: "\eabe";
+}
+.icon-linux:before {
+  content: "\e96c";
+}
+.icon-android:before {
+  content: "\e96d";
+}
+.icon-apple:before {
+  content: "\e96e";
+}

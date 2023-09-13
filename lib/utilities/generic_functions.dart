@@ -1,16 +1,12 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:math';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:synchronyx/models/emulators.dart';
-import 'package:synchronyx/models/media.dart';
-import 'package:synchronyx/utilities/generic_api_functions.dart' as api;
-import '../widgets/platform_tree_view.dart';
+import 'package:synchronyx/models/responses/emulator_download_response.dart';
+import 'package:synchronyx/utilities/generic_api_functions.dart';
 import 'Constants.dart';
 
 /* ------------------------- Delete a file per name ------------------------- */
@@ -149,6 +145,16 @@ Future<void> processScreenshots(
   }
 }
 
+Future<void> downloadFile(String url) async {
+  final response = await http.get(Uri.parse(url));
+  if (response.statusCode == 200) {
+    // El archivo se descargó exitosamente, puedes hacer lo que quieras con él
+    // Por ejemplo, puedes guardar el archivo en la memoria del dispositivo.
+  } else {
+    // Manejar el caso en que la descarga no fue exitosa
+  }
+}
+
 /* ----------------------- Download and save audio OST ---------------------- */
 Future<void> downloadAndSaveAudioOst(
     String audioUrl, String fileName, String folder) async {
@@ -276,11 +282,15 @@ String createSearchString(String input) {
   return cleanedString;
 }
 
-void selectEmulatorScrapper(String emulator, String url){
+Future<List<EmulatorDownloadResponse>> selectEmulatorScrapper(
+    String emulator, String url) async {
+  DioClient dioClient = DioClient();
+  late List<EmulatorDownloadResponse> response;
   switch (emulator) {
-      case 'Dolphin':
-      api.dolphinScrapper(url);
+    case 'Dolphin':
+      response = await dioClient.dolphinScrapper(url: url);
   }
+  return response;
 }
 
 /* ----------------------- Updates progress bar value ----------------------- */

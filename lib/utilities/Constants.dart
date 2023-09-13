@@ -148,7 +148,8 @@ enum GamePlatforms {
         height: 34,
         color: null,
       ),
-      "All"),
+      "All",
+      Icons.devices),
   Android(
       Image(
         image: AssetImage("assets/icons/android.png"),
@@ -156,7 +157,8 @@ enum GamePlatforms {
         height: 34,
         color: null,
       ),
-      "All"),
+      "Android",
+      CustomIcons.android),
   Computers(
       Image(
         image: AssetImage("assets/icons/Amstrad CPC.png"),
@@ -164,7 +166,8 @@ enum GamePlatforms {
         height: 34,
         color: null,
       ),
-      "Computers"),
+      "Computers",
+      Icons.computer),
   Dreamcast(
       Image(
         image: AssetImage("assets/icons/dreamcast.png"),
@@ -172,7 +175,7 @@ enum GamePlatforms {
         height: 34,
         color: null,
       ),
-      "Dreamcast"),
+      "Dreamcast",CustomIcons.dreamcast),
   DS(
       Image(
         image: AssetImage("assets/icons/ds.png"),
@@ -180,7 +183,7 @@ enum GamePlatforms {
         height: 34,
         color: null,
       ),
-      "DS"),
+      "DS",CustomIcons.ds),
   Gameboy(
       Image(
         image: AssetImage("assets/icons/gameboy.png"),
@@ -188,7 +191,7 @@ enum GamePlatforms {
         height: 34,
         color: null,
       ),
-      "Gameboy"),
+      "Gameboy",CustomIcons.game_boy),
   Gamecube(
       Image(
         image: AssetImage("assets/icons/gamecube.png"),
@@ -196,7 +199,7 @@ enum GamePlatforms {
         height: 34,
         color: null,
       ),
-      "Gamecube"),
+      "Gamecube",CustomIcons.gamecube),
   Gamegear(
       Image(
         image: AssetImage("assets/icons/gamegear.png"),
@@ -204,7 +207,7 @@ enum GamePlatforms {
         height: 34,
         color: null,
       ),
-      "Gamegear"),
+      "Gamegear",Icons.computer),
   Linux(
       Image(
         image: AssetImage("assets/icons/linux.png"),
@@ -212,7 +215,7 @@ enum GamePlatforms {
         height: 34,
         color: null,
       ),
-      "Linux"),
+      "Linux",CustomIcons.linux),
   Mac(
       Image(
         image: AssetImage("assets/icons/mac.png"),
@@ -220,7 +223,7 @@ enum GamePlatforms {
         height: 34,
         color: null,
       ),
-      "Mac"),
+      "Mac", CustomIcons.apple),
   MAME(
       Image(
         image: AssetImage("assets/icons/mame.png"),
@@ -228,7 +231,7 @@ enum GamePlatforms {
         height: 34,
         color: null,
       ),
-      "MAME"),
+      "MAME",CustomIcons.mame),
   Mastersystem(
       Image(
         image: AssetImage("assets/icons/mastersystem.png"),
@@ -236,7 +239,7 @@ enum GamePlatforms {
         height: 34,
         color: null,
       ),
-      "Mastersystem"),
+      "Mastersystem",Icons.computer),
   Megadrive(
       Image(
         image: AssetImage("assets/icons/megadrive.png"),
@@ -244,7 +247,7 @@ enum GamePlatforms {
         height: 34,
         color: null,
       ),
-      "Megadrive"),
+      "Megadrive",CustomIcons.sega_mega_drive),
   Neogeo(
       Image(
         image: AssetImage("assets/icons/neogeo.png"),
@@ -252,7 +255,7 @@ enum GamePlatforms {
         height: 34,
         color: null,
       ),
-      "Neogeo"),
+      "Neogeo",Icons.computer),
   NES(
       Image(
         image: AssetImage("assets/icons/nes.png"),
@@ -260,7 +263,7 @@ enum GamePlatforms {
         height: 34,
         color: null,
       ),
-      "NES"),
+      "NES",CustomIcons.nes),
   Nintendo64(
       Image(
         image: AssetImage("assets/icons/nintendo64.png"),
@@ -268,7 +271,7 @@ enum GamePlatforms {
         height: 34,
         color: null,
       ),
-      "Nintendo64"),
+      "Nintendo64",CustomIcons.nintendo_64),
   PS1(
       Image(
         image: AssetImage("assets/icons/ps1.png"),
@@ -276,7 +279,7 @@ enum GamePlatforms {
         height: 34,
         color: null,
       ),
-      "PS1"),
+      "PS1",CustomIcons.ps1),
   PS2(
       Image(
         image: AssetImage("assets/icons/ps2.png"),
@@ -284,7 +287,7 @@ enum GamePlatforms {
         height: 34,
         color: null,
       ),
-      "PS2"),
+      "PS2",CustomIcons.ps2),
   PS3(
       Image(
         image: AssetImage("assets/icons/ps3.png"),
@@ -292,7 +295,7 @@ enum GamePlatforms {
         height: 34,
         color: null,
       ),
-      "PS3"),
+      "PS3",CustomIcons.ps3),
   PSP(
       Image(
         image: AssetImage("assets/icons/psp.png"),
@@ -300,7 +303,7 @@ enum GamePlatforms {
         height: 34,
         color: null,
       ),
-      "PSP"),
+      "PSP",CustomIcons.psp),
   SNES(
       Image(
         image: AssetImage("assets/icons/snes.png"),
@@ -308,7 +311,7 @@ enum GamePlatforms {
         height: 34,
         color: null,
       ),
-      "SNES"),
+      "SNES",CustomIcons.snes),
   Wii(
       Image(
         image: AssetImage("assets/icons/wii.png"),
@@ -316,7 +319,7 @@ enum GamePlatforms {
         height: 34,
         color: null,
       ),
-      "Wii"),
+      "Wii",CustomIcons.wii),
   WIIU(
       Image(
         image: AssetImage("assets/icons/wiiu.png"),
@@ -324,7 +327,7 @@ enum GamePlatforms {
         height: 34,
         color: null,
       ),
-      "WIIU"),
+      "WIIU",CustomIcons.wii_u),
   Windows(
       Image(
         image: AssetImage("assets/icons/windows.png"),
@@ -332,7 +335,7 @@ enum GamePlatforms {
         height: 34,
         color: null,
       ),
-      "Windows"),
+      "Windows",CustomIcons.windows),
   Xbox(
       Image(
         image: AssetImage("assets/icons/xbox.png"),
@@ -340,11 +343,12 @@ enum GamePlatforms {
         height: 34,
         color: null,
       ),
-      "Xbox");
+      "Xbox",CustomIcons.xbox);
 
   final Image image;
   final String name;
-  const GamePlatforms(this.image, this.name);
+  final IconData icon;
+  const GamePlatforms(this.image, this.name, this.icon);
 
   @override
   String toString() {

@@ -1,9 +1,10 @@
 import 'dart:async';
-import 'dart:io';
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:synchronyx/icons/custom_icons_icons.dart';
 import 'package:synchronyx/models/media.dart';
 import 'package:synchronyx/models/responses/emulator_download_response.dart';
 import 'package:synchronyx/models/responses/khinsider_response.dart';
@@ -570,8 +571,7 @@ class DioClient {
     final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
       final document = parser.parse(response.body);
-
-      final table = document.querySelector('.versions-list dev-versions');
+      final table = document.querySelector('table.versions-list.dev-versions');
       if (table != null) {
         final rows = table.querySelectorAll('tr');
 
@@ -583,21 +583,25 @@ class DioClient {
         final links = downloadLinks.querySelectorAll('a');
         String? l = ''; //Link
         String? p = ''; //Platform
+        IconData im; //Image Icon
         EmulatorDownloadResponse? response;
         //Windows
         l = links[0].attributes['href'];
         p = GamePlatforms.Windows.name;
-        response = EmulatorDownloadResponse(system: p, url: l);
+        im = CustomIcons.windows;
+        response = EmulatorDownloadResponse(system: p, url: l, image: im);
         results.add(response);
         //MAC
         l = links[2].attributes['href'];
         p = GamePlatforms.Mac.name;
-        response = EmulatorDownloadResponse(system: p, url: l);
+        im = CustomIcons.apple;
+        response = EmulatorDownloadResponse(system: p, url: l,image: im);
         results.add(response);
         //Android
         l = links[3].attributes['href'];
         p = GamePlatforms.Android.name;
-        response = EmulatorDownloadResponse(system: p, url: l);
+        im = CustomIcons.android;
+        response = EmulatorDownloadResponse(system: p, url: l,image: im);
         results.add(response);
       }
     }

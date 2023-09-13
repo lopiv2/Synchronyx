@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:getwidget/components/accordion/gf_accordion.dart';
 import 'package:synchronyx/icons/custom_icons_icons.dart';
 import 'package:synchronyx/models/emulators.dart';
+import 'package:synchronyx/models/responses/emulator_download_response.dart';
 import 'package:synchronyx/utilities/constants.dart';
 import 'package:synchronyx/utilities/generic_database_functions.dart';
 import 'package:synchronyx/utilities/generic_functions.dart';
@@ -84,30 +85,56 @@ class EmulatorContentDialog extends StatelessWidget {
     });
 
     // Create GFAccordion widgets for each platform and its emulators
-
     List<Widget> accordionWidgets = platforms.map((platform) {
       List<Emulators> platformEmulators = emulatorsByPlatform[platform] ?? [];
 
       List<Widget> emulatorWidgets = platformEmulators.map((emulator) {
-        return Column(
-          children: [
-            Container(
-              width: double.infinity, // O ajusta el ancho según tus necesidades
-              height: MediaQuery.of(context).size.height * 0.12,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage('assets/${emulator.icon}'),
-                  fit: BoxFit.fitHeight,
-                ),
-              ),
-            ),
-            Text(
-              '${emulator.name}',
-              style: TextStyle(
-                color: Colors.black,
-              ),
-            ),
-          ],
+        return FutureBuilder<List<EmulatorDownloadResponse>>(
+          future: selectEmulatorScrapper(emulator.name, emulator.url),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              // Muestra un indicador de carga mientras se obtienen los datos
+              return CircularProgressIndicator();
+            } else if (snapshot.hasError) {
+              // Maneja errores si ocurren
+              return Text('Error: ${snapshot.error}');
+            } else {
+              // Obtiene la respuesta de la función asincrónica
+              List<EmulatorDownloadResponse> response = snapshot.data ?? [];
+              List<Widget> iconButtons = response.map((response) {
+                return IconButton(
+                  icon: Icon(response.image), // Carga la imagen desde assets
+                  onPressed: () {
+                    print(response.url);
+                    downloadFile(response.url!);
+                  },
+                );
+              }).toList();
+              return Column(
+                children: [
+                  Container(
+                    width: double
+                        .infinity, // O ajusta el ancho según tus necesidades
+                    height: MediaQuery.of(context).size.height * 0.12,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage('assets/${emulator.icon}'),
+                        fit: BoxFit.fitHeight,
+                      ),
+                    ),
+                  ),
+                  Text(
+                    '${emulator.name}',
+                    style: TextStyle(
+                      color: Colors.black,
+                    ),
+                  ),
+                  Row(mainAxisAlignment: MainAxisAlignment.center, children: iconButtons)
+                  // Otros widgets de texto con otros valores de la respuesta, si es necesario
+                ],
+              );
+            }
+          },
         );
       }).toList();
 
@@ -122,20 +149,12 @@ class EmulatorContentDialog extends StatelessWidget {
           return emulatorWidgets[index];
         },
       );
-
       // Create the accordion for this platform
       return GFAccordion(
         title: platform,
         contentChild: gridView,
         collapsedIcon: const Icon(Icons.add),
         expandedIcon: const Icon(Icons.minimize),
-        onToggleCollapsed: (expanded) async {
-          if (expanded) {
-            // Ejecuta tu función asincrónica aquí
-            
-            await tuFuncionAsincronica();
-          }
-        },
       );
     }).toList();
 
