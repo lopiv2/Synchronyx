@@ -149,6 +149,14 @@ enum GamePlatforms {
         color: null,
       ),
       "All"),
+  Android(
+      Image(
+        image: AssetImage("assets/icons/android.png"),
+        width: 34,
+        height: 34,
+        color: null,
+      ),
+      "All"),
   Computers(
       Image(
         image: AssetImage("assets/icons/Amstrad CPC.png"),
@@ -357,6 +365,49 @@ class Constants {
   static Database? database;
   static double importProgress = 0.0;
   static late Directory appDocumentsDirectory;
+
+  static List<Emulators> emulatorsList = [
+    Emulators(
+        id: 1,
+        name: 'PCSX2',
+        url: 'https://example.com/emulator1',
+        systems: 'Playstation 2',
+        icon: 'icons/PCSX2.png',
+        description: 'Description 1',
+        installed: 0),
+    Emulators(
+        id: 2,
+        name: 'PPSSPP',
+        url: 'https://example.com/emulator2',
+        systems: 'PSP',
+        icon: 'icons/PPSSPP.png',
+        description: 'Description 2',
+        installed: 0),
+    Emulators(
+        id: 3,
+        name: 'Flycast',
+        url: 'https://example.com/emulator1',
+        systems: 'Dreamcast',
+        icon: 'icons/flycast.png',
+        description: 'Description 1',
+        installed: 0),
+    Emulators(
+        id: 4,
+        name: 'Redream',
+        url: 'https://example.com/emulator2',
+        systems: 'Dreamcast',
+        icon: 'icons/redream.png',
+        description: 'Description 2',
+        installed: 0),
+    Emulators(
+        id: 5,
+        name: 'Dolphin',
+        url: 'https://es.dolphin-emu.org/download/',
+        systems: 'WII,GameCube',
+        icon: 'icons/dolphin.png',
+        description: 'Description 3',
+        installed: 0),
+  ];
 
   static Future<void> initialize() async {
     try {

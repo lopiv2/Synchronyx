@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:synchronyx/models/media.dart';
+import 'package:synchronyx/models/responses/emulator_download_response.dart';
 import 'package:synchronyx/models/responses/khinsider_response.dart';
 import 'package:synchronyx/models/responses/rawg_response.dart';
 import '../models/game.dart';
@@ -125,6 +126,7 @@ class DioClient {
     }
   }
 
+/* -------------------------- Media file processing ------------------------- */
   Future<String> processMediaFiles(
       String img, String mediaType, String name, Media? mediaInfo) async {
     List<String> parts = img.split('/');
@@ -543,16 +545,62 @@ class DioClient {
         'grant_type': 'client_credentials',
       };
 
-      // Realiza la solicitud POST
+      // Performs the POST request
       final response =
           await _dio.post(urlAut, queryParameters: queryParameters);
 
-      // Maneja la respuesta aquí
+      // Manage the answer here
       print('Response status: ${response.statusCode}');
       print('Response data: ${response.data}');
     } catch (error) {
-      // Maneja los errores aquí
       print('Error: $error');
     }
+  }
+
+  /* -------------------------------------------------------------------------- */
+  /*                             Emulator Scrappers                             */
+  /* -------------------------------------------------------------------------- */
+
+  /* ------------------------ Dolphin Emulator Scrapper ------------------------ */
+  Future<List<EmulatorDownloadResponse>> dolphinScrapper(
+      {required String url}) async {
+    //String searchTitle = createSearchString(title);
+    List<EmulatorDownloadResponse> results = [];
+
+    final response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      final document = parser.parse(response.body);
+
+      final table = document.querySelector('.versions-list dev-versions');
+      if (table != null) {
+        final rows = table.querySelectorAll('tr');
+
+        // Start from the second tr
+        final row = rows[1];
+        // Select the second <td> in the row - Download links
+        final downloadLinks = row.querySelectorAll('td')[1];
+        //Select all the links
+        final links = downloadLinks.querySelectorAll('a');
+        String? l = ''; //Link
+        String? p = ''; //Platform
+        EmulatorDownloadResponse? response;
+        //Windows
+        l = links[0].attributes['href'];
+        p = GamePlatforms.Windows.name;
+        response = EmulatorDownloadResponse(system: p, url: l);
+        results.add(response);
+        //MAC
+        l = links[2].attributes['href'];
+        p = GamePlatforms.Mac.name;
+        response = EmulatorDownloadResponse(system: p, url: l);
+        results.add(response);
+        //Android
+        l = links[3].attributes['href'];
+        p = GamePlatforms.Android.name;
+        response = EmulatorDownloadResponse(system: p, url: l);
+        results.add(response);
+      }
+    }
+    return results;
   }
 }

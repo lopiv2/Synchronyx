@@ -78,7 +78,6 @@ flutter:
     - assets/icons/
     - assets/images/
     - assets/images/backgrounds/
-    - assets/music/
     - assets/database/synchronyx.db
 
   # The following line ensures that the Material Icons font is

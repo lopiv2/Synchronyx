@@ -426,6 +426,19 @@ Future<void> insertMedia(Media media, Game game) async {
   }
 }
 
+/* ---------------------- Inserts emulators in database --------------------- */
+Future<void> insertEmulators(List<Emulators> emulatorsList) async {
+  final db = Constants.database;
+
+  for (var emulator in emulatorsList) {
+    await db?.insert(
+      'emulators',
+      emulator.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.ignore,
+    );
+  }
+}
+
 /* -------------------------------------------------------------------------- */
 /*                              UPDATE FUNCTIONS                              */
 /* -------------------------------------------------------------------------- */

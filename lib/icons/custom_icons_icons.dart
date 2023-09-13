@@ -12,6 +12,9 @@ class CustomIcons {
 
   static const String _fontFamily = 'CustomIcons';
 
+  static const IconData apple = IconData(0xe912, fontFamily: _fontFamily);
+  static const IconData android = IconData(0xe913, fontFamily: _fontFamily);
+  static const IconData linux = IconData(0xe914, fontFamily: _fontFamily);
   static const IconData battle_net = IconData(0xe911, fontFamily: _fontFamily);
   static const IconData emulators = IconData(0xe900, fontFamily: _fontFamily);
   static const IconData amazon_games = IconData(0xe908, fontFamily: _fontFamily);

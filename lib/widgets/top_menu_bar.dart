@@ -444,7 +444,8 @@ class MyMenuBar extends StatelessWidget {
                       MenuItemButton(
                         leadingIcon:
                             const Icon(CustomIcons.emulators, size: 20),
-                        onPressed: () {
+                        onPressed: () async {
+                          await databaseFunctions.insertEmulators(Constants.emulatorsList);
                           showDialog(
                             context: context,
                             barrierDismissible: false,

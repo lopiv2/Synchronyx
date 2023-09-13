@@ -21,7 +21,7 @@ class EmulatorListDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Emulators> listOfEmulators=[];
+    List<Emulators> listOfEmulators = [];
     return FutureBuilder<List<Emulators>>(
       future: getAllEmulators(),
       builder: (context, snapshot) {
@@ -129,6 +129,13 @@ class EmulatorContentDialog extends StatelessWidget {
         contentChild: gridView,
         collapsedIcon: const Icon(Icons.add),
         expandedIcon: const Icon(Icons.minimize),
+        onToggleCollapsed: (expanded) async {
+          if (expanded) {
+            // Ejecuta tu función asincrónica aquí
+            
+            await tuFuncionAsincronica();
+          }
+        },
       );
     }).toList();
 

@@ -9,7 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:synchronyx/models/emulators.dart';
 import 'package:synchronyx/models/media.dart';
-
+import 'package:synchronyx/utilities/generic_api_functions.dart' as api;
 import '../widgets/platform_tree_view.dart';
 import 'Constants.dart';
 
@@ -274,6 +274,13 @@ String createSearchString(String input) {
   cleanedString = cleanedString.replaceAll(RegExp(r'^-|-$'), '');
 
   return cleanedString;
+}
+
+void selectEmulatorScrapper(String emulator, String url){
+  switch (emulator) {
+      case 'Dolphin':
+      api.dolphinScrapper(url);
+  }
 }
 
 /* ----------------------- Updates progress bar value ----------------------- */
