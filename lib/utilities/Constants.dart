@@ -175,7 +175,8 @@ enum GamePlatforms {
         height: 34,
         color: null,
       ),
-      "Dreamcast",CustomIcons.dreamcast),
+      "Dreamcast",
+      CustomIcons.dreamcast),
   DS(
       Image(
         image: AssetImage("assets/icons/ds.png"),
@@ -183,7 +184,8 @@ enum GamePlatforms {
         height: 34,
         color: null,
       ),
-      "DS",CustomIcons.ds),
+      "DS",
+      CustomIcons.ds),
   Gameboy(
       Image(
         image: AssetImage("assets/icons/gameboy.png"),
@@ -191,7 +193,8 @@ enum GamePlatforms {
         height: 34,
         color: null,
       ),
-      "Gameboy",CustomIcons.game_boy),
+      "Gameboy",
+      CustomIcons.game_boy),
   Gamecube(
       Image(
         image: AssetImage("assets/icons/gamecube.png"),
@@ -199,7 +202,8 @@ enum GamePlatforms {
         height: 34,
         color: null,
       ),
-      "Gamecube",CustomIcons.gamecube),
+      "Gamecube",
+      CustomIcons.gamecube),
   Gamegear(
       Image(
         image: AssetImage("assets/icons/gamegear.png"),
@@ -207,7 +211,8 @@ enum GamePlatforms {
         height: 34,
         color: null,
       ),
-      "Gamegear",Icons.computer),
+      "Gamegear",
+      Icons.computer),
   Linux(
       Image(
         image: AssetImage("assets/icons/linux.png"),
@@ -215,7 +220,8 @@ enum GamePlatforms {
         height: 34,
         color: null,
       ),
-      "Linux",CustomIcons.linux),
+      "Linux",
+      CustomIcons.linux),
   Mac(
       Image(
         image: AssetImage("assets/icons/mac.png"),
@@ -223,7 +229,8 @@ enum GamePlatforms {
         height: 34,
         color: null,
       ),
-      "Mac", CustomIcons.apple),
+      "Mac",
+      CustomIcons.apple),
   MAME(
       Image(
         image: AssetImage("assets/icons/mame.png"),
@@ -231,7 +238,8 @@ enum GamePlatforms {
         height: 34,
         color: null,
       ),
-      "MAME",CustomIcons.mame),
+      "MAME",
+      CustomIcons.mame),
   Mastersystem(
       Image(
         image: AssetImage("assets/icons/mastersystem.png"),
@@ -239,7 +247,8 @@ enum GamePlatforms {
         height: 34,
         color: null,
       ),
-      "Mastersystem",Icons.computer),
+      "Mastersystem",
+      Icons.computer),
   Megadrive(
       Image(
         image: AssetImage("assets/icons/megadrive.png"),
@@ -247,7 +256,8 @@ enum GamePlatforms {
         height: 34,
         color: null,
       ),
-      "Megadrive",CustomIcons.sega_mega_drive),
+      "Megadrive",
+      CustomIcons.sega_mega_drive),
   Neogeo(
       Image(
         image: AssetImage("assets/icons/neogeo.png"),
@@ -255,7 +265,8 @@ enum GamePlatforms {
         height: 34,
         color: null,
       ),
-      "Neogeo",Icons.computer),
+      "Neogeo",
+      Icons.computer),
   NES(
       Image(
         image: AssetImage("assets/icons/nes.png"),
@@ -263,7 +274,8 @@ enum GamePlatforms {
         height: 34,
         color: null,
       ),
-      "NES",CustomIcons.nes),
+      "NES",
+      CustomIcons.nes),
   Nintendo64(
       Image(
         image: AssetImage("assets/icons/nintendo64.png"),
@@ -271,7 +283,8 @@ enum GamePlatforms {
         height: 34,
         color: null,
       ),
-      "Nintendo64",CustomIcons.nintendo_64),
+      "Nintendo64",
+      CustomIcons.nintendo_64),
   PS1(
       Image(
         image: AssetImage("assets/icons/ps1.png"),
@@ -279,7 +292,8 @@ enum GamePlatforms {
         height: 34,
         color: null,
       ),
-      "PS1",CustomIcons.ps1),
+      "PS1",
+      CustomIcons.ps1),
   PS2(
       Image(
         image: AssetImage("assets/icons/ps2.png"),
@@ -287,7 +301,8 @@ enum GamePlatforms {
         height: 34,
         color: null,
       ),
-      "PS2",CustomIcons.ps2),
+      "PS2",
+      CustomIcons.ps2),
   PS3(
       Image(
         image: AssetImage("assets/icons/ps3.png"),
@@ -295,7 +310,8 @@ enum GamePlatforms {
         height: 34,
         color: null,
       ),
-      "PS3",CustomIcons.ps3),
+      "PS3",
+      CustomIcons.ps3),
   PSP(
       Image(
         image: AssetImage("assets/icons/psp.png"),
@@ -303,7 +319,8 @@ enum GamePlatforms {
         height: 34,
         color: null,
       ),
-      "PSP",CustomIcons.psp),
+      "PSP",
+      CustomIcons.psp),
   SNES(
       Image(
         image: AssetImage("assets/icons/snes.png"),
@@ -311,7 +328,8 @@ enum GamePlatforms {
         height: 34,
         color: null,
       ),
-      "SNES",CustomIcons.snes),
+      "SNES",
+      CustomIcons.snes),
   Wii(
       Image(
         image: AssetImage("assets/icons/wii.png"),
@@ -319,7 +337,8 @@ enum GamePlatforms {
         height: 34,
         color: null,
       ),
-      "Wii",CustomIcons.wii),
+      "Wii",
+      CustomIcons.wii),
   WIIU(
       Image(
         image: AssetImage("assets/icons/wiiu.png"),
@@ -327,7 +346,8 @@ enum GamePlatforms {
         height: 34,
         color: null,
       ),
-      "WIIU",CustomIcons.wii_u),
+      "WIIU",
+      CustomIcons.wii_u),
   Windows(
       Image(
         image: AssetImage("assets/icons/windows.png"),
@@ -335,7 +355,8 @@ enum GamePlatforms {
         height: 34,
         color: null,
       ),
-      "Windows",CustomIcons.windows),
+      "Windows",
+      CustomIcons.windows),
   Xbox(
       Image(
         image: AssetImage("assets/icons/xbox.png"),
@@ -343,7 +364,8 @@ enum GamePlatforms {
         height: 34,
         color: null,
       ),
-      "Xbox",CustomIcons.xbox);
+      "Xbox",
+      CustomIcons.xbox);
 
   final Image image;
   final String name;
@@ -409,6 +431,14 @@ class Constants {
         url: 'https://es.dolphin-emu.org/download/',
         systems: 'WII,GameCube',
         icon: 'icons/dolphin.png',
+        description: 'Description 3',
+        installed: 0),
+    Emulators(
+        id: 6,
+        name: 'SNES9X',
+        url: 'https://dl.emulator-zone.com/download.php/emulators/snes/snes9x/snes9x-1.62.3-win32-x64.zip',
+        systems: 'SNES',
+        icon: 'icons/snes9x.png',
         description: 'Description 3',
         installed: 0),
   ];

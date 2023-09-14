@@ -289,6 +289,10 @@ Future<List<EmulatorDownloadResponse>> selectEmulatorScrapper(
   switch (emulator) {
     case 'Dolphin':
       response = await dioClient.dolphinScrapper(url: url);
+      break;
+    case 'SNES9X':
+      response = await dioClient.snes9xScrapper(url: url);
+      break;
   }
   return response;
 }

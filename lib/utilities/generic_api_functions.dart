@@ -595,16 +595,34 @@ class DioClient {
         l = links[2].attributes['href'];
         p = GamePlatforms.Mac.name;
         im = CustomIcons.apple;
-        response = EmulatorDownloadResponse(system: p, url: l,image: im);
+        response = EmulatorDownloadResponse(system: p, url: l, image: im);
         results.add(response);
         //Android
         l = links[3].attributes['href'];
         p = GamePlatforms.Android.name;
         im = CustomIcons.android;
-        response = EmulatorDownloadResponse(system: p, url: l,image: im);
+        response = EmulatorDownloadResponse(system: p, url: l, image: im);
         results.add(response);
       }
     }
+    return results;
+  }
+
+  Future<List<EmulatorDownloadResponse>> snes9xScrapper(
+      {required String url}) async {
+    List<EmulatorDownloadResponse> results = [];
+
+    String? l = ''; //Link
+    String? p = ''; //Platform
+    IconData im; //Image Icon
+    EmulatorDownloadResponse? response;
+    //Windows
+    l = url;
+    p = GamePlatforms.Windows.name;
+    im = CustomIcons.windows;
+    response = EmulatorDownloadResponse(system: p, url: l, image: im);
+    results.add(response);
+
     return results;
   }
 }
