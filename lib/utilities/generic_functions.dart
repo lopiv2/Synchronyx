@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:speed_test_dart/speed_test_dart.dart';
 import 'package:synchronyx/models/emulators.dart';
 import 'package:synchronyx/models/responses/emulator_download_response.dart';
 import 'package:synchronyx/utilities/generic_api_functions.dart';
@@ -146,12 +147,70 @@ Future<void> processScreenshots(
 }
 
 Future<void> downloadFile(String url) async {
-  final response = await http.get(Uri.parse(url));
-  if (response.statusCode == 200) {
-    // El archivo se descargó exitosamente, puedes hacer lo que quieras con él
-    // Por ejemplo, puedes guardar el archivo en la memoria del dispositivo.
+  try {
+    final response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      String folder = '\\Synchronyx\\downloads\\';
+      List<String> parts = url.split("/");
+      String fileName = parts.last;
+      await Constants.initialize();
+      Directory fileFolder =
+          Directory('${Constants.appDocumentsDirectory.path}$folder');
+
+      // Create the directory if it doesn't exist
+      if (!fileFolder.existsSync()) {
+        fileFolder.createSync(recursive: true);
+      }
+
+      final file = File('${fileFolder.path}$fileName');
+      await file.writeAsBytes(response.bodyBytes);
+    } else {
+      print('Error downloading file: ${response.statusCode}');
+    }
+  } catch (e) {
+    print('Error: $e');
+  }
+}
+
+/* -------------------------- Check download speed -------------------------- */
+Future<double> testInternetSpeed() async {
+  SpeedTestDart tester = SpeedTestDart();
+  final settings = await tester.getSettings();
+  final servers = settings.servers;
+  final bestServersList = await tester.getBestServers(
+    servers: servers,
+  );
+  final downloadRate = await tester.testDownloadSpeed(servers: bestServersList);
+  return downloadRate;
+}
+
+double getEstimatedTime(double fileSize, double downloadSpeed) {
+  // Convierte el tamaño del archivo de MB a bytes y la velocidad de descarga de Mbps a bytes por segundo
+  double sizeFileBytes = fileSize * 1024 * 1024; // 1 MB = 1024 * 1024 bytes
+  double speedDownloadBytesPerSecond = downloadSpeed *
+      1024 *
+      1024 /
+      8; // 1 Mbps = 1024 * 1024 / 8 bytes por segundo
+
+  double downloadTime = fileSize / speedDownloadBytesPerSecond;
+
+  return downloadTime;
+}
+
+/* ----------------- Formats the size in bytes and prints it ---------------- */
+String formatFileSize(int sizeInBytes) {
+  final kbSize = sizeInBytes / 1024;
+  final mbSize = kbSize / 1024;
+  final gbSize = mbSize / 1024;
+
+  if (gbSize >= 1) {
+    return '${gbSize.toStringAsFixed(2)} GB';
+  } else if (mbSize >= 1) {
+    return '${mbSize.toStringAsFixed(2)} MB';
+  } else if (kbSize >= 1) {
+    return '${kbSize.toStringAsFixed(2)} KB';
   } else {
-    // Manejar el caso en que la descarga no fue exitosa
+    return '$sizeInBytes bytes';
   }
 }
 

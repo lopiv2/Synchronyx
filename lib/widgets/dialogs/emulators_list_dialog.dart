@@ -1,12 +1,15 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:getwidget/components/accordion/gf_accordion.dart';
+import 'package:provider/provider.dart';
 import 'package:synchronyx/icons/custom_icons_icons.dart';
 import 'package:synchronyx/models/emulators.dart';
 import 'package:synchronyx/models/responses/emulator_download_response.dart';
+import 'package:synchronyx/providers/app_state.dart';
 import 'package:synchronyx/utilities/constants.dart';
 import 'package:synchronyx/utilities/generic_database_functions.dart';
 import 'package:synchronyx/utilities/generic_functions.dart';
+import 'package:synchronyx/widgets/dialogs/download_progress_dialog.dart';
 import 'package:synchronyx/widgets/dialogs/generic_dialog.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -43,6 +46,8 @@ class EmulatorListDialog extends StatelessWidget {
                   listOfEmulators: listOfEmulators,
                   appLocalizations: appLocalizations,
                 ),
+            dialogHeader: appLocalizations.emulators,
+            preContent: const DownloadProgress(),
             dialogTitle: appLocalizations.emulators,
             icon: Icon(CustomIcons.emulators, size: 20),
           );
@@ -61,6 +66,7 @@ class EmulatorContentDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final appState = Provider.of<AppState>(context, listen: false);
     // Get the list of unique platforms
     List<String> platforms = getUniquePlatforms(listOfEmulators);
 
@@ -105,8 +111,8 @@ class EmulatorContentDialog extends StatelessWidget {
                 return IconButton(
                   icon: Icon(response.image), // Carga la imagen desde assets
                   onPressed: () {
-                    print(response.url);
-                    downloadFile(response.url!);
+                    appState.startDownload(response.url!);
+                    //downloadFile(response.url!);
                   },
                 );
               }).toList();
@@ -129,7 +135,9 @@ class EmulatorContentDialog extends StatelessWidget {
                       color: Colors.black,
                     ),
                   ),
-                  Row(mainAxisAlignment: MainAxisAlignment.center, children: iconButtons)
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: iconButtons)
                   // Otros widgets de texto con otros valores de la respuesta, si es necesario
                 ],
               );

@@ -13,10 +13,14 @@ class GenericDialog extends StatefulWidget {
       required this.appLocalizations,
       required this.content,
       required this.dialogTitle,
-      required this.icon});
+      required this.icon,
+      this.dialogHeader,
+      this.preContent});
   final AppLocalizations appLocalizations;
   final Widget content;
   final String dialogTitle;
+  final String? dialogHeader;
+  final Widget? preContent; //Content before content
   final Icon icon;
 
   @override
@@ -26,7 +30,6 @@ class GenericDialog extends StatefulWidget {
 class _GenericDialogState extends State<GenericDialog> {
   final AudioManager audioManager = AudioManager();
   Offset _offset = Offset(0, 0);
-  String dialogHeader = '';
 
   @override
   Widget build(BuildContext context) {
@@ -69,9 +72,10 @@ class _GenericDialogState extends State<GenericDialog> {
                         toolbarHeight: 35.0,
                         titleSpacing: -20.0,
                         leading: const Padding(
-                            padding: EdgeInsets.only(right: 20.0),
-                            child: Icon(CustomIcons.emulators,
-                                color: Colors.white, size: 20),),
+                          padding: EdgeInsets.only(right: 20.0),
+                          child: Icon(CustomIcons.emulators,
+                              color: Colors.white, size: 20),
+                        ),
                         title: Text(
                           widget.dialogTitle,
                           style: TextStyle(
@@ -93,7 +97,7 @@ class _GenericDialogState extends State<GenericDialog> {
                       Padding(
                         padding: EdgeInsets.fromLTRB(20, 0, 10, 0),
                         child: Text(
-                          dialogHeader,
+                          widget.dialogHeader ?? '',
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 20,
@@ -101,6 +105,8 @@ class _GenericDialogState extends State<GenericDialog> {
                           ),
                         ),
                       ),
+                      SizedBox(child: widget.preContent),
+                      SizedBox(height:40),
                       Expanded(
                         child: ListView(
                           children: [

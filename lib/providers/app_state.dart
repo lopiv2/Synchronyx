@@ -5,7 +5,8 @@ import 'package:synchronyx/models/responses/gameMedia_response.dart';
 class AppState extends ChangeNotifier {
   GameMediaResponse? selectedGame;
   late GlobalOptions selectedOptions; //Current using options
-  late GlobalOptions optionsResponse; //Temporary Response for options until saved
+  late GlobalOptions
+      optionsResponse; //Temporary Response for options until saved
   List<GameMediaResponse> gamesInGrid = [];
   bool shouldRefreshGridView = false;
   String _isImporting = 'no'; //Three states, no, importing and finished
@@ -19,7 +20,25 @@ class AppState extends ChangeNotifier {
   String filterValue = '';
   bool _showMoreContent = false;
   bool get showMoreContent => _showMoreContent;
-  final ValueNotifier<String> selectedOptionClicked = ValueNotifier<String>('');//Option selected in the options menu to display one menu or the other.
+  final ValueNotifier<String> selectedOptionClicked = ValueNotifier<String>(
+      ''); //Option selected in the options menu to display one menu or the other.
+
+  bool downloading = false; //Downloading a file or not
+  String urlDownloading = ""; //Url downloading
+  bool get isDownloading => downloading;
+
+
+  Future<void> startDownload(String url) async {
+    downloading = true;
+    urlDownloading = url;
+    notifyListeners();
+  }
+
+  Future<void> stopDownload() async {
+    downloading = false;
+    urlDownloading = '';
+    notifyListeners();
+  }
 
   //Show more tracks in ost import dialog
   void toggleShowMoreContent() {
