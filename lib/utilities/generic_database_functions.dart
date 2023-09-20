@@ -84,6 +84,7 @@ Future<Database?> createAndOpenDB() async {
           'rating REAL,'
           'favorite INTEGER,'
           'installed INTEGER,'
+          'owned INTEGER,'
           'playTime INTEGER,'
           'lastPlayed TEXT,'
           'tags TEXT'

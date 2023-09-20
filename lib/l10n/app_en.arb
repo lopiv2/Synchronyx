@@ -84,6 +84,8 @@
   "rating": "Rating",
   "region": "Region",
   "results": "Results",
+  "searchLibrary": "Search in library",
+  "searchInternet": "Search the Internet",
   "settings": "Settings",
   "size": "Size",
   "steamWindowAssistant": "Steam Games Import Wizard",

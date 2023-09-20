@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:synchronyx/models/global_options.dart';
 import 'package:synchronyx/models/responses/gameMedia_response.dart';
+import 'package:synchronyx/models/responses/rawg_response.dart';
 
 class AppState extends ChangeNotifier {
   GameMediaResponse? selectedGame;
@@ -26,7 +27,22 @@ class AppState extends ChangeNotifier {
   bool downloading = false; //Downloading a file or not
   String urlDownloading = ""; //Url downloading
   bool get isDownloading => downloading;
+  bool resultsEnabled =
+      false; //Variable that is activated when there are game search results
+  bool searchGameEnabled =
+      false; //Variable to be activated when searching for a game to add to the wanted list.
+  List<RawgResponse> results = [];
 
+  Future<void> showResults(List<RawgResponse> res, bool value) async {
+    resultsEnabled = value;
+    results = List.from(res);
+    notifyListeners();
+  }
+
+  Future<void> toggleGameSearch(bool value) async {
+    searchGameEnabled = value;
+    notifyListeners();
+  }
 
   Future<void> startDownload(String url) async {
     downloading = true;

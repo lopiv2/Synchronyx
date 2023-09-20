@@ -7,6 +7,8 @@ class TextButtonHoverColored extends StatefulWidget {
   final String text;
   final ButtonStyle? style;
   final Color? backColor;
+  final bool enableEllipsis;
+  final String? tooltip; // Nuevo atributo para el texto del Tooltip
 
   const TextButtonHoverColored({
     Key? key,
@@ -14,6 +16,8 @@ class TextButtonHoverColored extends StatefulWidget {
     this.style,
     required this.text,
     this.backColor = Colors.blueGrey,
+    this.enableEllipsis = false,
+    this.tooltip, // Agrega el atributo para el texto del Tooltip
   }) : super(key: key);
 
   @override
@@ -45,15 +49,24 @@ class _TextButtonHoverColored extends State<TextButtonHoverColored> {
           decoration: BoxDecoration(
             color: isHovered ? widget.backColor : Colors.transparent,
             border: appState.buttonClickedKey == widget.key
-                ? Border.all(
-                    color: Colors.blue,
-                    width: 2.0) // Borde cuando está presionado
+                ? Border.all(color: Colors.blue, width: 2.0)
                 : null,
             borderRadius: BorderRadius.only(
-                topRight: Radius.circular(
-                    40),bottomRight: Radius.circular(40)), // Ajusta el valor según tu preferencia
+                topRight: Radius.circular(40),
+                bottomRight: Radius.circular(40)),
           ),
-          child: Text(widget.text),
+          child: Tooltip(
+            message: widget.tooltip ??
+                widget
+                    .text, // Usa el tooltip personalizado o el texto por defecto
+            child: widget.enableEllipsis
+                ? Text(
+                    widget.text,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
+                  )
+                : Text(widget.text),
+          ),
         ),
       ),
     );

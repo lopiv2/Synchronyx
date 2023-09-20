@@ -177,6 +177,15 @@ enum GamePlatforms {
       ),
       "Dreamcast",
       CustomIcons.dreamcast),
+  ThreeDS(
+      Image(
+        image: AssetImage("assets/icons/3ds.png"),
+        width: 34,
+        height: 34,
+        color: null,
+      ),
+      "DS",
+      CustomIcons.nintendo3ds),
   DS(
       Image(
         image: AssetImage("assets/icons/ds.png"),
@@ -292,7 +301,7 @@ enum GamePlatforms {
         height: 34,
         color: null,
       ),
-      "PS1",
+      "PS1,Playstation 1",
       CustomIcons.ps1),
   PS2(
       Image(
@@ -301,7 +310,7 @@ enum GamePlatforms {
         height: 34,
         color: null,
       ),
-      "PS2",
+      "PS2,Playstation 2",
       CustomIcons.ps2),
   PS3(
       Image(
@@ -310,7 +319,7 @@ enum GamePlatforms {
         height: 34,
         color: null,
       ),
-      "PS3",
+      "PS3,Playstation 3",
       CustomIcons.ps3),
   PSP(
       Image(
@@ -360,6 +369,33 @@ enum GamePlatforms {
   Xbox(
       Image(
         image: AssetImage("assets/icons/xbox.png"),
+        width: 34,
+        height: 34,
+        color: null,
+      ),
+      "Xbox",
+      CustomIcons.xbox),
+  XboxOne(
+      Image(
+        image: AssetImage("assets/icons/xboxone.png"),
+        width: 34,
+        height: 34,
+        color: null,
+      ),
+      "Xbox",
+      CustomIcons.xbox),
+  XboxSeriesX(
+      Image(
+        image: AssetImage("assets/icons/xboxseriesx.png"),
+        width: 34,
+        height: 34,
+        color: null,
+      ),
+      "Xbox",
+      CustomIcons.xbox),
+  Xbox360(
+      Image(
+        image: AssetImage("assets/icons/xbox360.png"),
         width: 34,
         height: 34,
         color: null,
@@ -420,7 +456,7 @@ class Constants {
     Emulators(
         id: 4,
         name: 'Redream',
-        url: 'https://example.com/emulator2',
+        url: 'https://redream.io/download',
         systems: 'Dreamcast',
         icon: 'icons/redream.png',
         description: 'Description 2',
@@ -436,9 +472,18 @@ class Constants {
     Emulators(
         id: 6,
         name: 'SNES9X',
-        url: 'https://dl.emulator-zone.com/download.php/emulators/snes/snes9x/snes9x-1.62.3-win32-x64.zip',
+        url:
+            'https://dl.emulator-zone.com/download.php/emulators/snes/snes9x/snes9x-1.62.3-win32-x64.zip',
         systems: 'SNES',
         icon: 'icons/snes9x.png',
+        description: 'Description 3',
+        installed: 0),
+    Emulators(
+        id: 7,
+        name: 'BSNES',
+        url: 'https://bsnes.org/download/',
+        systems: 'SNES',
+        icon: 'icons/bsnes.png',
         description: 'Description 3',
         installed: 0),
   ];

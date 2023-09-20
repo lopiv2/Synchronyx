@@ -3,6 +3,7 @@ import 'package:provider/provider.dart' as provider;
 import 'package:provider/provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:synchronyx/models/global_options.dart';
+import 'package:synchronyx/models/responses/rawg_response.dart';
 import 'package:synchronyx/providers/app_state.dart';
 import 'package:synchronyx/utilities/audio_singleton.dart';
 import 'package:synchronyx/utilities/generic_database_functions.dart'
@@ -11,6 +12,8 @@ import 'package:synchronyx/utilities/generic_database_functions.dart';
 import 'package:synchronyx/widgets/filter_info_panel.dart';
 import 'package:synchronyx/widgets/filters/favorite_filter.dart';
 import 'package:synchronyx/widgets/game_info_panel.dart';
+import 'package:synchronyx/widgets/game_search_results_list.dart';
+import 'package:synchronyx/widgets/grid_view_game_covers_wish.dart';
 import 'package:synchronyx/widgets/platform_tree_view.dart';
 import 'package:synchronyx/widgets/top_menu_bar.dart';
 import 'widgets/buttons/arcade_box_button.dart';
@@ -19,6 +22,7 @@ import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:synchronyx/utilities/constants.dart';
 import 'widgets/grid_view_game_covers.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:synchronyx/utilities/generic_api_functions.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -156,58 +160,95 @@ class _LeftSideState extends State<LeftSide> {
             ],
           ),
         ),
-        child: Column(children: [
-          //Padding(padding: EdgeInsets.only(top: 10.0)),
-          const Padding(padding: EdgeInsets.only(top: 20.0)),
-          Container(
-            height: 30,
-            child: const Row(
-              children: <Widget>[
-                SizedBox(width: 10), // give it width
-                Flexible(
-                    child: TextField(
-                  decoration: InputDecoration(
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 10, horizontal: 6),
-                    filled: true,
-                    fillColor: Color.fromARGB(127, 11, 129, 46),
-                    border: OutlineInputBorder(),
-                    hintText: 'Search',
-                  ),
-                  style: TextStyle(fontSize: 14),
-                )),
-                SizedBox(width: 10),
-              ],
-            ),
-          ),
-          const Padding(padding: EdgeInsets.only(top: 20.0)),
-          DropdownWidget(
-            onChanged: (newValue) {
-              setState(() {
-                selectedValue = newValue;
-              });
-            },
-          ),
-          Expanded(
-            child: _buildWidgetBasedOnSelectedValue(
-                Provider.of<AppState>(context)),
-          ),
-          Container(
-            height: 50, // Altura del contenedor ámbar
-            color: const Color.fromARGB(101, 76, 175, 79), // Color ámbar
-            child: Align(
-              alignment: Alignment.center,
-              child: Text(
-                'Descargas',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
+        child: Consumer<AppState>(builder: (context, appState, child) {
+          return Column(children: [
+            //Padding(padding: EdgeInsets.only(top: 10.0)),
+            const Padding(padding: EdgeInsets.only(top: 20.0)),
+            Container(
+              height: 30,
+              child: Row(
+                children: <Widget>[
+                  const SizedBox(width: 10), // give it width
+                  Flexible(
+                      child: TextField(
+                    decoration: InputDecoration(
+                      contentPadding:
+                          EdgeInsets.symmetric(vertical: 10, horizontal: 6),
+                      filled: true,
+                      fillColor: const Color.fromARGB(127, 11, 129, 46),
+                      border: const OutlineInputBorder(),
+                      hintText: appState.searchGameEnabled
+                          ? widget.appLocalizations.searchInternet
+                          : widget.appLocalizations.searchLibrary,
+                    ),
+                    style: TextStyle(fontSize: 14),
+                    onSubmitted: (String searchString) async {
+                      if (appState.searchGameEnabled) {
+                        showDialog(
+                          context: context,
+                          barrierDismissible:
+                              false, // Evita que el usuario cierre el diálogo
+                          builder: (BuildContext context) {
+                            return Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          },
+                        );
+                        List<RawgResponse> responses = [];
+                        final dio = DioClient();
+                        responses = await dio.searchGamesRawg(
+                            key: '68239c29cb2c49f2acfddf9703077032',
+                            searchString: searchString);
+                        Navigator.of(context).pop(); // Cierra el diálogo
+                        if (responses.isNotEmpty) {
+                          appState.showResults(responses, true);
+                        } else {
+                          Text("No results");
+                        }
+                      }
+                    },
+                  )),
+                  SizedBox(width: 10),
+                ],
               ),
             ),
-          ),
-        ]));
+            const Padding(padding: EdgeInsets.only(top: 20.0)),
+            Visibility(
+              visible: appState.searchGameEnabled == false,
+              child: DropdownWidget(
+                onChanged: (newValue) {
+                  setState(() {
+                    selectedValue = newValue;
+                  });
+                },
+              ),
+            ),
+            Visibility(
+                visible: appState.searchGameEnabled && appState.resultsEnabled,
+                child: RawgResponseListWidget(
+                  rawgResponses: appState.results,
+                )),
+            Expanded(
+              child: _buildWidgetBasedOnSelectedValue(
+                  Provider.of<AppState>(context)),
+            ),
+            /*Container(
+              height: 50, // Altura del contenedor ámbar
+              color: const Color.fromARGB(101, 76, 175, 79), // Color ámbar
+              child: Align(
+                alignment: Alignment.center,
+                child: Text(
+                  'Descargas',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),*/
+          ]);
+        }));
   }
 
   Widget _buildWidgetBasedOnSelectedValue(AppState appState) {
@@ -221,17 +262,58 @@ class _LeftSideState extends State<LeftSide> {
       // Agrega más casos según tus necesidades
       default:
         return Text(
-            "otrodefaul"); // Cambia YourDefaultWidget por el widget predeterminado
+            ""); // Cambia YourDefaultWidget por el widget predeterminado
     }
   }
 }
 
-class CenterSide extends StatelessWidget {
-  const CenterSide({super.key});
+class CenterSide extends StatefulWidget {
+  const CenterSide({Key? key}) : super(key: key);
+
+  @override
+  _CenterSideState createState() => _CenterSideState();
+}
+
+class _CenterSideState extends State<CenterSide>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+  int _previousTabIndex = 0;
+
+  void _handleTabSelection() {
+    final appState = Provider.of<AppState>(context, listen: false);
+
+    if (_tabController.index != _previousTabIndex) {
+      // Verifica si el índice ha cambiado
+      _previousTabIndex = _tabController.index; // Actualiza el índice anterior
+
+      if (_tabController.index == 0) {
+        appState.toggleGameSearch(false);
+        print('Pestaña seleccionada: Biblioteca');
+      } else if (_tabController.index == 1) {
+        appState.toggleGameSearch(true);
+        print('Pestaña seleccionada: Lista');
+      }
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController =
+        TabController(length: 2, vsync: this); // 2 tabs (library and list)
+    _tabController.addListener(_handleTabSelection);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final appState = Provider.of<AppState>(context);
+
     return FutureBuilder<Database?>(
       future: database.createAndOpenDB(),
       builder: (context, snapshot) {
@@ -246,11 +328,10 @@ class CenterSide extends StatelessWidget {
           Future<GlobalOptions?> optionsFuture = getOptions().then((value) {
             if (value != null) {
               appState.selectedOptions = value;
-              appState.optionsResponse = GlobalOptions.copy(
-                  value); //Answer that will be the temporary one for the change of options
-              //print(appState.selectedOptions);
+              appState.optionsResponse = GlobalOptions.copy(value);
             }
           });
+
           return Expanded(
             child: Container(
               decoration: const BoxDecoration(
@@ -264,10 +345,40 @@ class CenterSide extends StatelessWidget {
                   ],
                 ),
               ),
-              child: Consumer<AppState>(
-                builder: (context, appState, child) {
-                  return GridViewGameCovers(); // Actualiza automáticamente cuando cambia shouldRefreshGridView
-                },
+              child: Column(
+                children: [
+                  TabBar(
+                    controller: _tabController,
+                    tabs: [
+                      Tab(text: 'Biblioteca'),
+                      Tab(text: 'Lista'),
+                    ],
+                    indicator: const UnderlineTabIndicator(
+                      borderSide: BorderSide(
+                          width: 4.0,
+                          color: Colors.blue), // Grosor y color del indicador
+                      insets: EdgeInsets.symmetric(
+                          horizontal: 16.0), // Ancho del indicador
+                    ),
+                  ),
+                  Expanded(
+                    child: TabBarView(
+                      controller: _tabController,
+                      children: [
+                        Consumer<AppState>(
+                          builder: (context, appState, child) {
+                            return GridViewGameCovers(); // Contenido de la pestaña 'Biblioteca'
+                          },
+                        ),
+                        Consumer<AppState>(
+                          builder: (context, appState, child) {
+                            return GridViewGameCoversWished(); // Contenido de la pestaña 'Biblioteca'
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
           );
@@ -282,10 +393,10 @@ class RightSide extends StatefulWidget {
   RightSide({Key? key, required this.appLocalizations}) : super(key: key);
 
   @override
-  State<RightSide> createState() => _MyWidgetState();
+  State<RightSide> createState() => _RightSideState();
 }
 
-class _MyWidgetState extends State<RightSide> {
+class _RightSideState extends State<RightSide> {
   @override
   Widget build(BuildContext context) {
     return Container(

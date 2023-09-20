@@ -93,7 +93,27 @@ class EmulatorContentDialog extends StatelessWidget {
     // Create GFAccordion widgets for each platform and its emulators
     List<Widget> accordionWidgets = platforms.map((platform) {
       List<Emulators> platformEmulators = emulatorsByPlatform[platform] ?? [];
+      bool found =
+          false; // Variable para controlar si se ha encontrado una coincidencia
 
+      GamePlatforms g = GamePlatforms.values.firstWhere(
+        (element) {
+          if (!found) {
+            // Si aún no se ha encontrado una coincidencia
+            final names = element.name.split(
+                ','); // Divide la cadena en múltiples valores usando comas
+
+            for (var name in names) {
+              if (name.trim().toLowerCase() == platform.toLowerCase()) {
+                found = true; // Marca que se ha encontrado una coincidencia
+                return true; // Retorna true para detener la búsqueda
+              }
+            }
+          }
+          return false; // Continúa buscando
+        },
+      );
+      Image im = g.image;
       List<Widget> emulatorWidgets = platformEmulators.map((emulator) {
         return FutureBuilder<List<EmulatorDownloadResponse>>(
           future: selectEmulatorScrapper(emulator.name, emulator.url),
@@ -159,7 +179,19 @@ class EmulatorContentDialog extends StatelessWidget {
       );
       // Create the accordion for this platform
       return GFAccordion(
-        title: platform,
+        titleChild: Row(
+          children: [
+            Text(platform), 
+            SizedBox(width: 8.0), 
+            Image(
+              image: im.image, 
+              width: 60, 
+              height: 60, 
+              fit: BoxFit
+                  .contain, 
+            ),
+          ],
+        ),
         contentChild: gridView,
         collapsedIcon: const Icon(Icons.add),
         expandedIcon: const Icon(Icons.minimize),

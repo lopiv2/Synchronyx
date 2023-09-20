@@ -4,7 +4,6 @@ import 'dart:math';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import 'package:speed_test_dart/speed_test_dart.dart';
 import 'package:synchronyx/models/emulators.dart';
 import 'package:synchronyx/models/responses/emulator_download_response.dart';
 import 'package:synchronyx/utilities/generic_api_functions.dart';
@@ -172,31 +171,6 @@ Future<void> downloadFile(String url) async {
   }
 }
 
-/* -------------------------- Check download speed -------------------------- */
-Future<double> testInternetSpeed() async {
-  SpeedTestDart tester = SpeedTestDart();
-  final settings = await tester.getSettings();
-  final servers = settings.servers;
-  final bestServersList = await tester.getBestServers(
-    servers: servers,
-  );
-  final downloadRate = await tester.testDownloadSpeed(servers: bestServersList);
-  return downloadRate;
-}
-
-double getEstimatedTime(double fileSize, double downloadSpeed) {
-  // Convierte el tamaño del archivo de MB a bytes y la velocidad de descarga de Mbps a bytes por segundo
-  double sizeFileBytes = fileSize * 1024 * 1024; // 1 MB = 1024 * 1024 bytes
-  double speedDownloadBytesPerSecond = downloadSpeed *
-      1024 *
-      1024 /
-      8; // 1 Mbps = 1024 * 1024 / 8 bytes por segundo
-
-  double downloadTime = fileSize / speedDownloadBytesPerSecond;
-
-  return downloadTime;
-}
-
 /* ----------------- Formats the size in bytes and prints it ---------------- */
 String formatFileSize(int sizeInBytes) {
   final kbSize = sizeInBytes / 1024;
@@ -346,8 +320,14 @@ Future<List<EmulatorDownloadResponse>> selectEmulatorScrapper(
   DioClient dioClient = DioClient();
   late List<EmulatorDownloadResponse> response;
   switch (emulator) {
+    case 'BSNES':
+      response = await dioClient.bsnesScrapper(url: url);
+      break;
     case 'Dolphin':
       response = await dioClient.dolphinScrapper(url: url);
+      break;
+    case 'Redream':
+      response = await dioClient.redreamScrapper(url: url);
       break;
     case 'SNES9X':
       response = await dioClient.snes9xScrapper(url: url);

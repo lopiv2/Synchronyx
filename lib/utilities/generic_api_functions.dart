@@ -88,7 +88,7 @@ class DioClient {
       RawgResponse rawgResponse = await getAndImportRawgData(
           key: '68239c29cb2c49f2acfddf9703077032', title: name);
       String finalbackgroundFolder = await processMediaFiles(
-          rawgResponse.imageUrl, "background", name, mediaInfo);
+          rawgResponse.imageUrl ?? '', "background", name, mediaInfo);
 
       //Get video for Media insert
       String videoUrl = await searchVideosAndReturnUrl('$name trailer');
@@ -124,6 +124,56 @@ class DioClient {
 
       updateProgress(requestCount, gamesList.length);
       if (requestCount > 5) break;
+    }
+  }
+
+  Future<List<RawgResponse>> searchGamesRawg(
+      {required String key, required String searchString}) async {
+    try {
+      final Response userData =
+          await _dio.get('$_rawgApiUrl?key=$key&search=$searchString');
+
+      if (userData.statusCode == 200) {
+        final Map<String, dynamic> jsonResponse = userData.data;
+
+        if (jsonResponse.containsKey('results')) {
+          final List<dynamic> results = jsonResponse['results'];
+
+          if (results.isNotEmpty) {
+            final List<RawgResponse> games = [];
+
+            for (final data in results) {
+              if (data is Map<String, dynamic> && data.containsKey('name')) {
+                final String gameName = data['name'];
+                String iconUrl = await getAndImportSteamGridDBIconByGame(
+                  key: 'fa61b6d47dfe3b6ab65a516b1f8bd0a3',
+                  searchString: gameName,
+                );
+                final RawgResponse game = RawgResponse(
+                  gameId: data['id'].toString(),
+                  name: data['name'],
+                  imageUrl: data['background_image'],
+                  iconUrl: iconUrl,
+                  metacriticInfo: data['rating'],
+                  releaseDate: data['released'],
+                  // Agrega otras propiedades si es necesario
+                );
+                games.add(game);
+              }
+            }
+            return games;
+          } else {
+            return []; // Devolver una lista vacía si no hay resultados
+          }
+        } else {
+          throw Exception(
+              'The "results" field was not found in the JSON response.');
+        }
+      } else {
+        throw Exception('HTTP request error');
+      }
+    } catch (e) {
+      throw Exception('HTTP request error: $e');
     }
   }
 
@@ -419,8 +469,49 @@ class DioClient {
     return '';
   }
 
+  Future<String> getAndImportSteamGridDBIconByGame(
+      {required String key, required String searchString}) async {
+    // Definir los encabezados que deseas enviar
+    Map<String, dynamic> headers = {
+      'Authorization': 'Bearer $key',
+      'Content-Type': 'application/json',
+    };
+    Response userData = await _dio.get(
+        _steamGridDBApiUrl + 'search/autocomplete/$searchString',
+        options: Options(headers: headers));
+    String jsonData = jsonEncode(userData.data);
+    //print('Game Data: $jsonData');
+
+    Map<String, dynamic> responseData = userData.data;
+    // Obtener la lista "data"
+    List<dynamic> dataList = responseData['data'];
+
+    if (dataList.isNotEmpty) {
+      // Obtener el primer elemento de la lista
+      Map<String, dynamic> firstData = dataList[0];
+
+      String gameId = firstData['id'].toString();
+
+      Response userData2 = await _dio.get(
+          _steamGridDBApiUrl + 'icons/game/$gameId',
+          options: Options(headers: headers));
+      String jsonData2 = jsonEncode(userData2.data);
+
+      Map<String, dynamic> responseData2 = userData2.data;
+      List<dynamic> dataList2 = responseData2['data'];
+      if (dataList2.isNotEmpty) {
+        // Obtener el primer elemento de la lista
+        Map<String, dynamic> firstData2 = dataList2[0];
+        String gameIcon = firstData2['thumb'];
+
+        //Returns the value of the first image obtained.
+        return gameIcon;
+      }
+    }
+    return '';
+  }
+
   /* ----------------------------- Get RAWG Media by Steam App Id and Platform ---------------------------- */
-  /* ------------------------ Not working by the moment ----------------------- */
   Future<RawgResponse> getAndImportRawgData(
       {required String key, required String title}) async {
     String sluggedTitle = createSlug(title);
@@ -562,6 +653,24 @@ class DioClient {
   /*                             Emulator Scrappers                             */
   /* -------------------------------------------------------------------------- */
 
+/* ------------------------- BSNES Emulator Scrapper ------------------------ */
+  Future<List<EmulatorDownloadResponse>> bsnesScrapper(
+      {required String url}) async {
+    //String searchTitle = createSearchString(title);
+    List<EmulatorDownloadResponse> results = [];
+    String? l = ''; //Link
+    String? p = ''; //Platform
+    IconData im; //Image Icon
+    EmulatorDownloadResponse? response;
+    //Windows
+    l = 'https://github.com/bsnes-emu/bsnes/releases/download/v115/bsnes_v115-windows.zip';
+    p = GamePlatforms.Windows.name;
+    im = CustomIcons.windows;
+    response = EmulatorDownloadResponse(system: p, url: l, image: im);
+    results.add(response);
+    return results;
+  }
+
   /* ------------------------ Dolphin Emulator Scrapper ------------------------ */
   Future<List<EmulatorDownloadResponse>> dolphinScrapper(
       {required String url}) async {
@@ -603,6 +712,55 @@ class DioClient {
         im = CustomIcons.android;
         response = EmulatorDownloadResponse(system: p, url: l, image: im);
         results.add(response);
+      }
+    }
+    return results;
+  }
+
+  /* ------------------------ Redream Emulator Scrapper ------------------------ */
+  Future<List<EmulatorDownloadResponse>> redreamScrapper(
+      {required String url}) async {
+    //String searchTitle = createSearchString(title);
+    List<EmulatorDownloadResponse> results = [];
+
+    final response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      final document = parser.parse(response.body);
+      final releasesList = document.querySelectorAll('#releases');
+      List<String> links = [];
+      String? l = ''; //Link
+      String? p = ''; //Platform
+      IconData im; //Image Icon
+      EmulatorDownloadResponse? responseDownload;
+      if (releasesList != null) {
+        final anchorElements = releasesList[1].querySelectorAll('a');
+
+        for (final anchorElement in anchorElements) {
+          final hrefValue = anchorElement.attributes['href'];
+
+          links.add(hrefValue ?? '');
+        }
+        //Windows
+        l = 'https://redream.io' + links[0];
+        p = GamePlatforms.Windows.name;
+        im = CustomIcons.windows;
+        responseDownload =
+            EmulatorDownloadResponse(system: p, url: l, image: im);
+        results.add(responseDownload);
+        //MAC
+        l = 'https://redream.io' + links[1];
+        p = GamePlatforms.Mac.name;
+        im = CustomIcons.apple;
+        responseDownload =
+            EmulatorDownloadResponse(system: p, url: l, image: im);
+        results.add(responseDownload);
+        //Linux
+        l = 'https://redream.io' + links[2];
+        p = GamePlatforms.Linux.name;
+        im = CustomIcons.linux;
+        responseDownload =
+            EmulatorDownloadResponse(system: p, url: l, image: im);
+        results.add(responseDownload);
       }
     }
     return results;

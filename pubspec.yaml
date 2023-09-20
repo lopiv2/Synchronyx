@@ -54,7 +54,7 @@ dependencies:
   audioplayers: ^5.1.0
   pushable_button: ^0.0.2
   getwidget: ^4.0.0
-  speed_test_dart: ^1.0.5+0
+  cached_network_image: ^3.2.3
 
 dev_dependencies:
   flutter_test:
