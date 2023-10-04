@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:synchronyx/providers/app_state.dart';
-import 'package:synchronyx/utilities/constants.dart';
 import '../models/game.dart';
 import '../models/responses/gameMedia_response.dart';
 import '../models/media.dart';
 import 'image_cover_model.dart';
 import 'package:synchronyx/utilities/generic_database_functions.dart'
-    as databaseFunctions;
+    as database_functions;
 
 class GridViewGameCovers extends StatefulWidget {
   const GridViewGameCovers({Key? key}) : super(key: key);
@@ -21,16 +20,16 @@ class _GridViewGameCoversState extends State<GridViewGameCovers> {
   Widget build(BuildContext context) {
     final appState = Provider.of<AppState>(context);
     return FutureBuilder<List<Game>>(
-      future: databaseFunctions.getAllGamesWithFilter(appState.filter, appState.filterValue),
+      future: database_functions.getAllGamesWithFilter(appState.filter, appState.filterValue), //Automatically filters according to the filter we apply from other filters
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator();
+          return const CircularProgressIndicator();
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         } else if (!snapshot.hasData) {
-          return Text('Cargando datos...'); // Mensaje durante la carga inicial
+          return const Text('Cargando datos...'); // Mensaje durante la carga inicial
         } else if (snapshot.data!.isEmpty) {
-          return Text('');
+          return const Text('');
         } else {
           List<Game> listOfGames = snapshot.data!;
           return FutureBuilder<List<Container>>(
@@ -38,11 +37,11 @@ class _GridViewGameCoversState extends State<GridViewGameCovers> {
             builder: (context, containerSnapshot) {
               if (containerSnapshot.connectionState ==
                   ConnectionState.waiting) {
-                return CircularProgressIndicator();
+                return const CircularProgressIndicator();
               } else if (containerSnapshot.hasError) {
                 return Text('Error: ${containerSnapshot.error}');
               } else if (!containerSnapshot.hasData) {
-                return Text('Cargando contenedores...');
+                return const Text('Cargando contenedores...');
               } else {
                 List<Container> containers = containerSnapshot.data!;
                 return GridView.count(
@@ -66,7 +65,7 @@ class _GridViewGameCoversState extends State<GridViewGameCovers> {
     List<Container> containers = [];
     for (int index = 0; index < listOfGames.length; index++) {
       Media? gameMedia =
-          await databaseFunctions.getMediaById(listOfGames[index].mediaId!);
+          await database_functions.getMediaById(listOfGames[index].mediaId);
       if (gameMedia != null) {
         GameMediaResponse gameMediaResponse =
             GameMediaResponse.fromGameAndMedia(listOfGames[index], gameMedia);

@@ -50,11 +50,15 @@ dependencies:
   youtube_explode_dart: ^2.0.2
   provider: ^6.0.5
   flutter_rating_bar: ^4.0.1
-  animate_do: ^3.0.2
+  animate_do: ^3.1.2
   audioplayers: ^5.1.0
   pushable_button: ^0.0.2
   getwidget: ^4.0.0
   cached_network_image: ^3.2.3
+  calendar_view: ^1.0.4
+  flutter_html: ^3.0.0-beta.2
+  dio_cache_interceptor: ^3.4.4
+  dio_cache_interceptor_file_store: ^1.2.2
 
 dev_dependencies:
   flutter_test:

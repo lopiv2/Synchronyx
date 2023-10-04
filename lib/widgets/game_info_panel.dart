@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:provider/provider.dart';
 import 'package:pushable_button/pushable_button.dart';
@@ -62,6 +63,7 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
   Future<Widget> _buildGameInfoPanel(
       AppState appState, GameMediaResponse? selectedGame) async {
     bool isHovered = false;
+    ScrollController _scrollController = ScrollController();
     audioManager.stop();
     //Marquee
     ImageProvider<Object> imageWidgetMarquee;
@@ -307,7 +309,8 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
             ),
           ],
         ),
-        SizedBox(height: 20),
+        const SizedBox(height: 20),
+        /* ------------------------------- Screenshots ------------------------------ */
         Row(
           children: [
             Expanded(
@@ -359,41 +362,43 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
             ),
           ],
         ),
-        Row(
-          children: [
-            Expanded(
-              flex: 2,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 36, 16, 0),
-                child: PushableButton(
-                  height: 40,
-                  elevation: 8,
-                  hslColor: HSLColor.fromAHSL(1.0, 120, 1.0, 0.37),
-                  shadow: BoxShadow(
-                    color: Colors.grey.withOpacity(0.5),
-                    spreadRadius: 5,
-                    blurRadius: 7,
-                    offset: Offset(0, 2),
-                  ),
-                  onPressed: () => print('Button Pressed!'),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(Icons.play_arrow, color: Colors.white),
-                      const SizedBox(width: 8),
-                      Text(
-                          appState.selectedGame?.game.installed == 1
-                              ? widget.appLocalizations.play
-                              : widget.appLocalizations.install,
-                          style: const TextStyle(
-                              color: Colors.white, fontSize: 18)),
-                    ],
+        /* ------------------------------ Launch button ----------------------------- */
+        if (appState.selectedGame!.game.owned == 1)
+          Row(
+            children: [
+              Expanded(
+                flex: 2,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 36, 16, 0),
+                  child: PushableButton(
+                    height: 40,
+                    elevation: 8,
+                    hslColor: HSLColor.fromAHSL(1.0, 120, 1.0, 0.37),
+                    shadow: BoxShadow(
+                      color: Colors.grey.withOpacity(0.5),
+                      spreadRadius: 5,
+                      blurRadius: 7,
+                      offset: Offset(0, 2),
+                    ),
+                    onPressed: () => print('Button Pressed!'),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.play_arrow, color: Colors.white),
+                        const SizedBox(width: 8),
+                        Text(
+                            appState.selectedGame?.game.installed == 1
+                                ? widget.appLocalizations.play
+                                : widget.appLocalizations.install,
+                            style: const TextStyle(
+                                color: Colors.white, fontSize: 18)),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
-        ),
+            ],
+          ),
         Padding(
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
             child: Container(
@@ -403,10 +408,10 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
                   //border: Border.all(),
                   boxShadow: const [
                     BoxShadow(
-                      color: Color.fromARGB(20, 12, 77, 12),
-                      spreadRadius: 1,
-                      blurRadius: 1,
-                      offset: Offset(0, 0), // changes position of shadow
+                      color: Color.fromARGB(153, 12, 77, 12),
+                      spreadRadius: 2,
+                      blurRadius: 3,
+                      offset: Offset(2, 2), // changes position of shadow
                     ),
                   ],
                 ),
@@ -569,7 +574,69 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
                       padding: EdgeInsets.fromLTRB(
                           26, 0, 26, 0), // Agrega el padding deseado
                       child: Divider()),
-                ])))
+                ]))),
+        Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+            child: Container(
+                decoration: BoxDecoration(
+                  color: const Color.fromARGB(46, 12, 77, 12),
+                  borderRadius: BorderRadius.circular(20),
+                  //border: Border.all(),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Color.fromARGB(153, 12, 77, 12),
+                      spreadRadius: 2,
+                      blurRadius: 3,
+                      offset: Offset(2, 2), // changes position of shadow
+                    ),
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    Text(
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 23,
+                          fontWeight: FontWeight.normal,
+                          shadows: [
+                            Shadow(
+                              offset: const Offset(
+                                  1.5, 1.5), // X and Y shadow displacement
+                              blurRadius: 0.1, // Shadow blurring radius
+                              color: Colors.black.withOpacity(
+                                  0.8), // Shadow color with opacity
+                            )
+                          ],
+                        ),
+                        widget.appLocalizations.description),
+                    Container(
+                      color: const Color.fromARGB(0, 0, 0, 0),
+                      // ignore: use_build_context_synchronously
+                      width: MediaQuery.of(context).size.width * 0.25,
+                      // ignore: use_build_context_synchronously
+                      height: MediaQuery.of(context).size.height * 0.22,
+                      child: RawScrollbar(
+                        thumbColor: const Color.fromARGB(92, 158, 158, 158),
+                        trackVisibility: true,
+                        controller: _scrollController,
+                        thumbVisibility: true,
+                        child: SingleChildScrollView(
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          controller: _scrollController,
+                          child: Html(
+                            data: appState.selectedGame!.game.description,
+                            style: {
+                              "body": Style(
+                                fontSize: FontSize(14),
+                                color: Colors.white,
+                              ),
+                            },
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                )))
       ])))
     ]);
   }
@@ -596,7 +663,6 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
 
   void reload() {
     //controller?.dispose();
-    if (url != null) {}
   }
 
   @override
@@ -605,7 +671,6 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
   }
 
   IconData updateFavIcon(int? value) {
-    IconData ic = Icons.star;
     if (value == 1) {
       return Icons.star;
     } else {
@@ -828,7 +893,6 @@ class _GameDeleteConfirmationDialogState
     extends State<GameDeleteConfirmationDialog> {
   @override
   Widget build(BuildContext context) {
-    final appState = Provider.of<AppState>(context);
     return AlertDialog(
       title: Text(widget.appLocalizations.confirmDelete),
       content: Text(
@@ -836,15 +900,15 @@ class _GameDeleteConfirmationDialogState
       actions: [
         TextButton(
           onPressed: () {
-            Navigator.of(context).pop(); // Cierra el diálogo
+            Navigator.of(context).pop();
           },
           child: Text(widget.appLocalizations.cancel),
         ),
         TextButton(
           onPressed: () {
             widget.onConfirm(widget
-                .selectedGame); // Pasa el juego seleccionado a la función de confirmación
-            Navigator.of(context).pop(); // Cierra el diálogo
+                .selectedGame); // Switches the selected set to the confirmation function
+            Navigator.of(context).pop(); // Close the dialog
           },
           child: Text(
               style: const TextStyle(

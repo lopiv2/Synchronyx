@@ -21,7 +21,7 @@ enum PlatformStore {
           color: Color.fromARGB(255, 84, 9, 97), size: 20),
       "gog"),
   Itch(
-      Icon(CustomIcons.itch_dot_io, color: Colors.redAccent, size: 20), "itch"),
+      Icon(CustomIcons.itch_dot_io, color: Colors.redAccent, size: 20), "itch.io"),
   Origin(Icon(CustomIcons.origin, color: Colors.orange, size: 20), "origin"),
   Steam(
       Icon(CustomIcons.steam, color: Color.fromARGB(255, 12, 66, 94), size: 20),
@@ -55,6 +55,7 @@ enum SearchParametersDropDown {
   Lastplayed,
   LaunchDate,
   MaxPlayers,
+  Owned,
   Platform,
   Playtime,
   Publisher,
@@ -85,6 +86,8 @@ extension SearchParametersValueExtension on SearchParametersDropDown {
         return "launchDate";
       case SearchParametersDropDown.MaxPlayers:
         return "maxPlayers";
+        case SearchParametersDropDown.Owned:
+        return "owned";
       case SearchParametersDropDown.Platform:
         return "platform";
       case SearchParametersDropDown.Playtime:
@@ -124,6 +127,8 @@ extension SearchParametersExtension on SearchParametersDropDown {
         return AppLocalizations.of(context).launchDate;
       case SearchParametersDropDown.MaxPlayers:
         return AppLocalizations.of(context).maxPlayers;
+        case SearchParametersDropDown.Owned:
+        return AppLocalizations.of(context).ownedGame;
       case SearchParametersDropDown.Platform:
         return AppLocalizations.of(context).platform;
       case SearchParametersDropDown.Playtime:

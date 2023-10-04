@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:synchronyx/providers/app_state.dart';
-import 'package:synchronyx/utilities/constants.dart';
 import '../models/game.dart';
 import '../models/responses/gameMedia_response.dart';
 import '../models/media.dart';
@@ -9,19 +8,19 @@ import 'image_cover_model.dart';
 import 'package:synchronyx/utilities/generic_database_functions.dart'
     as databaseFunctions;
 
-class GridViewGameCoversWished extends StatefulWidget {
-  const GridViewGameCoversWished({Key? key}) : super(key: key);
+class GridViewGameCoversBuyable extends StatefulWidget {
+  const GridViewGameCoversBuyable({Key? key}) : super(key: key);
 
   @override
-  State<GridViewGameCoversWished> createState() => _GridViewGameCoversWishedState();
+  State<GridViewGameCoversBuyable> createState() => _GridViewGameCoversBuyableState();
 }
 
-class _GridViewGameCoversWishedState extends State<GridViewGameCoversWished> {
+class _GridViewGameCoversBuyableState extends State<GridViewGameCoversBuyable> {
   @override
   Widget build(BuildContext context) {
     final appState = Provider.of<AppState>(context);
     return FutureBuilder<List<Game>>(
-      future: databaseFunctions.getAllGamesWithFilter('favorite', 'yes'),
+      future: databaseFunctions.getAllGamesWithFilter('owned', 'no'),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return CircularProgressIndicator();

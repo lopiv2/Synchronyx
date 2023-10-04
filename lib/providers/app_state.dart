@@ -11,14 +11,15 @@ class AppState extends ChangeNotifier {
   List<GameMediaResponse> gamesInGrid = [];
   bool shouldRefreshGridView = false;
   String _isImporting = 'no'; //Three states, no, importing and finished
-  Key buttonClickedKey = ValueKey<int>(42);
+  Key buttonClickedKey = const ValueKey<int>(42);
+  int filterIndex=10; //Value to set default set selection filters when changing tables 
   String get isImporting => _isImporting;
   int clickedElementIndex = 0;
   List<bool> elementsAnimations = [];
   bool _isCoverRotated = false;
   bool get isCoverRotated => _isCoverRotated;
-  String filter = '';
-  String filterValue = '';
+  String filter = 'owned';
+  String filterValue = 'yes';
   bool _showMoreContent = false;
   bool get showMoreContent => _showMoreContent;
   final ValueNotifier<String> selectedOptionClicked = ValueNotifier<String>(
@@ -32,10 +33,24 @@ class AppState extends ChangeNotifier {
   bool searchGameEnabled =
       false; //Variable to be activated when searching for a game to add to the wanted list.
   List<RawgResponse> results = [];
+  late RawgResponse gameClicked; //Variable to save the game clicked on in the search
+
+  bool enableGameSearchView =
+      false; // Variable that activates the preview panel of the game that we will add to favorite
+
+  Future<void> enableGameSearchViewPanel(bool value) async {
+    enableGameSearchView = value;
+    notifyListeners();
+  }
 
   Future<void> showResults(List<RawgResponse> res, bool value) async {
     resultsEnabled = value;
     results = List.from(res);
+    notifyListeners();
+  }
+
+  Future<void> resetFilter() async {
+    filterIndex = 10;
     notifyListeners();
   }
 
@@ -110,7 +125,7 @@ class AppState extends ChangeNotifier {
 
   void refreshGridView() {
     shouldRefreshGridView = !shouldRefreshGridView;
-    print("refresh");
+    //print("refresh");
     notifyListeners();
   }
 

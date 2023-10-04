@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:synchronyx/providers/app_state.dart';
 
 import '../utilities/constants.dart';
 
 class DropdownWidget extends StatefulWidget {
   final ValueChanged<SearchParametersDropDown?>? onChanged;
+  final int? indexInitialValue;
 
-  DropdownWidget({Key? key, this.onChanged}) : super(key: key);
+  DropdownWidget({Key? key, this.onChanged, this.indexInitialValue})
+      : super(key: key);
 
   @override
   DropDownCategories createState() => DropDownCategories();
@@ -18,12 +22,13 @@ class DropDownCategories extends State<DropdownWidget> {
 
   @override
   void initState() {
-    currentItem = items[1]; //All per default
+    currentItem = items[widget.indexInitialValue ?? 0]; //All per default
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    final appState = Provider.of<AppState>(context);
     return Padding(
       padding: const EdgeInsets.only(
           left: 10, right: 10), // Margen izquierdo deseado
@@ -48,6 +53,7 @@ class DropDownCategories extends State<DropdownWidget> {
           onChanged: (SearchParametersDropDown? newValue) {
             setState(() {
               currentItem = newValue;
+              appState.filterIndex=newValue!.index;
               widget.onChanged?.call(newValue);
             });
           },
@@ -55,7 +61,7 @@ class DropDownCategories extends State<DropdownWidget> {
             (SearchParametersDropDown value) {
               return DropdownMenuItem<SearchParametersDropDown>(
                 value: value,
-                child: Text(                
+                child: Text(
                   value.getLocalizedString(context),
                 ),
               );

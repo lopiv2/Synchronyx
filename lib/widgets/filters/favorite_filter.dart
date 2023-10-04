@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:synchronyx/providers/app_state.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:synchronyx/widgets/buttons/text_button_colored.dart';
+import 'package:synchronyx/widgets/grid_view_game_covers.dart';
 
 class FavoriteFilterColumn extends StatelessWidget {
   const FavoriteFilterColumn({required this.appLocalizations, super.key});
@@ -11,7 +12,6 @@ class FavoriteFilterColumn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final appState = Provider.of<AppState>(context);
     return Consumer<AppState>(builder: (context, appState, child) {
       return Container(
           padding: const EdgeInsets.all(10.0), // Padding del contenedor

@@ -25,7 +25,7 @@ class OstDownloadDialog extends StatefulWidget {
 
 class _OstDownloadDialogState extends State<OstDownloadDialog> {
   final AudioManager audioManager = AudioManager();
-  Offset _offset = Offset(0, 0);
+  Offset _offset = const Offset(0, 0);
 
   @override
   Widget build(BuildContext context) {
@@ -34,8 +34,6 @@ class _OstDownloadDialogState extends State<OstDownloadDialog> {
     List<KhinsiderResponse> responses = [];
     final indexSelected = ValueNotifier<int>(-1);
     final trackIndexSelected = ValueNotifier<int>(-1);
-    double _currentPosition = 0.0;
-    double _totalDuration = 0.0;
     final ValueNotifier<bool> tog = ValueNotifier<bool>(false);
 
     void toggleVisibility() {
@@ -88,7 +86,7 @@ class _OstDownloadDialogState extends State<OstDownloadDialog> {
                         ),
                         title: Text(
                           widget.appLocalizations.importOstWindowTitle,
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.white,
                             fontSize: 12,
                             fontWeight: FontWeight.bold,
@@ -105,11 +103,11 @@ class _OstDownloadDialogState extends State<OstDownloadDialog> {
                         ],
                       ),
                       Padding(
-                        padding: EdgeInsets.fromLTRB(20, 0, 10, 0),
+                        padding: const EdgeInsets.fromLTRB(20, 0, 10, 0),
                         child: Text(
                           widget.appLocalizations.importOstForGame(
                               appState.selectedGame!.game.title),
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.black,
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -117,18 +115,18 @@ class _OstDownloadDialogState extends State<OstDownloadDialog> {
                         ),
                       ),
                       Container(
-                        padding: EdgeInsets.all(16.0),
+                        padding: const EdgeInsets.all(16.0),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
                               widget.appLocalizations.results,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 18.0,
                               ),
                             ),
-                            SizedBox(height: 16.0),
+                            const SizedBox(height: 16.0),
                             SingleChildScrollView(
                                 child: Column(children: [
                               Container(
@@ -142,20 +140,18 @@ class _OstDownloadDialogState extends State<OstDownloadDialog> {
                                           snapshot) {
                                     if (snapshot.connectionState ==
                                         ConnectionState.waiting) {
-                                      return Container(
-                                        child: Center(
-                                          child: Transform.scale(
-                                            scale:
-                                                1, // Adjusts the scaling value to make the CircularProgressIndicator smaller.
-                                            child: CircularProgressIndicator(),
-                                          ),
+                                      return Center(
+                                        child: Transform.scale(
+                                          scale:
+                                              1, // Adjusts the scaling value to make the CircularProgressIndicator smaller.
+                                          child: CircularProgressIndicator(),
                                         ),
                                       );
                                     } else if (snapshot.hasError) {
                                       return Text(snapshot.error.toString());
                                     } else if (!snapshot.hasData ||
                                         snapshot.data!.isEmpty) {
-                                      return Text(
+                                      return const Text(
                                           'No se encontraron resultados');
                                     } else {
                                       responses = snapshot.data!;

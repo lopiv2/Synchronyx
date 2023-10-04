@@ -9,11 +9,16 @@ import 'package:synchronyx/utilities/audio_singleton.dart';
 import 'package:synchronyx/utilities/generic_database_functions.dart'
     as database;
 import 'package:synchronyx/utilities/generic_database_functions.dart';
+import 'package:synchronyx/widgets/buttons/notification_button.dart';
+import 'package:synchronyx/widgets/calendar_view_events.dart';
+import 'package:synchronyx/widgets/clicked_game_favorite_view.dart';
 import 'package:synchronyx/widgets/filter_info_panel.dart';
+import 'package:synchronyx/widgets/filters/all_filter.dart';
 import 'package:synchronyx/widgets/filters/favorite_filter.dart';
+import 'package:synchronyx/widgets/filters/owned_filter.dart';
 import 'package:synchronyx/widgets/game_info_panel.dart';
 import 'package:synchronyx/widgets/game_search_results_list.dart';
-import 'package:synchronyx/widgets/grid_view_game_covers_wish.dart';
+import 'package:synchronyx/widgets/grid_view_game_covers_buyable.dart';
 import 'package:synchronyx/widgets/platform_tree_view.dart';
 import 'package:synchronyx/widgets/top_menu_bar.dart';
 import 'widgets/buttons/arcade_box_button.dart';
@@ -104,12 +109,13 @@ class MainGrid extends StatelessWidget {
                 ),
               ),
               const Expanded(
-                flex: 1,
-                child: Center(
-                  // Usamos Center para centrar el ArcadeBoxButtonWidget vertical y horizontalmente
-                  child: ArcadeBoxButtonWidget(),
-                ),
-              ),
+                  flex: 1,
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        ArcadeBoxButtonWidget(),
+                        NotificationButtonWidget()
+                      ])),
               const WindowButtons(),
             ],
           ),
@@ -139,7 +145,7 @@ class LeftSide extends StatefulWidget {
 }
 
 class _LeftSideState extends State<LeftSide> {
-  SearchParametersDropDown? selectedValue;
+  SearchParametersDropDown? selectedValue = SearchParametersDropDown.Owned;
 
   @override
   Widget build(BuildContext context) {
@@ -189,8 +195,25 @@ class _LeftSideState extends State<LeftSide> {
                           barrierDismissible:
                               false, // Evita que el usuario cierre el diálogo
                           builder: (BuildContext context) {
-                            return Center(
-                              child: CircularProgressIndicator(),
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.5,
+                                ),
+                                Text(
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                    widget.appLocalizations.searchingGames),
+                                SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.05,
+                                ),
+                                Center(
+                                  child: CircularProgressIndicator(),
+                                ),
+                              ],
                             );
                           },
                         );
@@ -216,6 +239,7 @@ class _LeftSideState extends State<LeftSide> {
             Visibility(
               visible: appState.searchGameEnabled == false,
               child: DropdownWidget(
+                indexInitialValue: appState.filterIndex,
                 onChanged: (newValue) {
                   setState(() {
                     selectedValue = newValue;
@@ -232,6 +256,7 @@ class _LeftSideState extends State<LeftSide> {
               child: _buildWidgetBasedOnSelectedValue(
                   Provider.of<AppState>(context)),
             ),
+
             /*Container(
               height: 50, // Altura del contenedor ámbar
               color: const Color.fromARGB(101, 76, 175, 79), // Color ámbar
@@ -253,15 +278,33 @@ class _LeftSideState extends State<LeftSide> {
 
   Widget _buildWidgetBasedOnSelectedValue(AppState appState) {
     switch (selectedValue?.caseValue) {
+      case 'all':
+        if (appState.filterIndex == 1) {
+          return AllFilterColumn(appLocalizations: widget.appLocalizations);
+        } else {
+          return const Text('');
+        }
       case 'categoryPlatform':
-        return PlatformTreeView(appLocalizations: widget.appLocalizations);
+        if (appState.filterIndex == 2) {
+          return PlatformTreeView(appLocalizations: widget.appLocalizations);
+        } else {
+          return const Text('');
+        }
       case 'favorite':
-        return FavoriteFilterColumn(appLocalizations: widget.appLocalizations);
-      case 'OtherCase2':
-        return Text("otro2"); // Cambia YourWidget2 por el widget deseado
-      // Agrega más casos según tus necesidades
+        if (appState.filterIndex == 4) {
+          return FavoriteFilterColumn(
+              appLocalizations: widget.appLocalizations);
+        } else {
+          return const Text('');
+        }
+      case 'owned':
+        if (appState.searchGameEnabled == false) {
+          return OwnedFilterColumn(appLocalizations: widget.appLocalizations);
+        } else {
+          return const Text('');
+        }
       default:
-        return Text(
+        return const Text(
             ""); // Cambia YourDefaultWidget por el widget predeterminado
     }
   }
@@ -288,10 +331,15 @@ class _CenterSideState extends State<CenterSide>
 
       if (_tabController.index == 0) {
         appState.toggleGameSearch(false);
-        print('Pestaña seleccionada: Biblioteca');
+        appState.updateSelectedGame(null);
       } else if (_tabController.index == 1) {
+        appState.resetFilter();
         appState.toggleGameSearch(true);
-        print('Pestaña seleccionada: Lista');
+        appState.updateSelectedGame(null);
+      } else if (_tabController.index == 2) {
+        appState.resetFilter();
+        appState.updateSelectedGame(null);
+        appState.toggleGameSearch(true);
       }
     }
   }
@@ -300,7 +348,7 @@ class _CenterSideState extends State<CenterSide>
   void initState() {
     super.initState();
     _tabController =
-        TabController(length: 2, vsync: this); // 2 tabs (library and list)
+        TabController(length: 3, vsync: this); // 2 tabs (library and list)
     _tabController.addListener(_handleTabSelection);
   }
 
@@ -313,16 +361,17 @@ class _CenterSideState extends State<CenterSide>
   @override
   Widget build(BuildContext context) {
     final appState = Provider.of<AppState>(context);
+    final AppLocalizations appLocalizations = AppLocalizations.of(context);
 
     return FutureBuilder<Database?>(
       future: database.createAndOpenDB(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator();
+          return const CircularProgressIndicator();
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         } else if (snapshot.data == null) {
-          return Text('La base de datos no se inicializó correctamente.');
+          return const Text('La base de datos no se inicializó correctamente.');
         } else {
           Constants.database = snapshot.data;
           Future<GlobalOptions?> optionsFuture = getOptions().then((value) {
@@ -350,8 +399,9 @@ class _CenterSideState extends State<CenterSide>
                   TabBar(
                     controller: _tabController,
                     tabs: [
-                      Tab(text: 'Biblioteca'),
-                      Tab(text: 'Lista'),
+                      Tab(text: appLocalizations.tabLibrary),
+                      Tab(text: appLocalizations.tabShopList),
+                      Tab(text: appLocalizations.tabCalendar),
                     ],
                     indicator: const UnderlineTabIndicator(
                       borderSide: BorderSide(
@@ -367,12 +417,21 @@ class _CenterSideState extends State<CenterSide>
                       children: [
                         Consumer<AppState>(
                           builder: (context, appState, child) {
-                            return GridViewGameCovers(); // Contenido de la pestaña 'Biblioteca'
+                            return const GridViewGameCovers(); // Contents of the 'Library' tab
                           },
                         ),
                         Consumer<AppState>(
                           builder: (context, appState, child) {
-                            return GridViewGameCoversWished(); // Contenido de la pestaña 'Biblioteca'
+                            return appState.enableGameSearchView == false
+                                ? const GridViewGameCoversBuyable()
+                                : ClickedGameBuyableView(
+                                    game: appState
+                                        .gameClicked); // Contents of the 'List' tab
+                          },
+                        ),
+                        Consumer<AppState>(
+                          builder: (context, appState, child) {
+                            return const CalendarViewEvents(); // Contents of the 'Calendar' tab
                           },
                         ),
                       ],

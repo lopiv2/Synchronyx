@@ -12,6 +12,7 @@ class CustomIcons {
 
   static const String _fontFamily = 'CustomIcons';
 
+  static const IconData arrow_back_outline = IconData(0xe971, fontFamily: _fontFamily);
   static const IconData wii = IconData(0xe970, fontFamily: _fontFamily);
   static const IconData NES = IconData(0xe90c, fontFamily: _fontFamily);
   static const IconData mame = IconData(0xe900, fontFamily: _fontFamily);

@@ -1,17 +1,20 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
+import 'package:dio_cache_interceptor_file_store/dio_cache_interceptor_file_store.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:synchronyx/icons/custom_icons_icons.dart';
+import 'package:synchronyx/models/cheapSharkStores.dart';
 import 'package:synchronyx/models/media.dart';
+import 'package:synchronyx/models/responses/cheapSharkResponse_response.dart';
 import 'package:synchronyx/models/responses/emulator_download_response.dart';
 import 'package:synchronyx/models/responses/khinsider_response.dart';
 import 'package:synchronyx/models/responses/rawg_response.dart';
+import 'package:synchronyx/models/responses/steamgriddb_response.dart';
 import '../models/game.dart';
 import 'package:html/parser.dart' as parser;
-import 'package:html/dom.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 import 'package:synchronyx/utilities/generic_database_functions.dart'
     // ignore: library_prefixes
@@ -25,6 +28,20 @@ import 'generic_functions.dart';
 class DioClient {
   final Dio _dio = Dio(BaseOptions(followRedirects: true));
 
+  DioClient() {
+    final cacheOptions = CacheOptions(
+      store: FileCacheStore(
+        './documents_cache', // Cambia a la ubicación deseada
+      ),
+      policy: CachePolicy.forceCache, // Cambia esto según tus necesidades
+      hitCacheOnErrorExcept: [500, 401, 403], // Cambia según tus necesidades
+      priority: CachePriority.normal, // Prioridad de la caché
+      maxStale: const Duration(days: 1), //Cache duration of 1 day
+    );
+
+    _dio.interceptors.add(DioCacheInterceptor(options: cacheOptions));
+  }
+
   final _steamApiUrl =
       'https://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=';
 
@@ -35,6 +52,76 @@ class DioClient {
   final _rawgApiUrl = 'https://api.rawg.io/api/games';
 
   var IgdbAccessToken;
+
+  /* --------- Adds a searched game from list to Database to shop list -------- */
+  Future<void> addBuyableGameToList(RawgResponse game) async {
+    //Buscar todo esto en Steamgrid a partir del nombre, obtengo el id del juego
+    String key = '68239c29cb2c49f2acfddf9703077032';
+    List<String> tag = List.empty(growable: true);
+    tag.add("prueba");
+    tag.add("adios");
+    Game gameInsert = Game(
+        title: game.name ?? '',
+        installed: 0,
+        favorite: 0,
+        description: game.description ?? '',
+        playTime: 0,
+        releaseDate: DateTime.parse(game.releaseDate!),
+        rating: game.metacriticInfo,
+        developer: game.developer!,
+        publisher: game.publisher!,
+        platform: game.platform ?? '',
+        platformStore: game.store ?? '',
+        owned: 0,
+        tags: tag.join(','));
+    await databaseFunctions.insertGame(gameInsert);
+    Response screensData =
+        await _dio.get('$_rawgApiUrl/${game.gameId}/screenshots?key=$key');
+    await Constants.initialize();
+    Map<String, dynamic> responseScreensData = screensData.data;
+    Media? mediaInfo;
+    String screenNames = '';
+    List<String> sc = List.empty(growable: true);
+    if (responseScreensData.containsKey('results') &&
+        responseScreensData['results'] is List) {
+      List<dynamic> scList = responseScreensData['results'];
+      for (var scData in scList) {
+        if (scData.containsKey('image')) {
+          List<String> parts = scData['image'].split('/');
+          String lastPartFile = parts.last;
+          String imageName = '${game.gameId}_$lastPartFile';
+          String imageFolder =
+              '\\Synchronyx\\media\\screenshots\\${game.gameId}\\';
+          processScreenshots(scData['image'], imageName, imageFolder);
+          sc.add(imageName);
+        }
+      }
+    }
+    screenNames = sc.join(',');
+    SteamgridDBResponse st = await getAndImportSteamGridDBMediaByGame(
+        key: 'fa61b6d47dfe3b6ab65a516b1f8bd0a3', searchString: game.name ?? '');
+    String finalLogoFolder = await processMediaFiles(
+        st.logoUrl ?? '', "logo", game.name ?? '', mediaInfo);
+    String finalIconFolder = await processMediaFiles(
+        st.iconUrl ?? '', "icon", game.name ?? '', mediaInfo);
+    String finalCoverFolder = await processMediaFiles(
+        st.coverUrl ?? '', "cover", game.name ?? '', mediaInfo);
+    String finalMarqueeFolder = await processMediaFiles(
+        st.marqueeUrl ?? '', "marquee", game.name ?? '', mediaInfo);
+    String finalBackgroundFolder = await processMediaFiles(
+        game.imageUrl ?? '', "background", game.name ?? '', mediaInfo);
+    //Then I insert the media
+    var mediaInsert = Media(
+        iconUrl: finalIconFolder,
+        name: game.name ?? '',
+        screenshots: screenNames,
+        logoUrl: finalLogoFolder,
+        coverImageUrl: finalCoverFolder,
+        marqueeUrl: finalMarqueeFolder,
+        backgroundImageUrl: finalBackgroundFolder,
+        videoUrl: '');
+    await databaseFunctions.insertMedia(mediaInsert, gameInsert);
+  }
 
 /* ----------------------------- Get Steam Games ---------------------------- */
   Future<void> getAndImportSteamGames(
@@ -81,7 +168,7 @@ class DioClient {
           key: 'fa61b6d47dfe3b6ab65a516b1f8bd0a3',
           steamId: '$appId',
           platform: 'steam');
-      String finallogoFolder =
+      String finalLogoFolder =
           await processMediaFiles(logoUrl, "logo", name, mediaInfo);
 
       //Get info from RAWG
@@ -100,6 +187,7 @@ class DioClient {
           title: name,
           installed: 1,
           favorite: 0,
+          description: rawgResponse.description ?? '',
           playTime: playtime,
           releaseDate: DateTime.parse(rawgResponse.releaseDate!),
           rating: rawgResponse.metacriticInfo,
@@ -107,6 +195,7 @@ class DioClient {
           publisher: rawgResponse.publisher!,
           platform: GamePlatforms.Windows.name,
           platformStore: PlatformStore.Steam.name,
+          owned: 1,
           tags: tag.join(','));
       await databaseFunctions.insertGame(gameInsert);
 
@@ -115,7 +204,7 @@ class DioClient {
           iconUrl: iconUrl,
           name: name,
           screenshots: rawgResponse.screenshots!,
-          logoUrl: finallogoFolder,
+          logoUrl: finalLogoFolder,
           coverImageUrl: finalImageFolder,
           marqueeUrl: finalmarqueeFolder,
           backgroundImageUrl: finalbackgroundFolder,
@@ -127,49 +216,125 @@ class DioClient {
     }
   }
 
+/* ------------ Search for the game with the text entered in Rawg ----------- */
   Future<List<RawgResponse>> searchGamesRawg(
       {required String key, required String searchString}) async {
     try {
       final Response userData =
           await _dio.get('$_rawgApiUrl?key=$key&search=$searchString');
 
-      if (userData.statusCode == 200) {
+      if (userData.statusCode == 200 || userData.statusCode == 304) {
         final Map<String, dynamic> jsonResponse = userData.data;
 
         if (jsonResponse.containsKey('results')) {
           final List<dynamic> results = jsonResponse['results'];
-
           if (results.isNotEmpty) {
             final List<RawgResponse> games = [];
 
             for (final data in results) {
               if (data is Map<String, dynamic> && data.containsKey('name')) {
                 final String gameName = data['name'];
-                String iconUrl = await getAndImportSteamGridDBIconByGame(
-                  key: 'fa61b6d47dfe3b6ab65a516b1f8bd0a3',
-                  searchString: gameName,
-                );
-                final RawgResponse game = RawgResponse(
-                  gameId: data['id'].toString(),
-                  name: data['name'],
-                  imageUrl: data['background_image'],
-                  iconUrl: iconUrl,
-                  metacriticInfo: data['rating'],
-                  releaseDate: data['released'],
-                  // Agrega otras propiedades si es necesario
-                );
-                games.add(game);
+                SteamgridDBResponse stResp;
+                stResp = await getAndImportSteamGridDBMediaByGame(
+                    key: 'fa61b6d47dfe3b6ab65a516b1f8bd0a3',
+                    searchString: gameName);
+                String iconUrl = stResp.iconUrl ?? '';
+                String coverUrl = data['background_image'];
+                try {
+                  final Response gameData = await _dio
+                      .get('$_rawgApiUrl/${data['id'].toString()}?key=$key');
+                  Map<String, dynamic> responseData = gameData.data;
+
+                  String description = responseData.containsKey('description')
+                      ? responseData['description'].toString()
+                      : '';
+
+                  final List<dynamic> platforms = data['platforms'];
+                  String platformName = '';
+
+                  if (platforms.isNotEmpty) {
+                    final platformData = platforms[0]['platform'];
+                    if (platformData is Map<String, dynamic> &&
+                        platformData.containsKey('name')) {
+                      platformName = platformData['name'] as String;
+                      if (platformName == 'PC') {
+                        platformName = 'Windows';
+                      }
+                    }
+                  } else {
+                    // El array 'platforms' está vacío o no contiene elementos válidos.
+                  }
+
+                  //Stores
+                  String storeName = '';
+                  if (data['stores'] != null) {
+                    final List<dynamic> stores = data['stores'];
+                    if (stores.isNotEmpty) {
+                      final storeData = stores[0]['store'];
+                      if (storeData is Map<String, dynamic> &&
+                          storeData.containsKey('name')) {
+                        storeName = storeData['name'].toString().toLowerCase();
+                      }
+                    } else {
+                      // El array 'stores' está vacío o no contiene elementos válidos.
+                    }
+                  }
+
+                  String developersNames = '';
+                  List<String> developers = List.empty(growable: true);
+                  if (responseData.containsKey('developers') &&
+                      responseData['developers'] is List) {
+                    List<dynamic> developersList = responseData['developers'];
+                    for (var developerData in developersList) {
+                      if (developerData.containsKey('name')) {
+                        developers.add(developerData['name']);
+                      }
+                    }
+                    developersNames = developers.join(', ');
+                  }
+
+                  //Get publisher if exists
+                  String publisherNames = '';
+                  List<String> publishers = List.empty(growable: true);
+                  if (responseData.containsKey('publishers') &&
+                      responseData['publishers'] is List) {
+                    List<dynamic> publisherList = responseData['publishers'];
+                    for (var publisherData in publisherList) {
+                      if (publisherData.containsKey('name')) {
+                        publishers.add(publisherData['name']);
+                      }
+                    }
+                    publisherNames = publishers.join(', ');
+                  }
+                  final RawgResponse game = RawgResponse(
+                    gameId: data['id'].toString(),
+                    name: data['name'],
+                    description: description,
+                    imageUrl: coverUrl,
+                    iconUrl: iconUrl,
+                    developer: developersNames,
+                    publisher: publisherNames,
+                    platform: platformName,
+                    store: storeName,
+                    metacriticInfo: data['rating'],
+                    releaseDate: data['released'],
+                  );
+                  games.add(game);
+                } catch (e) {
+                  throw Exception('HTTP request error: $e');
+                }
               }
             }
             return games;
           } else {
-            return []; // Devolver una lista vacía si no hay resultados
+            return []; // Return an empty list if there are no results
           }
         } else {
           throw Exception(
               'The "results" field was not found in the JSON response.');
         }
       } else {
+        print(userData.statusCode);
         throw Exception('HTTP request error');
       }
     } catch (e) {
@@ -191,28 +356,35 @@ class DioClient {
         imageFolder = '\\Synchronyx\\media\\frontCovers\\';
         //Delete file before download a new one
         if (mediaInfo != null) {
-          deleteFile(mediaInfo!.coverImageUrl);
+          deleteFile(mediaInfo.coverImageUrl);
+        }
+        break;
+      case "icon":
+        imageFolder = '\\Synchronyx\\media\\icons\\';
+        //Delete file before download a new one
+        if (mediaInfo != null) {
+          deleteFile(mediaInfo.iconUrl);
         }
         break;
       case "marquee":
         imageFolder = '\\Synchronyx\\media\\marquees\\';
         //Delete file before download a new one
         if (mediaInfo != null) {
-          deleteFile(mediaInfo!.marqueeUrl);
+          deleteFile(mediaInfo.marqueeUrl);
         }
         break;
       case "background":
         imageFolder = '\\Synchronyx\\media\\backgrounds\\';
         //Delete file before download a new one
         if (mediaInfo != null) {
-          deleteFile(mediaInfo!.backgroundImageUrl);
+          deleteFile(mediaInfo.backgroundImageUrl);
         }
         break;
       case "logo":
         imageFolder = '\\Synchronyx\\media\\logos\\';
         //Delete file before download a new one
         if (mediaInfo != null) {
-          deleteFile(mediaInfo!.logoUrl);
+          deleteFile(mediaInfo.logoUrl);
         }
         break;
     }
@@ -223,8 +395,87 @@ class DioClient {
   }
 
   /* -------------------------------------------------------------------------- */
-  /*                             Scrappers for Media                            */
+  /*                             Scrappers for Media or Data                    */
   /* -------------------------------------------------------------------------- */
+
+/* ------------------------ Get price list from CheapShark ------------------------ */
+  Future<List<CheapSharkResponse>> getDealsFromCheapShark(
+      {required String title}) async {
+    List<CheapSharkResponse> results = [];
+    String sluggedTitle = createSlug(title);
+    String gameID = '';
+    //Get all deal stores
+    final Response storesData =
+        await _dio.get('https://www.cheapshark.com/api/1.0/stores');
+    final List<dynamic> storesJsonResponse = storesData.data;
+    List<CheapSharkStore> stores = [];
+
+    for (final storeData in storesJsonResponse) {
+      final storeID = storeData['storeID'] as String;
+      final storeName = storeData['storeName'] as String;
+      final storeLogoUrl = storeData['images']['logo'] as String;
+
+      final store = CheapSharkStore(
+        storeID: storeID,
+        storeName: storeName,
+        storeLogoUrl: storeLogoUrl,
+      );
+
+      stores.add(store);
+    }
+
+    //Get game ID
+    final Response userData =
+        await _dio.get('https://www.cheapshark.com/api/1.0/games?title=$title');
+    final List<dynamic> jsonResponse = userData.data;
+
+    for (final Map<String, dynamic> gameData in jsonResponse) {
+      gameID = gameData['gameID'];
+      break;
+    }
+
+    final Response dealData =
+        await _dio.get('https://www.cheapshark.com/api/1.0/games?id=$gameID');
+
+    if (dealData.statusCode == 200 || dealData.statusCode == 304) {
+      final Map<String, dynamic> jsonResponse = dealData.data;
+
+      // Extraer información del juego
+      final String title = jsonResponse['info']['title'];
+      final String steamAppID = jsonResponse['info']['steamAppID'];
+      final String thumb = jsonResponse['info']['thumb'];
+
+      // Extraer información de las ofertas
+      final List<dynamic> deals = jsonResponse['deals'];
+      for (final Map<String, dynamic> deal in deals) {
+        final String storeID = deal['storeID'];
+        CheapSharkStore st = searchStoreById(storeID, stores);
+        final String dealID = deal['dealID'];
+        final double price = double.parse(deal['price']);
+        final double retailPrice = double.parse(deal['retailPrice']);
+        final double savings = double.parse(deal['savings']);
+        CheapSharkResponse c = CheapSharkResponse(
+            store: st.storeName,
+            retailPrice: retailPrice,
+            salePrice: price,
+            logo: 'https://www.cheapshark.com${st.storeLogoUrl}',
+            dealId: dealID);
+        results.add(c);
+      }
+    } else {
+      print('Error: ${dealData.statusCode}');
+    }
+    return results;
+  }
+
+  CheapSharkStore searchStoreById(String id, List<CheapSharkStore> stores) {
+    String searchStoreID = '2'; // El ID de la tienda que deseas buscar
+
+    CheapSharkStore? foundStore =
+        stores.firstWhere((store) => store.storeID == searchStoreID);
+
+    return foundStore;
+  }
 
 /* ------------------------ Get music from Khinsider ------------------------ */
   Future<List<KhinsiderResponse>> scrapeKhinsider(
@@ -234,7 +485,7 @@ class DioClient {
     final url = 'https://downloads.khinsider.com/search?search=$searchTitle';
 
     final response = await http.get(Uri.parse(url));
-    if (response.statusCode == 200) {
+    if (response.statusCode == 200 || response.statusCode == 304) {
       final document = parser.parse(response.body);
 
       final table = document.querySelector('.albumList');
@@ -265,7 +516,8 @@ class DioClient {
           final urlElement =
               'https://downloads.khinsider.com${title.querySelector('a')!.attributes['href']}';
           final responseSongs = await http.get(Uri.parse(urlElement));
-          if (responseSongs.statusCode == 200) {
+          if (responseSongs.statusCode == 200 ||
+              responseSongs.statusCode == 304) {
             final document = parser.parse(responseSongs.body);
             final table = document.querySelector('table[id="songlist"]');
             //Cuento las columnas que tiene cada columna
@@ -324,12 +576,13 @@ class DioClient {
     return results;
   }
 
-  //Get the mp3 url to download or play
+  /* ------------------- Get the mp3 url to download or play ------------------ */
   Future<String> getMp3UrlDownload({required String url}) async {
     String playerUrl = ''; //Song url to download
     final responseSongsUrl =
         await http.get(Uri.parse('https://downloads.khinsider.com$url'));
-    if (responseSongsUrl.statusCode == 200) {
+    if (responseSongsUrl.statusCode == 200 ||
+        responseSongsUrl.statusCode == 304) {
       final documentSong = parser.parse(responseSongsUrl.body);
       playerUrl =
           documentSong.querySelector('audio[id="audio"]')!.attributes['src'] ??
@@ -416,8 +669,6 @@ class DioClient {
     Response userData = await _dio.get(
         _steamGridDBApiUrl + 'heroes/$platform/$steamId',
         options: Options(headers: headers));
-    String jsonData = jsonEncode(userData.data);
-    //print('Game Data: $jsonData');
 
     Map<String, dynamic> responseData = userData.data;
     // Obtener la lista "data"
@@ -449,8 +700,6 @@ class DioClient {
     Response userData = await _dio.get(
         _steamGridDBApiUrl + 'logos/$platform/$steamId',
         options: Options(headers: headers));
-    String jsonData = jsonEncode(userData.data);
-    //print('Game Data: $jsonData');
 
     Map<String, dynamic> responseData = userData.data;
     // Obtener la lista "data"
@@ -469,6 +718,101 @@ class DioClient {
     return '';
   }
 
+  /* --------------------- Get game media from SteamGridDB --------------------- */
+  Future<SteamgridDBResponse> getAndImportSteamGridDBMediaByGame(
+      {required String key, required String searchString}) async {
+    // Define the headers you want to send
+    Map<String, dynamic> headers = {
+      'Authorization': 'Bearer $key',
+      'Content-Type': 'application/json',
+    };
+    String coverImage = '';
+    String marqueeImage = '';
+    String icon = '';
+    String logo = '';
+    Response userData = await _dio.get(
+        '${_steamGridDBApiUrl}search/autocomplete/$searchString',
+        options: Options(headers: headers));
+
+    Map<String, dynamic> responseData = userData.data;
+    // Obtain the "data" list
+    List<dynamic> dataList = responseData['data'];
+
+    if (dataList.isNotEmpty) {
+      // Get the first item in the list
+      Map<String, dynamic> firstData = dataList[0];
+
+      String gameId = firstData['id'].toString();
+
+      //Cover image
+      Response userData2 = await _dio.get(
+          '${_steamGridDBApiUrl}grids/game/$gameId',
+          options: Options(headers: headers));
+
+      Map<String, dynamic> responseData2 = userData2.data;
+      List<dynamic> dataList2 = responseData2['data'];
+      if (dataList2.isNotEmpty) {
+        // Get the first item in the list
+        Map<String, dynamic> firstData2 = dataList2[0];
+        coverImage = firstData2['url'];
+      }
+
+      //ICON
+      Response userData3 = await _dio.get(
+          '${_steamGridDBApiUrl}icons/game/$gameId',
+          options: Options(headers: headers));
+      Map<String, dynamic> responseData3 = userData3.data;
+      List<dynamic> dataList3 = responseData3['data'];
+      if (dataList3.isNotEmpty) {
+        // Obtener el primer elemento de la lista
+        Map<String, dynamic> firstData3 = dataList3[0];
+        icon = firstData3['thumb'];
+      }
+
+      //LOGO
+      Response userData4 = await _dio.get(
+          '${_steamGridDBApiUrl}logos/game/$gameId',
+          options: Options(headers: headers));
+
+      Map<String, dynamic> responseData4 = userData4.data;
+      // Obtener la lista "data"
+      List<dynamic> dataList4 = responseData4['data'];
+
+      if (dataList4.isNotEmpty) {
+        // Obtener el primer elemento de la lista
+        Map<String, dynamic> firstData4 = dataList4[0];
+
+        // Obtener el valor del campo "url"
+        logo = firstData4['thumb'];
+      }
+
+      //Marquee Image
+      Response userData5 = await _dio.get(
+          '${_steamGridDBApiUrl}heroes/game/$gameId',
+          options: Options(headers: headers));
+
+      Map<String, dynamic> responseData5 = userData5.data;
+      // Obtener la lista "data"
+      List<dynamic> dataList5 = responseData5['data'];
+
+      if (dataList5.isNotEmpty) {
+        // Obtener el primer elemento de la lista
+        Map<String, dynamic> firstData5 = dataList5[0];
+
+        // Obtener el valor del campo "url"
+        marqueeImage = firstData5['thumb'];
+      }
+    }
+    SteamgridDBResponse st = SteamgridDBResponse(
+        name: searchString,
+        coverUrl: coverImage,
+        marqueeUrl: marqueeImage,
+        iconUrl: icon,
+        logoUrl: logo);
+    return st;
+  }
+
+/* --------------------- Get icon game from SteamGridDB --------------------- */
   Future<String> getAndImportSteamGridDBIconByGame(
       {required String key, required String searchString}) async {
     // Definir los encabezados que deseas enviar
@@ -477,9 +821,8 @@ class DioClient {
       'Content-Type': 'application/json',
     };
     Response userData = await _dio.get(
-        _steamGridDBApiUrl + 'search/autocomplete/$searchString',
+        '${_steamGridDBApiUrl}search/autocomplete/$searchString',
         options: Options(headers: headers));
-    String jsonData = jsonEncode(userData.data);
     //print('Game Data: $jsonData');
 
     Map<String, dynamic> responseData = userData.data;
@@ -493,9 +836,8 @@ class DioClient {
       String gameId = firstData['id'].toString();
 
       Response userData2 = await _dio.get(
-          _steamGridDBApiUrl + 'icons/game/$gameId',
+          '${_steamGridDBApiUrl}icons/game/$gameId',
           options: Options(headers: headers));
-      String jsonData2 = jsonEncode(userData2.data);
 
       Map<String, dynamic> responseData2 = userData2.data;
       List<dynamic> dataList2 = responseData2['data'];
@@ -588,12 +930,20 @@ class DioClient {
       screenNames = sc.join(',');
     }
 
+    final Response gameData = await _dio.get('$_rawgApiUrl/$id?key=$key');
+    Map<String, dynamic> respData = gameData.data;
+
+    String description = respData.containsKey('description')
+        ? respData['description'].toString()
+        : '';
+
     // Crear una instancia de MediaInfo con los datos recopilados
     RawgResponse mediaInfo = RawgResponse(
         gameId: id,
         imageUrl: imageUrl,
         metacriticInfo: metacriticInfo as double,
         releaseDate: releaseDate,
+        description: description,
         screenshots: screenNames,
         developer: developersNames,
         publisher: publisherNames);
@@ -678,7 +1028,7 @@ class DioClient {
     List<EmulatorDownloadResponse> results = [];
 
     final response = await http.get(Uri.parse(url));
-    if (response.statusCode == 200) {
+    if (response.statusCode == 200 || response.statusCode == 304) {
       final document = parser.parse(response.body);
       final table = document.querySelector('table.versions-list.dev-versions');
       if (table != null) {
@@ -724,7 +1074,7 @@ class DioClient {
     List<EmulatorDownloadResponse> results = [];
 
     final response = await http.get(Uri.parse(url));
-    if (response.statusCode == 200) {
+    if (response.statusCode == 200 || response.statusCode == 304) {
       final document = parser.parse(response.body);
       final releasesList = document.querySelectorAll('#releases');
       List<String> links = [];

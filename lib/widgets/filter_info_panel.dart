@@ -56,8 +56,8 @@ class _GameInfoPanelState extends State<FilterInfoPanel> {
                   bottom: MediaQuery.of(context).size.height * 0.13,
                   child: FadeIn(
                       animate: true,
-                      duration: Duration(seconds: 2),
-                      child: Text(
+                      duration: const Duration(seconds: 2),
+                      child: const Text(
                         'Logo',
                         style: TextStyle(
                             color: Colors.white,
@@ -67,24 +67,24 @@ class _GameInfoPanelState extends State<FilterInfoPanel> {
                 ),
               ],
             )),
-        Row(
+        const Row(
           children: [
             Expanded(
                 flex: 2,
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(
+                  padding: EdgeInsets.fromLTRB(
                       16, 16, 16, 0), // Márgenes izquierdo y derecho
                   child: Text('Tiempo Jugado',
-                      style: const TextStyle(color: Colors.grey, fontSize: 16)),
+                      style: TextStyle(color: Colors.grey, fontSize: 16)),
                 )),
             Expanded(
                 flex: 2,
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(
+                  padding: EdgeInsets.fromLTRB(
                       16, 16, 16, 0), // Márgenes izquierdo y derecho
                   child: Text('0h 00m 00s',
                       style:
-                          const TextStyle(color: Colors.white, fontSize: 16)),
+                          TextStyle(color: Colors.white, fontSize: 16)),
                 ))
           ],
         ),
@@ -94,10 +94,10 @@ class _GameInfoPanelState extends State<FilterInfoPanel> {
           child: Container(
               height: 200,
               decoration: BoxDecoration(
-                color: Color.fromARGB(46, 12, 77, 12),
+                color: const Color.fromARGB(46, 12, 77, 12),
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(),
-                boxShadow: [
+                boxShadow: const [
                   BoxShadow(
                     color: Color.fromARGB(181, 12, 77, 12),
                     spreadRadius: 1,

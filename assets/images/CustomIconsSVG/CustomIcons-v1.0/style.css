@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'CustomIcons';
-  src:  url('fonts/CustomIcons.eot?oycuw1');
-  src:  url('fonts/CustomIcons.eot?oycuw1#iefix') format('embedded-opentype'),
-    url('fonts/CustomIcons.ttf?oycuw1') format('truetype'),
-    url('fonts/CustomIcons.woff?oycuw1') format('woff'),
-    url('fonts/CustomIcons.svg?oycuw1#CustomIcons') format('svg');
+  src:  url('fonts/CustomIcons.eot?m2j14x');
+  src:  url('fonts/CustomIcons.eot?m2j14x#iefix') format('embedded-opentype'),
+    url('fonts/CustomIcons.ttf?m2j14x') format('truetype'),
+    url('fonts/CustomIcons.woff?m2j14x') format('woff'),
+    url('fonts/CustomIcons.svg?m2j14x#CustomIcons') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -25,6 +25,9 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-arrow-back-outline:before {
+  content: "\e971";
+}
 .icon-wii:before {
   content: "\e970";
   color: #999;

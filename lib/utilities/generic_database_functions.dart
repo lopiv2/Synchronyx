@@ -9,6 +9,7 @@ import 'package:synchronyx/models/emulators.dart';
 import 'package:synchronyx/models/global_options.dart';
 import 'package:synchronyx/models/responses/gameMedia_response.dart';
 import 'package:synchronyx/models/media.dart';
+import 'package:synchronyx/models/responses/rawg_response.dart';
 import '../models/api.dart';
 import 'package:synchronyx/utilities/constants.dart';
 import '../models/game.dart';
@@ -164,13 +165,13 @@ Future<Database?> createAndOpenDB() async {
 /* ------- A method that retrieves all the games from the games table. ------ */
 Future<List<Game>> getAllGames() async {
   // Get a reference to the database.
-  final db = await Constants.database;
+  final db = Constants.database;
 
   List<Map<String, dynamic>> maps = List.empty(growable: true);
 
   if (db != null) {
     // Query the table for all The Games.
-    maps = await db!.query('games');
+    maps = await db.query('games');
   }
 
   return maps.map((map) => Game.fromMap(map)).toList();
@@ -179,25 +180,34 @@ Future<List<Game>> getAllGames() async {
 /* ------- A method that retrieves all the games filtered from the games table. ------ */
 Future<List<Game>> getAllGamesWithFilter(String filter, String value) async {
   // Get a reference to the database.
-  final db = await Constants.database;
+  final db = Constants.database;
   List<Map<String, dynamic>> maps = List.empty(growable: true);
   if (db != null) {
     switch (filter) {
+      case 'all':
+        maps = await db.query('games');
+        break;
       case 'favorite':
         if (value == 'yes') {
-          maps =
-              await db!.query('games', where: 'favorite = ?', whereArgs: [1]);
+          maps = await db.query('games', where: 'favorite = ?', whereArgs: [1]);
         }
         if (value == 'no') {
-          maps =
-              await db!.query('games', where: 'favorite = ?', whereArgs: [0]);
+          maps = await db.query('games', where: 'favorite = ?', whereArgs: [0]);
         }
         if (value == 'all') {
-          maps = maps = await db!.query('games');
+          maps = maps = await db.query('games');
+        }
+        break;
+      case 'owned':
+        if (value == 'yes') {
+          maps = await db.query('games', where: 'owned = ?', whereArgs: [1]);
+        }
+        if (value == 'no') {
+          maps = await db.query('games', where: 'owned = ?', whereArgs: [0]);
         }
         break;
       default:
-        maps = await db!.query('games');
+        maps = await db.query('games');
     }
   }
 
@@ -207,27 +217,28 @@ Future<List<Game>> getAllGamesWithFilter(String filter, String value) async {
 /* ----------------------- Get all available emulators ---------------------- */
 Future<List<Emulators>> getAllEmulators() async {
   // Get a reference to the database.
-  final db = await Constants.database;
+  final db = Constants.database;
 
   List<Map<String, dynamic>> maps = List.empty(growable: true);
 
   if (db != null) {
     // Query the table for all The Games.
-    maps = await db!.query('emulators');
+    maps = await db.query('emulators');
   }
 
   return maps.map((map) => Emulators.fromMap(map)).toList();
 }
 
+/* ------------------------- Get options from table ------------------------- */
 Future<GlobalOptions?> getOptions() async {
   // Get a reference to the database.
-  final db = await Constants.database;
+  final db = Constants.database;
 
   GlobalOptions? options;
 
   if (db != null) {
     // Query the table for the first (and only) result.
-    final List<Map<String, dynamic>> maps = await db!.query(
+    final List<Map<String, dynamic>> maps = await db.query(
       'options',
       limit: 1, // Limitar la consulta a un solo resultado.
     );
@@ -256,15 +267,17 @@ Future<Api?> checkApiByName(String name) async {
       return null; // Return null if no matching API is found
     }
   }
+  return null;
 }
 
 /* ----------- Gets game from database with title parameter ---------- */
 Future<Game?> getGameByTitle(String name) async {
   //print('Base de datos abierta en:${Constants.database}');
   // Verify if the database is open before continuing
+  name = name.toLowerCase();
   if (Constants.database != null) {
     var game = await Constants.database
-        ?.query('games', where: 'title = ?', whereArgs: [name]);
+        ?.query('games', where: 'LOWER(title) = ?', whereArgs: [name]);
     if (game!.isNotEmpty) {
       // Return the first API found (assuming 'name' is unique in the database)
       return Game.fromMap(game.first);
@@ -272,6 +285,7 @@ Future<Game?> getGameByTitle(String name) async {
       return null; // Return null if no matching API is found
     }
   }
+  return null;
 }
 
 /* ----------- Gets media record from database with name parameter ---------- */
@@ -289,6 +303,7 @@ Future<Media?> getMediaByName(String name) async {
       return null; // Return null if no matching API is found
     }
   }
+  return null;
 }
 
 /* ----------- Gets media record from database with id parameter ---------- */
@@ -303,6 +318,7 @@ Future<Media?> getMediaById(int id) async {
       return null; // Return null if no matching API is found
     }
   }
+  return null;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -326,13 +342,14 @@ Future<void> deleteGame(int id) async {
 
 Future<void> deleteMediaByName(GameMediaResponse game) async {
   // Get a reference to the database.
-  final db = await Constants.database;
-  deleteFile(game.media!.coverImageUrl);
-  deleteFile(game.media!.backgroundImageUrl);
-  deleteFile(game.media!.marqueeUrl);
-  deleteFile(game.media!.logoUrl);
+  final db = Constants.database;
+  deleteFile(game.media.coverImageUrl);
+  deleteFile(game.media.backgroundImageUrl);
+  deleteFile(game.media.marqueeUrl);
+  deleteFile(game.media.logoUrl);
+  deleteFile(game.media.iconUrl);
   //Deleting screenshots folder
-  List<String> fileNames = game.media!.screenshots.split(',');
+  List<String> fileNames = game.media.screenshots.split(',');
   String id = fileNames[0].split('_')[0]; //Game ID according to Steam
   String folder = '\\Synchronyx\\media\\screenshots\\$id\\';
   String aFolder = '\\Synchronyx\\media\\audio\\$id\\';
@@ -408,10 +425,6 @@ Future<void> insertMedia(Media media, Game game) async {
   );
 
   if (existingGames != null && existingGames.isNotEmpty) {
-    // Obtén el valor de mediaId del primer juego encontrado y actualiza ese id con las nuevas medias
-    int mediaId = existingGames[0]['mediaId'] as int;
-    //print(mediaId);
-
     //Obtengo el id de insercion para agregarselo al juego
     final id = await db?.insert(
       'medias',
