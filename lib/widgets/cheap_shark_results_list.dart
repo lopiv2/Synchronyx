@@ -37,67 +37,84 @@ class CheapSharkResultsList extends StatelessWidget {
                 } else {
                   responses = snapshot.data!;
                   return SingleChildScrollView(
-                      child: Table(
-                    border: TableBorder.all(color: Colors.grey),
-                    defaultColumnWidth: FixedColumnWidth(
-                        MediaQuery.of(context).size.width * 0.098),
-                    children: responses.map((cheapSharkResponse) {
-                      print(cheapSharkResponse.logo);
-                      final currentIndex =
-                          responses.indexOf(cheapSharkResponse);
-                      return TableRow(
-                        children: [
-                          TableCell(
-                            verticalAlignment:
-                                TableCellVerticalAlignment.middle,
-                            child: CachedNetworkImage(
-                              height: 55,
-                              imageUrl: cheapSharkResponse.logo,
-                              placeholder: (context, url) =>
-                                  CircularProgressIndicator(),
-                              errorWidget: (context, url, error) =>
-                                  Image.asset('assets/icons/noimage.png'),
-                              fit: BoxFit
-                                  .fitWidth, // Ajusta la imagen para cubrir todo el contenedor
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: responses.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        final cheapSharkResponse = responses[index];
+                        return InkWell(
+                          onTap: () {
+                            // Maneja la acción cuando se hace clic en la fila aquí
+                            print('Fila clickeada en el índice $index');
+                          },
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 30.0),
+                            child: Table(
+                              border: TableBorder.all(color: Colors.grey),
+                              defaultColumnWidth: FixedColumnWidth(
+                                  MediaQuery.of(context).size.width * 0.098),
+                              children: [
+                                TableRow(
+                                  children: [
+                                    TableCell(
+                                      verticalAlignment:
+                                          TableCellVerticalAlignment.middle,
+                                      child: CachedNetworkImage(
+                                        height: 55,
+                                        imageUrl: cheapSharkResponse.logo,
+                                        placeholder: (context, url) =>
+                                            CircularProgressIndicator(),
+                                        errorWidget: (context, url, error) =>
+                                            Image.asset(
+                                                'assets/icons/noimage.png'),
+                                        fit: BoxFit.fitWidth,
+                                      ),
+                                    ),
+                                    TableCell(
+                                      verticalAlignment:
+                                          TableCellVerticalAlignment.middle,
+                                      child: Text(
+                                        cheapSharkResponse.store.toString(),
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                    TableCell(
+                                      verticalAlignment:
+                                          TableCellVerticalAlignment.middle,
+                                      child: Text(
+                                        '${cheapSharkResponse.salePrice} €',
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.normal,
+                                        ),
+                                      ),
+                                    ),
+                                    TableCell(
+                                      verticalAlignment:
+                                          TableCellVerticalAlignment.middle,
+                                      child: Text(
+                                        '${cheapSharkResponse.retailPrice} €',
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.normal,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
                           ),
-                          TableCell(
-                            verticalAlignment:
-                                TableCellVerticalAlignment.middle,
-                            child: Text(
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                cheapSharkResponse.store.toString()),
-                          ),
-                          TableCell(
-                            verticalAlignment:
-                                TableCellVerticalAlignment.middle,
-                            child: Text(
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.normal,
-                                ),
-                                '${cheapSharkResponse.salePrice} €'),
-                          ),
-                          TableCell(
-                            verticalAlignment:
-                                TableCellVerticalAlignment.middle,
-                            child: Text(
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.normal,
-                                ),
-                                '${cheapSharkResponse.retailPrice} €'),
-                          ),
-                        ],
-                      );
-                    }).toList(),
-                  ));
+                        );
+                      },
+                    ),
+                  );
                 }
               }))
     ]));
