@@ -125,6 +125,7 @@ Future<Database?> createAndOpenDB() async {
           'playOSTOnSelectGame INTEGER,'
           'showLogoNameOnGrid INTEGER,'
           'showEditorOnGrid INTEGER,'
+          'logoAnimation TEXT'
           ')',
         );
         await db.insert(
@@ -134,6 +135,7 @@ Future<Database?> createAndOpenDB() async {
             'playOSTOnSelectGame': 1,
             'showLogoNameOnGrid': 0,
             'showEditorOnGrid': 1,
+            'logoAnimation': 'FadeInDown',
           },
         );
         // Create the Emulators table

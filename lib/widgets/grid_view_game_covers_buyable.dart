@@ -65,7 +65,7 @@ class _GridViewGameCoversBuyableState extends State<GridViewGameCoversBuyable> {
     List<Container> containers = [];
     for (int index = 0; index < listOfGames.length; index++) {
       Media? gameMedia =
-          await databaseFunctions.getMediaById(listOfGames[index].mediaId!);
+          await databaseFunctions.getMediaById(listOfGames[index].mediaId);
       if (gameMedia != null) {
         GameMediaResponse gameMediaResponse =
             GameMediaResponse.fromGameAndMedia(listOfGames[index], gameMedia);

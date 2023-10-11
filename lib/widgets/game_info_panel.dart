@@ -10,6 +10,7 @@ import 'package:synchronyx/models/responses/gameMedia_response.dart';
 import 'package:synchronyx/utilities/Constants.dart';
 import 'package:synchronyx/utilities/audio_singleton.dart';
 import 'package:synchronyx/utilities/generic_functions.dart';
+import 'package:synchronyx/widgets/animation_container_logo.dart';
 import 'package:synchronyx/widgets/buttons/icon_button_colored.dart';
 import 'package:synchronyx/widgets/dialogs/image_preview_dialog.dart';
 import 'package:synchronyx/widgets/dialogs/ost_download_dialog.dart';
@@ -31,7 +32,8 @@ class GameInfoPanel extends StatefulWidget {
 class _GameInfoPanelState extends State<GameInfoPanel> {
   final AudioManager audioManager = AudioManager();
   late String url = "";
-  late AnimationController _controller;
+  late AnimationController _controller =
+      AnimationController(vsync: AnimatedListState());
   bool isFavorite = false;
 
   @override
@@ -44,7 +46,7 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
         isFavorite = appState.selectedGame?.game.favorite == 1;
 
         return FutureBuilder<Widget>(
-          future: _buildGameInfoPanel(appState, selectedGame),
+          future: _buildGameInfoPanel(context, appState, selectedGame),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return CircularProgressIndicator(); // Mostrar un indicador de carga mientras esperas
@@ -60,8 +62,8 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
     );
   }
 
-  Future<Widget> _buildGameInfoPanel(
-      AppState appState, GameMediaResponse? selectedGame) async {
+  Future<Widget> _buildGameInfoPanel(BuildContext context, AppState appState,
+      GameMediaResponse? selectedGame) async {
     bool isHovered = false;
     ScrollController _scrollController = ScrollController();
     audioManager.stop();
@@ -105,18 +107,27 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
     if (appState.selectedOptions.playOSTOnSelectGame == 1) {
       playOst(appState);
     }
+    Widget logoAnimationSelectedBuilder=Text('');
+      logoAnimationSelectedBuilder =
+          Constants.animationWidgets[appState.optionsResponse.logoAnimation]!(_controller);
+
+    /*Widget Function(Duration p1, AnimationController p2)?
+        logoAnimationSelectedBuilder =
+        Constants.animationWidgets[appState.optionsResponse.logoAnimation];*/
 
     return Column(children: [
       Expanded(
           child: SingleChildScrollView(
               child: Column(children: [
         Container(
+            // ignore: use_build_context_synchronously
             height: MediaQuery.of(context).size.height * 0.3,
             color: Colors.white,
             child: appState.selectedGame?.media.videoUrl != ""
-                ? Text("Video holder")
+                ? const Text("Video holder")
                 : Stack(
                     children: <Widget>[
+                      // ignore: unrelated_type_equality_checks
                       imageWidgetMarquee != ""
                           ? Container(
                               decoration: BoxDecoration(
@@ -126,39 +137,29 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
                                 ),
                               ),
                             )
-                          : Text(""),
+                          : const Text(""),
+                      // ignore: unrelated_type_equality_checks
                       logoWidgetMarquee != ""
                           ? Positioned(
+                              // ignore: use_build_context_synchronously
                               right: MediaQuery.of(context).size.width * 0.06,
                               bottom: -80,
-                              child: FadeInDown(
-                                  controller: (controller) =>
-                                      _controller = controller,
-                                  duration: Duration(seconds: 2),
-                                  child: Container(
-                                    width: MediaQuery.of(context).size.width *
-                                        0.15,
-                                    height: MediaQuery.of(context).size.height *
-                                        0.5,
-                                    decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                        image: logoWidgetMarquee,
-                                        fit: BoxFit.scaleDown,
-                                      ),
-                                    ),
-                                  )))
-                          : Text(""),
+                              child: logoAnimationSelectedBuilder,
+                            )
+                          : const Text(""),
+                      // ignore: unrelated_type_equality_checks
                       platformStoreIcon != ""
                           ? Positioned(
                               right: 20.01,
+                              // ignore: use_build_context_synchronously
                               bottom: MediaQuery.of(context).size.height * 0.25,
-                              child: Container(
-                                  child: Icon(
+                              child: Icon(
                                 platformStoreIcon.icon,
                                 color: Colors.white,
+                                // ignore: use_build_context_synchronously
                                 size: MediaQuery.of(context).size.width * 0.02,
-                              )))
-                          : Text(""),
+                              ))
+                          : const Text(""),
                       ToggleMusicIcon(
                         appLocalizations: widget.appLocalizations,
                         audioManager: audioManager,

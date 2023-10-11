@@ -2,12 +2,14 @@
 
 import 'dart:io';
 
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite_common/sqlite_api.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:synchronyx/icons/custom_icons_icons.dart';
 import 'package:synchronyx/models/emulators.dart';
+import 'package:synchronyx/widgets/animation_container_logo.dart';
 import '../models/api.dart';
 
 enum PlatformStore {
@@ -20,8 +22,8 @@ enum PlatformStore {
       Icon(CustomIcons.gog_dot_com,
           color: Color.fromARGB(255, 84, 9, 97), size: 20),
       "gog"),
-  Itch(
-      Icon(CustomIcons.itch_dot_io, color: Colors.redAccent, size: 20), "itch.io"),
+  Itch(Icon(CustomIcons.itch_dot_io, color: Colors.redAccent, size: 20),
+      "itch.io"),
   Origin(Icon(CustomIcons.origin, color: Colors.orange, size: 20), "origin"),
   Steam(
       Icon(CustomIcons.steam, color: Color.fromARGB(255, 12, 66, 94), size: 20),
@@ -86,7 +88,7 @@ extension SearchParametersValueExtension on SearchParametersDropDown {
         return "launchDate";
       case SearchParametersDropDown.MaxPlayers:
         return "maxPlayers";
-        case SearchParametersDropDown.Owned:
+      case SearchParametersDropDown.Owned:
         return "owned";
       case SearchParametersDropDown.Platform:
         return "platform";
@@ -127,7 +129,7 @@ extension SearchParametersExtension on SearchParametersDropDown {
         return AppLocalizations.of(context).launchDate;
       case SearchParametersDropDown.MaxPlayers:
         return AppLocalizations.of(context).maxPlayers;
-        case SearchParametersDropDown.Owned:
+      case SearchParametersDropDown.Owned:
         return AppLocalizations.of(context).ownedGame;
       case SearchParametersDropDown.Platform:
         return AppLocalizations.of(context).platform;
@@ -143,6 +145,55 @@ extension SearchParametersExtension on SearchParametersDropDown {
         return "";
     }
   }
+}
+
+enum AnimationsDropDown {
+  FadeIn,
+  FadeInDown,
+  FadeInDownBig,
+  FadeInUp,
+  FadeInUpBig,
+  FadeInLeft,
+  FadeInLeftBig,
+  FadeInRight,
+  FadeInRightBig,
+  FadeOut,
+  FadeOutDown,
+  FadeOutDownBig,
+  FadeOutUp,
+  FadeOutUpBig,
+  FadeOutLeft,
+  FadeOutLeftBig,
+  FadeOutRight,
+  FadeOutRightBig,
+  BounceInDown,
+  BounceInUp,
+  BounceInLeft,
+  BounceInRight,
+  ElasticIn,
+  ElasticInDown,
+  ElasticInUp,
+  ElasticInLeft,
+  ElasticInRight,
+  SlideInDown,
+  SlideInUp,
+  SlideInLeft,
+  SlideInRight,
+  FlipInX,
+  FlipInY,
+  ZoomIn,
+  ZoomOut,
+  JelloIn,
+  Bounce,
+  Dance,
+  Flash,
+  Pulse,
+  Roulette,
+  ShakeX,
+  ShakeY,
+  Spin,
+  SpinPerfect,
+  Swing,
 }
 
 enum GamePlatforms {
@@ -492,6 +543,362 @@ class Constants {
         description: 'Description 3',
         installed: 0),
   ];
+
+  static final Map<String, Widget Function(AnimationController)>
+      animationWidgets = {
+    // ignore: no_leading_underscores_for_local_identifiers
+    'FadeInDown': (_controller) {
+      return FadeInDown(
+        controller: (controller) => _controller = controller,
+        duration: const Duration(seconds: 2),
+        child: const AnimationLogoContainer(),
+      );
+    },
+    // ignore: no_leading_underscores_for_local_identifiers
+    /*'FadeInDownBig': (duration, _controller) {
+      return FadeInDownBig(
+        controller: (controller) => _controller = controller,
+        duration: const Duration(seconds: 2),
+        child: const AnimationLogoContainer(),
+      );
+    },
+    // ignore: no_leading_underscores_for_local_identifiers
+    'FadeInLeft': (duration, _controller) {
+      return FadeInLeft(
+        controller: (controller) => _controller = controller,
+        duration: const Duration(seconds: 2),
+        child: const AnimationLogoContainer(),
+      );
+    },
+    // ignore: no_leading_underscores_for_local_identifiers
+    'FadeInLeftBig': (duration, _controller) {
+      return FadeInLeftBig(
+        controller: (controller) => _controller = controller,
+        duration: const Duration(seconds: 2),
+        child: const AnimationLogoContainer(),
+      );
+    },
+    // ignore: no_leading_underscores_for_local_identifiers
+    'FadeInUpBig': (duration, _controller) {
+      return FadeInUpBig(
+        controller: (controller) => _controller = controller,
+        duration: const Duration(seconds: 2),
+        child: const AnimationLogoContainer(),
+      );
+    },
+    // ignore: no_leading_underscores_for_local_identifiers
+    'FadeInRight': (duration, _controller) {
+      return FadeInRight(
+        controller: (controller) => _controller = controller,
+        duration: const Duration(seconds: 2),
+        child: const AnimationLogoContainer(),
+      );
+    },
+    // ignore: no_leading_underscores_for_local_identifiers
+    'FadeInRightBig': (duration, _controller) {
+      return FadeInRightBig(
+        controller: (controller) => _controller = controller,
+        duration: const Duration(seconds: 2),
+        child: const AnimationLogoContainer(),
+      );
+    },
+    // ignore: no_leading_underscores_for_local_identifiers
+    'FadeOut': (duration, _controller) {
+      return FadeOut(
+        controller: (controller) => _controller = controller,
+        duration: const Duration(seconds: 2),
+        child: const AnimationLogoContainer(),
+      );
+    },
+    // ignore: no_leading_underscores_for_local_identifiers
+    'FadeOutDown': (duration, _controller) {
+      return FadeOutDown(
+        controller: (controller) => _controller = controller,
+        duration: const Duration(seconds: 2),
+        child: const AnimationLogoContainer(),
+      );
+    },
+    // ignore: no_leading_underscores_for_local_identifiers
+    'FadeOutDownBig': (duration, _controller) {
+      return FadeOutDownBig(
+        controller: (controller) => _controller = controller,
+        duration: const Duration(seconds: 2),
+        child: const AnimationLogoContainer(),
+      );
+    },
+    // ignore: no_leading_underscores_for_local_identifiers
+    'FadeOutUp': (duration, _controller) {
+      return FadeOutUp(
+        controller: (controller) => _controller = controller,
+        duration: const Duration(seconds: 2),
+        child: const AnimationLogoContainer(),
+      );
+    },
+    // ignore: no_leading_underscores_for_local_identifiers
+    'FadeOutUpBig': (duration, _controller) {
+      return FadeOutUpBig(
+        controller: (controller) => _controller = controller,
+        duration: const Duration(seconds: 2),
+        child: const AnimationLogoContainer(),
+      );
+    },
+    // ignore: no_leading_underscores_for_local_identifiers
+    'FadeOutLeft': (duration, _controller) {
+      return FadeOutLeft(
+        controller: (controller) => _controller = controller,
+        duration: const Duration(seconds: 2),
+        child: const AnimationLogoContainer(),
+      );
+    },
+    // ignore: no_leading_underscores_for_local_identifiers
+    'FadeOutLeftBig': (duration, _controller) {
+      return FadeOutLeftBig(
+        controller: (controller) => _controller = controller,
+        duration: const Duration(seconds: 2),
+        child: const AnimationLogoContainer(),
+      );
+    },
+    // ignore: no_leading_underscores_for_local_identifiers
+    'FadeOutRight': (duration, _controller) {
+      return FadeOutRight(
+        controller: (controller) => _controller = controller,
+        duration: const Duration(seconds: 2),
+        child: const AnimationLogoContainer(),
+      );
+    },
+    // ignore: no_leading_underscores_for_local_identifiers
+    'FadeOutRightBig': (duration, _controller) {
+      return FadeOutRightBig(
+        controller: (controller) => _controller = controller,
+        duration: const Duration(seconds: 2),
+        child: const AnimationLogoContainer(),
+      );
+    },
+    // ignore: no_leading_underscores_for_local_identifiers
+    'BounceInDown': (duration, _controller) {
+      return BounceInDown(
+        controller: (controller) => _controller = controller,
+        duration: const Duration(seconds: 2),
+        child: const AnimationLogoContainer(),
+      );
+    },
+    // ignore: no_leading_underscores_for_local_identifiers
+    'BounceInUp': (duration, _controller) {
+      return BounceInUp(
+        controller: (controller) => _controller = controller,
+        duration: const Duration(seconds: 2),
+        child: const AnimationLogoContainer(),
+      );
+    },
+    // ignore: no_leading_underscores_for_local_identifiers
+    'BounceInLeft': (duration, _controller) {
+      return BounceInLeft(
+        controller: (controller) => _controller = controller,
+        duration: const Duration(seconds: 2),
+        child: const AnimationLogoContainer(),
+      );
+    },
+    // ignore: no_leading_underscores_for_local_identifiers
+    'BounceInRight': (duration, _controller) {
+      return BounceInRight(
+        controller: (controller) => _controller = controller,
+        duration: const Duration(seconds: 2),
+        child: const AnimationLogoContainer(),
+      );
+    },
+    // ignore: no_leading_underscores_for_local_identifiers
+    'ElasticIn': (duration, _controller) {
+      return ElasticIn(
+        controller: (controller) => _controller = controller,
+        duration: const Duration(seconds: 2),
+        child: const AnimationLogoContainer(),
+      );
+    },
+    // ignore: no_leading_underscores_for_local_identifiers
+    'ElasticInDown': (duration, _controller) {
+      return ElasticInDown(
+        controller: (controller) => _controller = controller,
+        duration: const Duration(seconds: 2),
+        child: const AnimationLogoContainer(),
+      );
+    },
+    // ignore: no_leading_underscores_for_local_identifiers
+    'ElasticInUp': (duration, _controller) {
+      return ElasticInUp(
+        controller: (controller) => _controller = controller,
+        duration: const Duration(seconds: 2),
+        child: const AnimationLogoContainer(),
+      );
+    },
+    // ignore: no_leading_underscores_for_local_identifiers
+    'ElasticInLeft': (duration, _controller) {
+      return ElasticInLeft(
+        controller: (controller) => _controller = controller,
+        duration: const Duration(seconds: 2),
+        child: const AnimationLogoContainer(),
+      );
+    },
+    // ignore: no_leading_underscores_for_local_identifiers
+    'ElasticInRight': (duration, _controller) {
+      return ElasticInRight(
+        controller: (controller) => _controller = controller,
+        duration: const Duration(seconds: 2),
+        child: const AnimationLogoContainer(),
+      );
+    },
+    // ignore: no_leading_underscores_for_local_identifiers
+    'SlideInDown': (duration, _controller) {
+      return SlideInDown(
+        controller: (controller) => _controller = controller,
+        duration: const Duration(seconds: 2),
+        child: const AnimationLogoContainer(),
+      );
+    },
+    // ignore: no_leading_underscores_for_local_identifiers
+    'SlideInUp': (duration, _controller) {
+      return SlideInUp(
+        controller: (controller) => _controller = controller,
+        duration: const Duration(seconds: 2),
+        child: const AnimationLogoContainer(),
+      );
+    },
+    // ignore: no_leading_underscores_for_local_identifiers
+    'SlideInLeft': (duration, _controller) {
+      return SlideInLeft(
+        controller: (controller) => _controller = controller,
+        duration: const Duration(seconds: 2),
+        child: const AnimationLogoContainer(),
+      );
+    },
+    // ignore: no_leading_underscores_for_local_identifiers
+    'SlideInRight': (duration, _controller) {
+      return SlideInRight(
+        controller: (controller) => _controller = controller,
+        duration: const Duration(seconds: 2),
+        child: const AnimationLogoContainer(),
+      );
+    },
+    // ignore: no_leading_underscores_for_local_identifiers
+    'FlipInX': (duration, _controller) {
+      return FlipInX(
+        controller: (controller) => _controller = controller,
+        duration: const Duration(seconds: 2),
+        child: const AnimationLogoContainer(),
+      );
+    },
+    // ignore: no_leading_underscores_for_local_identifiers
+    'FlipInY': (duration, _controller) {
+      return FlipInY(
+        controller: (controller) => _controller = controller,
+        duration: const Duration(seconds: 2),
+        child: const AnimationLogoContainer(),
+      );
+    },
+    // ignore: no_leading_underscores_for_local_identifiers
+    'ZoomIn': (duration, _controller) {
+      return ZoomIn(
+        controller: (controller) => _controller = controller,
+        duration: const Duration(seconds: 2),
+        child: const AnimationLogoContainer(),
+      );
+    },
+    // ignore: no_leading_underscores_for_local_identifiers
+    'ZoomOut': (duration, _controller) {
+      return ZoomOut(
+        controller: (controller) => _controller = controller,
+        duration: const Duration(seconds: 2),
+        child: const AnimationLogoContainer(),
+      );
+    },
+    // ignore: no_leading_underscores_for_local_identifiers
+    'JelloIn': (duration, _controller) {
+      return JelloIn(
+        controller: (controller) => _controller = controller,
+        duration: const Duration(seconds: 2),
+        child: const AnimationLogoContainer(),
+      );
+    },
+    // ignore: no_leading_underscores_for_local_identifiers
+    'Bounce': (duration, _controller) {
+      return Bounce(
+        controller: (controller) => _controller = controller,
+        duration: const Duration(seconds: 2),
+        child: const AnimationLogoContainer(),
+      );
+    },
+    // ignore: no_leading_underscores_for_local_identifiers
+    'Dance': (duration, _controller) {
+      return Dance(
+        controller: (controller) => _controller = controller,
+        duration: const Duration(seconds: 2),
+        child: const AnimationLogoContainer(),
+      );
+    },
+    // ignore: no_leading_underscores_for_local_identifiers
+    'Flash': (duration, _controller) {
+      return Flash(
+        controller: (controller) => _controller = controller,
+        duration: const Duration(seconds: 2),
+        child: const AnimationLogoContainer(),
+      );
+    },
+    // ignore: no_leading_underscores_for_local_identifiers
+    'Pulse': (duration, _controller) {
+      return Pulse(
+        controller: (controller) => _controller = controller,
+        duration: const Duration(seconds: 2),
+        child: const AnimationLogoContainer(),
+      );
+    },
+    // ignore: no_leading_underscores_for_local_identifiers
+    'Roulette': (duration, _controller) {
+      return Roulette(
+        controller: (controller) => _controller = controller,
+        duration: const Duration(seconds: 2),
+        child: const AnimationLogoContainer(),
+      );
+    },
+    // ignore: no_leading_underscores_for_local_identifiers
+    'ShakeX': (duration, _controller) {
+      return ShakeX(
+        controller: (controller) => _controller = controller,
+        duration: const Duration(seconds: 2),
+        child: const AnimationLogoContainer(),
+      );
+    },
+    // ignore: no_leading_underscores_for_local_identifiers
+    'ShakeY': (duration, _controller) {
+      return ShakeY(
+        controller: (controller) => _controller = controller,
+        duration: const Duration(seconds: 2),
+        child: const AnimationLogoContainer(),
+      );
+    },
+    // ignore: no_leading_underscores_for_local_identifiers
+    'Spin': (duration, _controller) {
+      return Spin(
+        controller: (controller) => _controller = controller,
+        duration: const Duration(seconds: 2),
+        child: const AnimationLogoContainer(),
+      );
+    },
+    // ignore: no_leading_underscores_for_local_identifiers
+    'SpinPerfect': (duration, _controller) {
+      return SpinPerfect(
+        controller: (controller) => _controller = controller,
+        duration: const Duration(seconds: 2),
+        child: const AnimationLogoContainer(),
+      );
+    },
+    // ignore: no_leading_underscores_for_local_identifiers
+    'Swing': (duration, _controller) {
+      return Swing(
+        controller: (controller) => _controller = controller,
+        duration: const Duration(seconds: 2),
+        child: const AnimationLogoContainer(),
+      );
+    },*/
+  };
 
   static Future<void> initialize() async {
     try {

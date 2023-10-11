@@ -12,7 +12,8 @@ class AppState extends ChangeNotifier {
   bool shouldRefreshGridView = false;
   String _isImporting = 'no'; //Three states, no, importing and finished
   Key buttonClickedKey = const ValueKey<int>(42);
-  int filterIndex=10; //Value to set default set selection filters when changing tables 
+  int filterIndex =
+      10; //Value to set default set selection filters when changing tables
   String get isImporting => _isImporting;
   int clickedElementIndex = 0;
   List<bool> elementsAnimations = [];
@@ -33,10 +34,16 @@ class AppState extends ChangeNotifier {
   bool searchGameEnabled =
       false; //Variable to be activated when searching for a game to add to the wanted list.
   List<RawgResponse> results = [];
-  late RawgResponse gameClicked; //Variable to save the game clicked on in the search
+  late RawgResponse
+      gameClicked; //Variable to save the game clicked on in the search
 
   bool enableGameSearchView =
       false; // Variable that activates the preview panel of the game that we will add to favorite
+
+  // This method will update the value of logoAnimation in optionsResponse
+  void updateLogoAnimation(String newLogoAnimation) {
+    optionsResponse.logoAnimation = newLogoAnimation;
+  }
 
   Future<void> enableGameSearchViewPanel(bool value) async {
     enableGameSearchView = value;

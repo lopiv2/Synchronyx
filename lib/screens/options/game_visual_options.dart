@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:synchronyx/providers/app_state.dart';
+import 'package:synchronyx/utilities/Constants.dart';
+import 'package:synchronyx/widgets/dropDowns/options_animations_drop_down.dart';
 
 class GameVisualOptions extends StatefulWidget {
   final AppLocalizations appLocalizations;
@@ -114,6 +116,24 @@ class _GameVisualOptionsState extends State<GameVisualOptions> {
                     });
               },
             ),
+            Selector<AppState, String>(
+                selector: (_, provider) =>
+                    provider.optionsResponse.logoAnimation,
+                builder: (context, logoAnimation, child) {
+                  AnimationsDropDown? defaultValue;
+                  for (AnimationsDropDown value in AnimationsDropDown.values) {
+                    if (value.toString().split('.').last == logoAnimation) {
+                      defaultValue = value;
+                      break;
+                    }
+                  }
+                  defaultValue ??= AnimationsDropDown
+                        .FadeInDown;
+                  return AnimationsDropdownWithTextToLeft(
+                    defaultValue: defaultValue,
+                    appLocalizations: widget.appLocalizations,
+                  );
+                })
           ],
         ),
       ),

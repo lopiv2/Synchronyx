@@ -12,6 +12,7 @@ import 'package:synchronyx/utilities/generic_database_functions.dart';
 import 'package:synchronyx/widgets/buttons/notification_button.dart';
 import 'package:synchronyx/widgets/calendar_view_events.dart';
 import 'package:synchronyx/widgets/clicked_game_favorite_view.dart';
+import 'package:synchronyx/widgets/clicked_game_favorite_view.dart';
 import 'package:synchronyx/widgets/filter_info_panel.dart';
 import 'package:synchronyx/widgets/filters/all_filter.dart';
 import 'package:synchronyx/widgets/filters/favorite_filter.dart';

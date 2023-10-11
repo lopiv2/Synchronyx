@@ -46,8 +46,9 @@ class RawgResponseListWidget extends StatelessWidget {
                 title: TextButtonHoverColored(
                     enableEllipsis: true,
                     onPressed: (() => {
+                          appState.selectedGame = null,
                           appState.enableGameSearchViewPanel(true),
-                          appState.gameClicked=rawgResponse,
+                          appState.gameClicked = rawgResponse,
                         }),
                     text: rawgResponse.name ?? ''),
                 dense: true,

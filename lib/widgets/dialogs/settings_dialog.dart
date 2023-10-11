@@ -63,7 +63,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
       child: CustomDialog(
         offset: _offset,
         child: Container(
-          width: MediaQuery.of(context).size.width * 0.8,
+          width: MediaQuery.of(context).size.width * 0.7,
           height: MediaQuery.of(context).size.height * 0.7,
           decoration: BoxDecoration(
             border: Border.all(
@@ -117,7 +117,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
               ],
             ),
             Padding(
-                padding: const EdgeInsets.only(left: 16.0), // Padding izquierdo
+                padding: const EdgeInsets.only(left: 16.0),
                 child: Row(
                   children: [
                     LeftColumn(

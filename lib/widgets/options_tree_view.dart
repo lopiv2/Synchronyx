@@ -50,16 +50,16 @@ class _OptionsTreeViewState extends State<OptionsTreeView> {
 
   List<Options> buildTreeView() {
     final appState = Provider.of<AppState>(context, listen: false);
-    List<String> OptionsList = [];
-    OptionsList.add('General');
-    List<Options> OptionsNodes = [];
+    List<String> optionsList = [];
+    optionsList.add('General');
+    List<Options> optionsNodes = [];
     Options g = Options(title: 'General', value: 'general');
-    OptionsNodes.add(g);
+    optionsNodes.add(g);
     Options v = Options(title: 'Visuales', value: 'visual');
-    OptionsNodes.add(v);
-    g.children.add(new Options(title: 'Preferencias', value: 'prefs'));
-    v.children.add(new Options(title: 'Juegos', value: 'games'));
-    return OptionsNodes;
+    optionsNodes.add(v);
+    g.children.add(Options(title: 'Preferencias', value: 'prefs'));
+    v.children.add(Options(title: 'Juegos', value: 'games'));
+    return optionsNodes;
   }
 
   @override

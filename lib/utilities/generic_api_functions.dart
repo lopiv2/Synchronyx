@@ -239,89 +239,107 @@ class DioClient {
                     key: 'fa61b6d47dfe3b6ab65a516b1f8bd0a3',
                     searchString: gameName);
                 String iconUrl = stResp.iconUrl ?? '';
-                String coverUrl = data['background_image'];
+                String coverUrl = stResp.coverUrl ?? '';
+                String id = data['id'].toString();
                 try {
-                  final Response gameData = await _dio
-                      .get('$_rawgApiUrl/${data['id'].toString()}?key=$key');
-                  Map<String, dynamic> responseData = gameData.data;
+                  Response gameData =
+                      await _dio.head('$_rawgApiUrl/$id?key=$key');
+                  if (gameData.statusCode == 200 ||
+                      gameData.statusCode == 304) {
+                    gameData = await _dio.get('$_rawgApiUrl/$id?key=$key');
+                    Map<String, dynamic> responseData = gameData.data;
 
-                  String description = responseData.containsKey('description')
-                      ? responseData['description'].toString()
-                      : '';
+                    String description = responseData.containsKey('description')
+                        ? responseData['description'].toString()
+                        : '';
 
-                  final List<dynamic> platforms = data['platforms'];
-                  String platformName = '';
+                    final List<dynamic> platforms = data['platforms'];
+                    String platformName = '';
 
-                  if (platforms.isNotEmpty) {
-                    final platformData = platforms[0]['platform'];
-                    if (platformData is Map<String, dynamic> &&
-                        platformData.containsKey('name')) {
-                      platformName = platformData['name'] as String;
-                      if (platformName == 'PC') {
-                        platformName = 'Windows';
-                      }
-                    }
-                  } else {
-                    // El array 'platforms' está vacío o no contiene elementos válidos.
-                  }
-
-                  //Stores
-                  String storeName = '';
-                  if (data['stores'] != null) {
-                    final List<dynamic> stores = data['stores'];
-                    if (stores.isNotEmpty) {
-                      final storeData = stores[0]['store'];
-                      if (storeData is Map<String, dynamic> &&
-                          storeData.containsKey('name')) {
-                        storeName = storeData['name'].toString().toLowerCase();
+                    if (platforms.isNotEmpty) {
+                      final platformData = platforms[0]['platform'];
+                      if (platformData is Map<String, dynamic> &&
+                          platformData.containsKey('name')) {
+                        platformName = platformData['name'] as String;
+                        if (platformName == 'PC') {
+                          platformName = 'Windows';
+                        }
                       }
                     } else {
-                      // El array 'stores' está vacío o no contiene elementos válidos.
+                      // The array 'platforms' is empty or does not contain valid elements.
                     }
-                  }
 
-                  String developersNames = '';
-                  List<String> developers = List.empty(growable: true);
-                  if (responseData.containsKey('developers') &&
-                      responseData['developers'] is List) {
-                    List<dynamic> developersList = responseData['developers'];
-                    for (var developerData in developersList) {
-                      if (developerData.containsKey('name')) {
-                        developers.add(developerData['name']);
+                    //Stores
+                    String storeName = '';
+                    if (data['stores'] != null) {
+                      final List<dynamic> stores = data['stores'];
+                      if (stores.isNotEmpty) {
+                        final storeData = stores[0]['store'];
+                        if (storeData is Map<String, dynamic> &&
+                            storeData.containsKey('name')) {
+                          storeName =
+                              storeData['name'].toString().toLowerCase();
+                        }
+                      } else {
+                        // The array 'stores' is empty or does not contain valid elements.
                       }
                     }
-                    developersNames = developers.join(', ');
-                  }
 
-                  //Get publisher if exists
-                  String publisherNames = '';
-                  List<String> publishers = List.empty(growable: true);
-                  if (responseData.containsKey('publishers') &&
-                      responseData['publishers'] is List) {
-                    List<dynamic> publisherList = responseData['publishers'];
-                    for (var publisherData in publisherList) {
-                      if (publisherData.containsKey('name')) {
-                        publishers.add(publisherData['name']);
+                    String developersNames = '';
+                    List<String> developers = List.empty(growable: true);
+                    if (responseData.containsKey('developers') &&
+                        responseData['developers'] is List) {
+                      List<dynamic> developersList = responseData['developers'];
+                      for (var developerData in developersList) {
+                        if (developerData.containsKey('name')) {
+                          developers.add(developerData['name']);
+                        }
                       }
+                      developersNames = developers.join(', ');
                     }
-                    publisherNames = publishers.join(', ');
+
+                    //Get publisher if exists
+                    String publisherNames = '';
+                    List<String> publishers = List.empty(growable: true);
+                    if (responseData.containsKey('publishers') &&
+                        responseData['publishers'] is List) {
+                      List<dynamic> publisherList = responseData['publishers'];
+                      for (var publisherData in publisherList) {
+                        if (publisherData.containsKey('name')) {
+                          publishers.add(publisherData['name']);
+                        }
+                      }
+                      publisherNames = publishers.join(', ');
+                    }
+                    final RawgResponse game = RawgResponse(
+                      gameId: data['id'].toString(),
+                      name: data['name'],
+                      description: description,
+                      imageUrl: coverUrl,
+                      iconUrl: iconUrl,
+                      developer: developersNames,
+                      publisher: publisherNames,
+                      platform: platformName,
+                      store: storeName,
+                      metacriticInfo: data['rating'],
+                      releaseDate: data['released'],
+                    );
+                    games.add(game);
                   }
-                  final RawgResponse game = RawgResponse(
-                    gameId: data['id'].toString(),
-                    name: data['name'],
-                    description: description,
-                    imageUrl: coverUrl,
-                    iconUrl: iconUrl,
-                    developer: developersNames,
-                    publisher: publisherNames,
-                    platform: platformName,
-                    store: storeName,
-                    metacriticInfo: data['rating'],
-                    releaseDate: data['released'],
-                  );
-                  games.add(game);
                 } catch (e) {
-                  throw Exception('HTTP request error: $e');
+                  if (e is DioException) {
+                    if (e.response?.statusCode == 404) {
+                      // Maneja el error 404 aquí
+                      print('Not found (404)');
+                      continue;
+                    } else {
+                      // Maneja otros errores de solicitud aquí
+                      print('Error in the application: ${e.message}');
+                    }
+                  } else {
+                    // Maneja otros tipos de errores aquí
+                    print('Error: $e');
+                  }
                 }
               }
             }
@@ -433,16 +451,22 @@ class DioClient {
       gameID = gameData['gameID'];
       break;
     }
+    Response? dealData;
+    if (gameID != '') {
+      dealData =
+          await _dio.get('https://www.cheapshark.com/api/1.0/games?id=$gameID');
+    } else {
+      dealData = null;
+    }
 
-    final Response dealData =
-        await _dio.get('https://www.cheapshark.com/api/1.0/games?id=$gameID');
-
-    if (dealData.statusCode == 200 || dealData.statusCode == 304) {
-      final Map<String, dynamic> jsonResponse = dealData.data;
+    if (dealData?.statusCode == 200 || dealData?.statusCode == 304) {
+      final Map<String, dynamic> jsonResponse = dealData?.data;
 
       // Extraer información del juego
       final String title = jsonResponse['info']['title'];
-      final String steamAppID = jsonResponse['info']['steamAppID'];
+      if (jsonResponse['info']['steamAppID'] != null) {
+        final String steamAppID = jsonResponse['info']['steamAppID'];
+      }
       final String thumb = jsonResponse['info']['thumb'];
 
       // Extraer información de las ofertas
@@ -463,13 +487,13 @@ class DioClient {
         results.add(c);
       }
     } else {
-      print('Error: ${dealData.statusCode}');
+      //print('Error: ${dealData?.statusCode}');
     }
     return results;
   }
 
   CheapSharkStore searchStoreById(String id, List<CheapSharkStore> stores) {
-    String searchStoreID = '2'; // El ID de la tienda que deseas buscar
+    String searchStoreID = id; // The ID of the store you wish to search for
 
     CheapSharkStore? foundStore =
         stores.firstWhere((store) => store.storeID == searchStoreID);
