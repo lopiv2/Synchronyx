@@ -12,6 +12,7 @@ import 'package:synchronyx/utilities/audio_singleton.dart';
 import 'package:synchronyx/utilities/generic_functions.dart';
 import 'package:synchronyx/widgets/animation_container_logo.dart';
 import 'package:synchronyx/widgets/buttons/icon_button_colored.dart';
+import 'package:synchronyx/widgets/cheap_shark_results_list.dart';
 import 'package:synchronyx/widgets/dialogs/image_preview_dialog.dart';
 import 'package:synchronyx/widgets/dialogs/ost_download_dialog.dart';
 import '../providers/app_state.dart';
@@ -29,24 +30,30 @@ class GameInfoPanel extends StatefulWidget {
   State<GameInfoPanel> createState() => _GameInfoPanelState();
 }
 
-class _GameInfoPanelState extends State<GameInfoPanel> {
+class _GameInfoPanelState extends State<GameInfoPanel>
+    with SingleTickerProviderStateMixin {
   final AudioManager audioManager = AudioManager();
   late String url = "";
-  late AnimationController _controller =
-      AnimationController(vsync: AnimatedListState());
   bool isFavorite = false;
+  late AnimationController animController;
+
+  @override
+  void initState() {
+    super.initState();
+    animController = AnimationController(vsync: this);
+  }
 
   @override
   Widget build(BuildContext context) {
     final appState = Provider.of<AppState>(context);
-
     return Consumer<AppState>(
       builder: (context, appState, child) {
         final selectedGame = appState.selectedGame;
         isFavorite = appState.selectedGame?.game.favorite == 1;
 
         return FutureBuilder<Widget>(
-          future: _buildGameInfoPanel(context, appState, selectedGame),
+          future: _buildGameInfoPanel(
+              animController, context, appState, selectedGame),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return CircularProgressIndicator(); // Mostrar un indicador de carga mientras esperas
@@ -62,7 +69,10 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
     );
   }
 
-  Future<Widget> _buildGameInfoPanel(BuildContext context, AppState appState,
+  Future<Widget> _buildGameInfoPanel(
+      AnimationController animController,
+      BuildContext context,
+      AppState appState,
       GameMediaResponse? selectedGame) async {
     bool isHovered = false;
     ScrollController _scrollController = ScrollController();
@@ -100,20 +110,17 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
         appState.selectedGame!.game.publisher.split(',');
     List<Widget> publisherWidgets = publisherList.map((publisher) {
       return Text(
-          style: TextStyle(color: Colors.white),
+          style: const TextStyle(color: Colors.white),
           textAlign: TextAlign.start,
           '- $publisher');
     }).toList();
     if (appState.selectedOptions.playOSTOnSelectGame == 1) {
       playOst(appState);
     }
-    Widget logoAnimationSelectedBuilder=Text('');
-      logoAnimationSelectedBuilder =
-          Constants.animationWidgets[appState.optionsResponse.logoAnimation]!(_controller);
-
-    /*Widget Function(Duration p1, AnimationController p2)?
-        logoAnimationSelectedBuilder =
-        Constants.animationWidgets[appState.optionsResponse.logoAnimation];*/
+    Widget logoAnimationSelectedBuilder = const Text('');
+    logoAnimationSelectedBuilder =
+        Constants.animationWidgets[appState.optionsResponse.logoAnimation]!(
+            animController);
 
     return Column(children: [
       Expanded(
@@ -637,7 +644,29 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
                       ),
                     )
                   ],
-                )))
+                ))),
+        if (appState.selectedGame!.game.owned == 0)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+            child: Container(
+              decoration: BoxDecoration(
+                color: const Color.fromARGB(46, 12, 77, 12),
+                borderRadius: BorderRadius.circular(20),
+                //border: Border.all(),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Color.fromARGB(153, 12, 77, 12),
+                    spreadRadius: 2,
+                    blurRadius: 3,
+                    offset: Offset(2, 2), // changes position of shadow
+                  ),
+                ],
+              ),
+              child: CheapSharkResultsList(
+                title: appState.selectedGame!.game.title,
+              ),
+            ),
+          ),
       ])))
     ]);
   }
@@ -667,8 +696,9 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
   }
 
   @override
-  void initState() {
-    super.initState();
+  void dispose() {
+    animController.dispose();
+    super.dispose();
   }
 
   IconData updateFavIcon(int? value) {
@@ -686,12 +716,6 @@ class _GameInfoPanelState extends State<GameInfoPanel> {
     /*_controller
       ..reset()
       ..forward();*/
-  }
-
-  @override
-  void dispose() {
-    //_controller.dispose();
-    super.dispose();
   }
 
   void showDeleteConfirmationDialog(BuildContext context, AppState appState) {

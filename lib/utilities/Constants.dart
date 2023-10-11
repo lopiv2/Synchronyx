@@ -544,7 +544,7 @@ class Constants {
         installed: 0),
   ];
 
-  static final Map<String, Widget Function(AnimationController)>
+  static Map<String, Widget Function(AnimationController)>
       animationWidgets = {
     // ignore: no_leading_underscores_for_local_identifiers
     'FadeInDown': (_controller) {
@@ -555,7 +555,7 @@ class Constants {
       );
     },
     // ignore: no_leading_underscores_for_local_identifiers
-    /*'FadeInDownBig': (duration, _controller) {
+    'FadeInDownBig': (_controller) {
       return FadeInDownBig(
         controller: (controller) => _controller = controller,
         duration: const Duration(seconds: 2),
@@ -563,7 +563,7 @@ class Constants {
       );
     },
     // ignore: no_leading_underscores_for_local_identifiers
-    'FadeInLeft': (duration, _controller) {
+    'FadeInLeft': (_controller) {
       return FadeInLeft(
         controller: (controller) => _controller = controller,
         duration: const Duration(seconds: 2),
@@ -571,7 +571,7 @@ class Constants {
       );
     },
     // ignore: no_leading_underscores_for_local_identifiers
-    'FadeInLeftBig': (duration, _controller) {
+    'FadeInLeftBig': (_controller) {
       return FadeInLeftBig(
         controller: (controller) => _controller = controller,
         duration: const Duration(seconds: 2),
@@ -579,7 +579,7 @@ class Constants {
       );
     },
     // ignore: no_leading_underscores_for_local_identifiers
-    'FadeInUpBig': (duration, _controller) {
+    'FadeInUpBig': (_controller) {
       return FadeInUpBig(
         controller: (controller) => _controller = controller,
         duration: const Duration(seconds: 2),
@@ -587,7 +587,7 @@ class Constants {
       );
     },
     // ignore: no_leading_underscores_for_local_identifiers
-    'FadeInRight': (duration, _controller) {
+    'FadeInRight': (_controller) {
       return FadeInRight(
         controller: (controller) => _controller = controller,
         duration: const Duration(seconds: 2),
@@ -595,7 +595,7 @@ class Constants {
       );
     },
     // ignore: no_leading_underscores_for_local_identifiers
-    'FadeInRightBig': (duration, _controller) {
+    'FadeInRightBig': (_controller) {
       return FadeInRightBig(
         controller: (controller) => _controller = controller,
         duration: const Duration(seconds: 2),
@@ -603,7 +603,7 @@ class Constants {
       );
     },
     // ignore: no_leading_underscores_for_local_identifiers
-    'FadeOut': (duration, _controller) {
+    'FadeOut': (_controller) {
       return FadeOut(
         controller: (controller) => _controller = controller,
         duration: const Duration(seconds: 2),
@@ -611,7 +611,7 @@ class Constants {
       );
     },
     // ignore: no_leading_underscores_for_local_identifiers
-    'FadeOutDown': (duration, _controller) {
+    'FadeOutDown': (_controller) {
       return FadeOutDown(
         controller: (controller) => _controller = controller,
         duration: const Duration(seconds: 2),
@@ -619,7 +619,7 @@ class Constants {
       );
     },
     // ignore: no_leading_underscores_for_local_identifiers
-    'FadeOutDownBig': (duration, _controller) {
+    'FadeOutDownBig': (_controller) {
       return FadeOutDownBig(
         controller: (controller) => _controller = controller,
         duration: const Duration(seconds: 2),
@@ -627,7 +627,7 @@ class Constants {
       );
     },
     // ignore: no_leading_underscores_for_local_identifiers
-    'FadeOutUp': (duration, _controller) {
+    'FadeOutUp': (_controller) {
       return FadeOutUp(
         controller: (controller) => _controller = controller,
         duration: const Duration(seconds: 2),
@@ -635,7 +635,7 @@ class Constants {
       );
     },
     // ignore: no_leading_underscores_for_local_identifiers
-    'FadeOutUpBig': (duration, _controller) {
+    'FadeOutUpBig': (_controller) {
       return FadeOutUpBig(
         controller: (controller) => _controller = controller,
         duration: const Duration(seconds: 2),
@@ -643,7 +643,7 @@ class Constants {
       );
     },
     // ignore: no_leading_underscores_for_local_identifiers
-    'FadeOutLeft': (duration, _controller) {
+    'FadeOutLeft': (_controller) {
       return FadeOutLeft(
         controller: (controller) => _controller = controller,
         duration: const Duration(seconds: 2),
@@ -651,7 +651,7 @@ class Constants {
       );
     },
     // ignore: no_leading_underscores_for_local_identifiers
-    'FadeOutLeftBig': (duration, _controller) {
+    'FadeOutLeftBig': (_controller) {
       return FadeOutLeftBig(
         controller: (controller) => _controller = controller,
         duration: const Duration(seconds: 2),
@@ -659,7 +659,7 @@ class Constants {
       );
     },
     // ignore: no_leading_underscores_for_local_identifiers
-    'FadeOutRight': (duration, _controller) {
+    'FadeOutRight': (_controller) {
       return FadeOutRight(
         controller: (controller) => _controller = controller,
         duration: const Duration(seconds: 2),
@@ -667,7 +667,7 @@ class Constants {
       );
     },
     // ignore: no_leading_underscores_for_local_identifiers
-    'FadeOutRightBig': (duration, _controller) {
+    'FadeOutRightBig': (_controller) {
       return FadeOutRightBig(
         controller: (controller) => _controller = controller,
         duration: const Duration(seconds: 2),
@@ -675,7 +675,7 @@ class Constants {
       );
     },
     // ignore: no_leading_underscores_for_local_identifiers
-    'BounceInDown': (duration, _controller) {
+    'BounceInDown': (_controller) {
       return BounceInDown(
         controller: (controller) => _controller = controller,
         duration: const Duration(seconds: 2),
@@ -683,7 +683,7 @@ class Constants {
       );
     },
     // ignore: no_leading_underscores_for_local_identifiers
-    'BounceInUp': (duration, _controller) {
+    'BounceInUp': (_controller) {
       return BounceInUp(
         controller: (controller) => _controller = controller,
         duration: const Duration(seconds: 2),
@@ -691,7 +691,7 @@ class Constants {
       );
     },
     // ignore: no_leading_underscores_for_local_identifiers
-    'BounceInLeft': (duration, _controller) {
+    'BounceInLeft': (_controller) {
       return BounceInLeft(
         controller: (controller) => _controller = controller,
         duration: const Duration(seconds: 2),
@@ -699,7 +699,7 @@ class Constants {
       );
     },
     // ignore: no_leading_underscores_for_local_identifiers
-    'BounceInRight': (duration, _controller) {
+    'BounceInRight': (_controller) {
       return BounceInRight(
         controller: (controller) => _controller = controller,
         duration: const Duration(seconds: 2),
@@ -707,7 +707,7 @@ class Constants {
       );
     },
     // ignore: no_leading_underscores_for_local_identifiers
-    'ElasticIn': (duration, _controller) {
+    'ElasticIn': (_controller) {
       return ElasticIn(
         controller: (controller) => _controller = controller,
         duration: const Duration(seconds: 2),
@@ -715,7 +715,7 @@ class Constants {
       );
     },
     // ignore: no_leading_underscores_for_local_identifiers
-    'ElasticInDown': (duration, _controller) {
+    'ElasticInDown': (_controller) {
       return ElasticInDown(
         controller: (controller) => _controller = controller,
         duration: const Duration(seconds: 2),
@@ -723,7 +723,7 @@ class Constants {
       );
     },
     // ignore: no_leading_underscores_for_local_identifiers
-    'ElasticInUp': (duration, _controller) {
+    'ElasticInUp': (_controller) {
       return ElasticInUp(
         controller: (controller) => _controller = controller,
         duration: const Duration(seconds: 2),
@@ -731,7 +731,7 @@ class Constants {
       );
     },
     // ignore: no_leading_underscores_for_local_identifiers
-    'ElasticInLeft': (duration, _controller) {
+    'ElasticInLeft': (_controller) {
       return ElasticInLeft(
         controller: (controller) => _controller = controller,
         duration: const Duration(seconds: 2),
@@ -739,7 +739,7 @@ class Constants {
       );
     },
     // ignore: no_leading_underscores_for_local_identifiers
-    'ElasticInRight': (duration, _controller) {
+    'ElasticInRight': (_controller) {
       return ElasticInRight(
         controller: (controller) => _controller = controller,
         duration: const Duration(seconds: 2),
@@ -747,7 +747,7 @@ class Constants {
       );
     },
     // ignore: no_leading_underscores_for_local_identifiers
-    'SlideInDown': (duration, _controller) {
+    'SlideInDown': (_controller) {
       return SlideInDown(
         controller: (controller) => _controller = controller,
         duration: const Duration(seconds: 2),
@@ -755,7 +755,7 @@ class Constants {
       );
     },
     // ignore: no_leading_underscores_for_local_identifiers
-    'SlideInUp': (duration, _controller) {
+    'SlideInUp': (_controller) {
       return SlideInUp(
         controller: (controller) => _controller = controller,
         duration: const Duration(seconds: 2),
@@ -763,7 +763,7 @@ class Constants {
       );
     },
     // ignore: no_leading_underscores_for_local_identifiers
-    'SlideInLeft': (duration, _controller) {
+    'SlideInLeft': (_controller) {
       return SlideInLeft(
         controller: (controller) => _controller = controller,
         duration: const Duration(seconds: 2),
@@ -771,7 +771,7 @@ class Constants {
       );
     },
     // ignore: no_leading_underscores_for_local_identifiers
-    'SlideInRight': (duration, _controller) {
+    'SlideInRight': (_controller) {
       return SlideInRight(
         controller: (controller) => _controller = controller,
         duration: const Duration(seconds: 2),
@@ -779,7 +779,7 @@ class Constants {
       );
     },
     // ignore: no_leading_underscores_for_local_identifiers
-    'FlipInX': (duration, _controller) {
+    'FlipInX': (_controller) {
       return FlipInX(
         controller: (controller) => _controller = controller,
         duration: const Duration(seconds: 2),
@@ -787,7 +787,7 @@ class Constants {
       );
     },
     // ignore: no_leading_underscores_for_local_identifiers
-    'FlipInY': (duration, _controller) {
+    'FlipInY': (_controller) {
       return FlipInY(
         controller: (controller) => _controller = controller,
         duration: const Duration(seconds: 2),
@@ -795,7 +795,7 @@ class Constants {
       );
     },
     // ignore: no_leading_underscores_for_local_identifiers
-    'ZoomIn': (duration, _controller) {
+    'ZoomIn': (_controller) {
       return ZoomIn(
         controller: (controller) => _controller = controller,
         duration: const Duration(seconds: 2),
@@ -803,7 +803,7 @@ class Constants {
       );
     },
     // ignore: no_leading_underscores_for_local_identifiers
-    'ZoomOut': (duration, _controller) {
+    'ZoomOut': (_controller) {
       return ZoomOut(
         controller: (controller) => _controller = controller,
         duration: const Duration(seconds: 2),
@@ -811,7 +811,7 @@ class Constants {
       );
     },
     // ignore: no_leading_underscores_for_local_identifiers
-    'JelloIn': (duration, _controller) {
+    'JelloIn': (_controller) {
       return JelloIn(
         controller: (controller) => _controller = controller,
         duration: const Duration(seconds: 2),
@@ -819,7 +819,7 @@ class Constants {
       );
     },
     // ignore: no_leading_underscores_for_local_identifiers
-    'Bounce': (duration, _controller) {
+    'Bounce': (_controller) {
       return Bounce(
         controller: (controller) => _controller = controller,
         duration: const Duration(seconds: 2),
@@ -827,7 +827,7 @@ class Constants {
       );
     },
     // ignore: no_leading_underscores_for_local_identifiers
-    'Dance': (duration, _controller) {
+    'Dance': (_controller) {
       return Dance(
         controller: (controller) => _controller = controller,
         duration: const Duration(seconds: 2),
@@ -835,7 +835,7 @@ class Constants {
       );
     },
     // ignore: no_leading_underscores_for_local_identifiers
-    'Flash': (duration, _controller) {
+    'Flash': (_controller) {
       return Flash(
         controller: (controller) => _controller = controller,
         duration: const Duration(seconds: 2),
@@ -843,7 +843,7 @@ class Constants {
       );
     },
     // ignore: no_leading_underscores_for_local_identifiers
-    'Pulse': (duration, _controller) {
+    'Pulse': (_controller) {
       return Pulse(
         controller: (controller) => _controller = controller,
         duration: const Duration(seconds: 2),
@@ -851,7 +851,7 @@ class Constants {
       );
     },
     // ignore: no_leading_underscores_for_local_identifiers
-    'Roulette': (duration, _controller) {
+    'Roulette': (_controller) {
       return Roulette(
         controller: (controller) => _controller = controller,
         duration: const Duration(seconds: 2),
@@ -859,7 +859,7 @@ class Constants {
       );
     },
     // ignore: no_leading_underscores_for_local_identifiers
-    'ShakeX': (duration, _controller) {
+    'ShakeX': (_controller) {
       return ShakeX(
         controller: (controller) => _controller = controller,
         duration: const Duration(seconds: 2),
@@ -867,7 +867,7 @@ class Constants {
       );
     },
     // ignore: no_leading_underscores_for_local_identifiers
-    'ShakeY': (duration, _controller) {
+    'ShakeY': (_controller) {
       return ShakeY(
         controller: (controller) => _controller = controller,
         duration: const Duration(seconds: 2),
@@ -875,7 +875,7 @@ class Constants {
       );
     },
     // ignore: no_leading_underscores_for_local_identifiers
-    'Spin': (duration, _controller) {
+    'Spin': (_controller) {
       return Spin(
         controller: (controller) => _controller = controller,
         duration: const Duration(seconds: 2),
@@ -883,7 +883,7 @@ class Constants {
       );
     },
     // ignore: no_leading_underscores_for_local_identifiers
-    'SpinPerfect': (duration, _controller) {
+    'SpinPerfect': (_controller) {
       return SpinPerfect(
         controller: (controller) => _controller = controller,
         duration: const Duration(seconds: 2),
@@ -891,13 +891,13 @@ class Constants {
       );
     },
     // ignore: no_leading_underscores_for_local_identifiers
-    'Swing': (duration, _controller) {
+    'Swing': (_controller) {
       return Swing(
         controller: (controller) => _controller = controller,
         duration: const Duration(seconds: 2),
         child: const AnimationLogoContainer(),
       );
-    },*/
+    },
   };
 
   static Future<void> initialize() async {

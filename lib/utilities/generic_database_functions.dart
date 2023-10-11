@@ -208,6 +208,14 @@ Future<List<Game>> getAllGamesWithFilter(String filter, String value) async {
           maps = await db.query('games', where: 'owned = ?', whereArgs: [0]);
         }
         break;
+      case 'search':
+        if (value != '') {
+          maps = await db
+              .query('games', where: 'title LIKE ?', whereArgs: ['%$value%']);
+        } else {
+          maps = await db.query('games', where: 'owned = ?', whereArgs: [1]);
+        }
+        break;
       default:
         maps = await db.query('games');
     }

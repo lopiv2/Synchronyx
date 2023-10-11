@@ -3,6 +3,7 @@ import 'package:provider/provider.dart' as provider;
 import 'package:provider/provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:synchronyx/models/global_options.dart';
+import 'package:synchronyx/models/responses/gameMedia_response.dart';
 import 'package:synchronyx/models/responses/rawg_response.dart';
 import 'package:synchronyx/providers/app_state.dart';
 import 'package:synchronyx/utilities/audio_singleton.dart';
@@ -150,6 +151,8 @@ class _LeftSideState extends State<LeftSide> {
 
   @override
   Widget build(BuildContext context) {
+    final TextEditingController _searchController = TextEditingController();
+
     return Container(
         width: MediaQuery.of(context).size.width * 0.18,
         decoration: BoxDecoration(
@@ -177,62 +180,52 @@ class _LeftSideState extends State<LeftSide> {
                 children: <Widget>[
                   const SizedBox(width: 10), // give it width
                   Flexible(
-                      child: TextField(
-                    decoration: InputDecoration(
-                      contentPadding:
-                          EdgeInsets.symmetric(vertical: 10, horizontal: 6),
-                      filled: true,
-                      fillColor: const Color.fromARGB(127, 11, 129, 46),
-                      border: const OutlineInputBorder(),
-                      hintText: appState.searchGameEnabled
-                          ? widget.appLocalizations.searchInternet
-                          : widget.appLocalizations.searchLibrary,
-                    ),
-                    style: TextStyle(fontSize: 14),
-                    onSubmitted: (String searchString) async {
-                      if (appState.searchGameEnabled) {
-                        showDialog(
-                          context: context,
-                          barrierDismissible:
-                              false, // Evita que el usuario cierre el diálogo
-                          builder: (BuildContext context) {
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.5,
-                                ),
-                                Text(
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                    widget.appLocalizations.searchingGames),
-                                SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.05,
-                                ),
-                                Center(
-                                  child: CircularProgressIndicator(),
-                                ),
-                              ],
-                            );
+                      child: Stack(
+                    children: [
+                      TextField(
+                        controller: _searchController,
+                        decoration: InputDecoration(
+                          contentPadding:
+                              EdgeInsets.symmetric(vertical: 10, horizontal: 6),
+                          filled: true,
+                          fillColor: const Color.fromARGB(127, 11, 129, 46),
+                          border: const OutlineInputBorder(),
+                          hintText: appState.searchGameEnabled
+                              ? widget.appLocalizations.searchInternet
+                              : widget.appLocalizations.searchLibrary,
+                        ),
+                        style: TextStyle(fontSize: 14),
+                        onSubmitted: (String searchString) async {
+                          if (appState.searchGameEnabled) {
+                            handleSearchInternetButtonPress(
+                                context, searchString, widget.appLocalizations);
+                          } else {
+                            searchByString(searchString);
+                          }
+                        },
+                      ),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: IconButton(
+                          icon: const Icon(Icons.search),
+                          padding: const EdgeInsets.only(
+                              top: 2), // Ajusta la posición vertical del icono
+                          onPressed: () {
+                            if (appState.searchGameEnabled) {
+                              handleSearchInternetButtonPress(
+                                  context,
+                                  _searchController.text,
+                                  widget.appLocalizations);
+                            }
+                            else{
+                              searchByString(_searchController.text);
+                            }
                           },
-                        );
-                        List<RawgResponse> responses = [];
-                        final dio = DioClient();
-                        responses = await dio.searchGamesRawg(
-                            key: '68239c29cb2c49f2acfddf9703077032',
-                            searchString: searchString);
-                        Navigator.of(context).pop(); // Cierra el diálogo
-                        if (responses.isNotEmpty) {
-                          appState.showResults(responses, true);
-                        } else {
-                          Text("No results");
-                        }
-                      }
-                    },
+                        ),
+                      ),
+                    ],
                   )),
-                  SizedBox(width: 10),
+                  const SizedBox(width: 10),
                 ],
               ),
             ),
@@ -257,22 +250,6 @@ class _LeftSideState extends State<LeftSide> {
               child: _buildWidgetBasedOnSelectedValue(
                   Provider.of<AppState>(context)),
             ),
-
-            /*Container(
-              height: 50, // Altura del contenedor ámbar
-              color: const Color.fromARGB(101, 76, 175, 79), // Color ámbar
-              child: Align(
-                alignment: Alignment.center,
-                child: Text(
-                  'Descargas',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ),*/
           ]);
         }));
   }
@@ -308,6 +285,54 @@ class _LeftSideState extends State<LeftSide> {
         return const Text(
             ""); // Cambia YourDefaultWidget por el widget predeterminado
     }
+  }
+
+  Future<void> handleSearchInternetButtonPress(BuildContext context,
+      String searchString, AppLocalizations appLocalizations) async {
+    final appState = Provider.of<AppState>(context, listen: false);
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.5,
+            ),
+            Text(
+              style: TextStyle(fontWeight: FontWeight.bold),
+              appLocalizations.searchingGames,
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.05,
+            ),
+            Center(
+              child: CircularProgressIndicator(),
+            ),
+          ],
+        );
+      },
+    );
+
+    List<RawgResponse> responses = [];
+    final dio = DioClient();
+    responses = await dio.searchGamesRawg(
+        key: '68239c29cb2c49f2acfddf9703077032', searchString: searchString);
+    Navigator.of(context).pop(); // Cierra el diálogo
+
+    if (responses.isNotEmpty) {
+      appState.showResults(responses, true);
+    } else {
+      Text("No results");
+    }
+  }
+
+  void searchByString(String searchString) {
+    final appState = Provider.of<AppState>(context, listen: false);
+    appState.updateFilters('search', searchString);
+    appState.updateSelectedGame(null);
+    appState.refreshGridView();
   }
 }
 
