@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:synchronyx/models/global_options.dart';
 import 'package:synchronyx/providers/app_state.dart';
+import 'package:synchronyx/screens/options/calendar_visual_options.dart';
 import 'package:synchronyx/screens/options/game_visual_options.dart';
 import 'package:synchronyx/utilities/audio_singleton.dart';
 import 'package:synchronyx/utilities/constants.dart';
@@ -264,6 +265,8 @@ class RightColumn extends StatelessWidget {
     switch (appState.selectedOptionClicked.value) {
       case "games":
         return GameVisualOptions(appLocalizations: appLocalizations);
+      case "calendar":
+        return CalendarVisualOptions(appLocalizations: appLocalizations);
       default:
         return Text("data");
     }

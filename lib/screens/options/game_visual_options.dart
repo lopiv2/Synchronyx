@@ -23,12 +23,12 @@ class _GameVisualOptionsState extends State<GameVisualOptions> {
   Widget build(BuildContext context) {
     final appState = Provider.of<AppState>(context);
     return Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-      const Row(
+      Row(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text("Juegos",
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+            Text(widget.appLocalizations.optionsGameTitle,
+                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
           ]),
       Container(
         height: 200,
@@ -127,8 +127,7 @@ class _GameVisualOptionsState extends State<GameVisualOptions> {
                       break;
                     }
                   }
-                  defaultValue ??= AnimationsDropDown
-                        .FadeInDown;
+                  defaultValue ??= AnimationsDropDown.FadeInDown;
                   return AnimationsDropdownWithTextToLeft(
                     defaultValue: defaultValue,
                     appLocalizations: widget.appLocalizations,
@@ -188,10 +187,10 @@ class _Toggle2d3dState extends State<ToggleSwitch> {
             });
           },
         ),
-        SizedBox(height: 20),
+        const SizedBox(height: 20),
         Text(
           '${widget.text}: - ${isSwitched ? widget.toggleValue : widget.initialValue}',
-          style: TextStyle(fontSize: 12),
+          style: const TextStyle(fontSize: 12),
         ),
       ],
     );

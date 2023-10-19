@@ -10,16 +10,15 @@ import 'package:synchronyx/models/responses/gameMedia_response.dart';
 import 'package:synchronyx/utilities/Constants.dart';
 import 'package:synchronyx/utilities/audio_singleton.dart';
 import 'package:synchronyx/utilities/generic_functions.dart';
-import 'package:synchronyx/widgets/animation_container_logo.dart';
 import 'package:synchronyx/widgets/buttons/icon_button_colored.dart';
 import 'package:synchronyx/widgets/cheap_shark_results_list.dart';
 import 'package:synchronyx/widgets/dialogs/image_preview_dialog.dart';
 import 'package:synchronyx/widgets/dialogs/ost_download_dialog.dart';
 import '../providers/app_state.dart';
-import 'package:animate_do/animate_do.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:synchronyx/utilities/generic_database_functions.dart'
+    // ignore: library_prefixes
     as databaseFunctions;
 
 class GameInfoPanel extends StatefulWidget {
@@ -45,7 +44,6 @@ class _GameInfoPanelState extends State<GameInfoPanel>
 
   @override
   Widget build(BuildContext context) {
-    final appState = Provider.of<AppState>(context);
     return Consumer<AppState>(
       builder: (context, appState, child) {
         final selectedGame = appState.selectedGame;
@@ -56,12 +54,12 @@ class _GameInfoPanelState extends State<GameInfoPanel>
               animController, context, appState, selectedGame),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return CircularProgressIndicator(); // Mostrar un indicador de carga mientras esperas
+              return const CircularProgressIndicator(); // Mostrar un indicador de carga mientras esperas
             } else if (snapshot.hasError) {
               return Text('Error: ${snapshot.error}');
             } else {
               return snapshot.data ??
-                  SizedBox(); // Construir el widget obtenido o un SizedBox si es nulo
+                  const SizedBox(); // Construir el widget obtenido o un SizedBox si es nulo
             }
           },
         );
@@ -75,7 +73,7 @@ class _GameInfoPanelState extends State<GameInfoPanel>
       AppState appState,
       GameMediaResponse? selectedGame) async {
     bool isHovered = false;
-    ScrollController _scrollController = ScrollController();
+    ScrollController scrollController = ScrollController();
     audioManager.stop();
     //Marquee
     ImageProvider<Object> imageWidgetMarquee;
@@ -104,7 +102,7 @@ class _GameInfoPanelState extends State<GameInfoPanel>
     List<String> developersList =
         appState.selectedGame!.game.developer.split(',');
     List<Widget> developerWidgets = developersList.map((developer) {
-      return Text(style: TextStyle(color: Colors.white), '- $developer');
+      return Text(style: const TextStyle(color: Colors.white), '- $developer');
     }).toList();
     List<String> publisherList =
         appState.selectedGame!.game.publisher.split(',');
@@ -176,15 +174,18 @@ class _GameInfoPanelState extends State<GameInfoPanel>
                               appLocalizations: widget.appLocalizations,
                               audioManager: audioManager,
                               playOst: () => playOst(appState))
-                          : Text(""),
+                          : const Text(""),
                       Positioned(
+                        // ignore: use_build_context_synchronously
                         right: MediaQuery.of(context).size.width * 0.17,
                         bottom: 10,
                         child: Stack(
                           children: [
                             Container(
+                                // ignore: use_build_context_synchronously
                                 width: MediaQuery.of(context).size.width * 0.1,
                                 height:
+                                    // ignore: use_build_context_synchronously
                                     MediaQuery.of(context).size.height * 0.04,
                                 decoration: BoxDecoration(
                                   color:
@@ -199,6 +200,7 @@ class _GameInfoPanelState extends State<GameInfoPanel>
                                     children: [
                                       Text(
                                           style: TextStyle(
+                                              // ignore: use_build_context_synchronously
                                               fontSize: MediaQuery.of(context)
                                                       .size
                                                       .height *
@@ -211,6 +213,7 @@ class _GameInfoPanelState extends State<GameInfoPanel>
                                         itemCount: 5,
                                         color: Colors.amber,
                                         size:
+                                            // ignore: use_build_context_synchronously
                                             MediaQuery.of(context).size.width *
                                                 0.015,
                                         value:
@@ -235,15 +238,17 @@ class _GameInfoPanelState extends State<GameInfoPanel>
               icon: Icons.shopping_cart,
               iconColor: Colors.white,
             ),
-            ToggleGameCover(),
+            const ToggleGameCover(),
             IconButtonHoverColored(
               onPressed: () {
-                print('Botón 3');
+                if (kDebugMode) {
+                  print('Botón 3');
+                }
               },
               icon: Icons.settings,
               iconColor: Colors.white,
             ),
-            ToggleFavoriteButton(),
+            const ToggleFavoriteButton(),
             IconButtonHoverColored(
               icon: Icons.clear,
               onPressed: () {
@@ -259,7 +264,7 @@ class _GameInfoPanelState extends State<GameInfoPanel>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: EdgeInsets.fromLTRB(10, 0, 0,
+              padding: const EdgeInsets.fromLTRB(10, 0, 0,
                   0), // Aplicar espacio de padding a la derecha del icono
               child: platformIcon,
             ),
@@ -302,6 +307,7 @@ class _GameInfoPanelState extends State<GameInfoPanel>
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
                     child: Container(
+                      // ignore: use_build_context_synchronously
                       height: MediaQuery.of(context).size.height * 0.25,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
@@ -324,7 +330,9 @@ class _GameInfoPanelState extends State<GameInfoPanel>
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+                // ignore: sized_box_for_whitespace
                 child: Container(
+                  // ignore: use_build_context_synchronously
                   height: MediaQuery.of(context).size.height *
                       0.195, // Ajusta la altura según tus necesidades
                   child: GridView.builder(
@@ -381,13 +389,14 @@ class _GameInfoPanelState extends State<GameInfoPanel>
                   child: PushableButton(
                     height: 40,
                     elevation: 8,
-                    hslColor: HSLColor.fromAHSL(1.0, 120, 1.0, 0.37),
+                    hslColor: const HSLColor.fromAHSL(1.0, 120, 1.0, 0.37),
                     shadow: BoxShadow(
                       color: Colors.grey.withOpacity(0.5),
                       spreadRadius: 5,
                       blurRadius: 7,
-                      offset: Offset(0, 2),
+                      offset: const Offset(0, 2),
                     ),
+                    // ignore: avoid_print
                     onPressed: () => print('Button Pressed!'),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -411,7 +420,7 @@ class _GameInfoPanelState extends State<GameInfoPanel>
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
             child: Container(
                 decoration: BoxDecoration(
-                  color: Color.fromARGB(46, 12, 77, 12),
+                  color: const Color.fromARGB(46, 12, 77, 12),
                   borderRadius: BorderRadius.circular(20),
                   //border: Border.all(),
                   boxShadow: const [
@@ -434,7 +443,7 @@ class _GameInfoPanelState extends State<GameInfoPanel>
                               children: [
                                 Text(
                                     style:
-                                        TextStyle(fontWeight: FontWeight.bold),
+                                        const TextStyle(fontWeight: FontWeight.bold),
                                     widget.appLocalizations.launchDate),
                               ],
                             ),
@@ -444,7 +453,7 @@ class _GameInfoPanelState extends State<GameInfoPanel>
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 Text(
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                         fontWeight: FontWeight.bold,
                                         color: Colors.white),
                                     formatDateString(appState
@@ -455,9 +464,9 @@ class _GameInfoPanelState extends State<GameInfoPanel>
                           ),
                         ],
                       )),
-                  Padding(
-                      padding: const EdgeInsets.fromLTRB(26, 0, 26, 0),
-                      child: const Divider()),
+                  const Padding(
+                      padding: EdgeInsets.fromLTRB(26, 0, 26, 0),
+                      child: Divider()),
                   Padding(
                       padding: const EdgeInsets.fromLTRB(26, 0, 26, 0),
                       child: Row(
@@ -468,7 +477,7 @@ class _GameInfoPanelState extends State<GameInfoPanel>
                               children: [
                                 Text(
                                     style:
-                                        TextStyle(fontWeight: FontWeight.bold),
+                                        const TextStyle(fontWeight: FontWeight.bold),
                                     widget.appLocalizations.developer),
                               ],
                             ),
@@ -480,7 +489,7 @@ class _GameInfoPanelState extends State<GameInfoPanel>
                                 GFAccordion(
                                     title: widget.appLocalizations.clickToOpen,
                                     contentPadding:
-                                        EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                        const EdgeInsets.fromLTRB(0, 0, 0, 0),
                                     collapsedTitleBackgroundColor:
                                         const Color.fromARGB(0, 250, 205, 202),
                                     expandedTitleBackgroundColor:
@@ -626,11 +635,11 @@ class _GameInfoPanelState extends State<GameInfoPanel>
                       child: RawScrollbar(
                         thumbColor: const Color.fromARGB(92, 158, 158, 158),
                         trackVisibility: true,
-                        controller: _scrollController,
+                        controller: scrollController,
                         thumbVisibility: true,
                         child: SingleChildScrollView(
                           physics: const AlwaysScrollableScrollPhysics(),
-                          controller: _scrollController,
+                          controller: scrollController,
                           child: Html(
                             data: appState.selectedGame!.game.description,
                             style: {

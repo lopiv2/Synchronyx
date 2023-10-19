@@ -5,6 +5,8 @@ class GlobalOptions {
   late int showLogoNameOnGrid;
   late int showEditorOnGrid;
   late String logoAnimation;
+  late int showBackgroundImageCalendar;
+  String? imageBackgroundFile;
 
   GlobalOptions({
     this.id,
@@ -13,6 +15,8 @@ class GlobalOptions {
     required this.showLogoNameOnGrid,
     required this.showEditorOnGrid,
     required this.logoAnimation,
+    required this.showBackgroundImageCalendar,
+    this.imageBackgroundFile,
   });
 
   Map<String, dynamic> toMap() {
@@ -23,6 +27,8 @@ class GlobalOptions {
       'showLogoNameOnGrid': showLogoNameOnGrid,
       'showEditorOnGrid': showEditorOnGrid,
       'logoAnimation': logoAnimation,
+      'showBackgroundImageCalendar': showBackgroundImageCalendar,
+      'imageBackgroundFile': imageBackgroundFile,
     };
   }
 
@@ -34,11 +40,13 @@ class GlobalOptions {
     showLogoNameOnGrid = other.showLogoNameOnGrid;
     showEditorOnGrid = other.showEditorOnGrid;
     logoAnimation = other.logoAnimation;
+    showBackgroundImageCalendar = other.showBackgroundImageCalendar;
+    imageBackgroundFile = other.imageBackgroundFile;
   }
 
   @override
   String toString() {
-    return 'Options{id: $id, twoDThreeDCovers: $twoDThreeDCovers,playOSTOnSelectGame: $playOSTOnSelectGame, showLogoNameOnGrid: $showLogoNameOnGrid, showEditorOnGrid: $showEditorOnGrid. logoAnimation: $logoAnimation}';
+    return 'Options{id: $id, twoDThreeDCovers: $twoDThreeDCovers,playOSTOnSelectGame: $playOSTOnSelectGame, showLogoNameOnGrid: $showLogoNameOnGrid, showEditorOnGrid: $showEditorOnGrid, logoAnimation: $logoAnimation, showBackgroundImageCalendar=$showBackgroundImageCalendar}';
   }
 
   static GlobalOptions fromMap(Map<String, dynamic> map) {
@@ -49,6 +57,8 @@ class GlobalOptions {
       showLogoNameOnGrid: map['showLogoNameOnGrid'] ?? '1',
       showEditorOnGrid: map['showEditorOnGrid'] ?? '1',
       logoAnimation: map['logoAnimation'] ?? 'FadeInDown',
+      showBackgroundImageCalendar: map['showBackgroundImageCalendar'] ?? '0',
+      imageBackgroundFile: map['imageBackgroundFile'] ?? '',
     );
   }
 }

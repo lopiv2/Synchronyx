@@ -3,7 +3,6 @@ import 'package:provider/provider.dart' as provider;
 import 'package:provider/provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:synchronyx/models/global_options.dart';
-import 'package:synchronyx/models/responses/gameMedia_response.dart';
 import 'package:synchronyx/models/responses/rawg_response.dart';
 import 'package:synchronyx/providers/app_state.dart';
 import 'package:synchronyx/utilities/audio_singleton.dart';
@@ -12,7 +11,6 @@ import 'package:synchronyx/utilities/generic_database_functions.dart'
 import 'package:synchronyx/utilities/generic_database_functions.dart';
 import 'package:synchronyx/widgets/buttons/notification_button.dart';
 import 'package:synchronyx/widgets/calendar_view_events.dart';
-import 'package:synchronyx/widgets/clicked_game_favorite_view.dart';
 import 'package:synchronyx/widgets/clicked_game_favorite_view.dart';
 import 'package:synchronyx/widgets/filter_info_panel.dart';
 import 'package:synchronyx/widgets/filters/all_filter.dart';

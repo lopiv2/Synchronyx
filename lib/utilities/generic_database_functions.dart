@@ -3,13 +3,11 @@ import 'dart:io';
 
 import 'package:flutter/services.dart';
 import 'package:path/path.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:synchronyx/models/emulators.dart';
 import 'package:synchronyx/models/global_options.dart';
 import 'package:synchronyx/models/responses/gameMedia_response.dart';
 import 'package:synchronyx/models/media.dart';
-import 'package:synchronyx/models/responses/rawg_response.dart';
 import '../models/api.dart';
 import 'package:synchronyx/utilities/constants.dart';
 import '../models/game.dart';
@@ -125,7 +123,9 @@ Future<Database?> createAndOpenDB() async {
           'playOSTOnSelectGame INTEGER,'
           'showLogoNameOnGrid INTEGER,'
           'showEditorOnGrid INTEGER,'
-          'logoAnimation TEXT'
+          'logoAnimation TEXT,'
+          'showBackgroundImageCalendar INTEGER,'
+          'imageBackgroundFile TEXT'
           ')',
         );
         await db.insert(
@@ -136,6 +136,8 @@ Future<Database?> createAndOpenDB() async {
             'showLogoNameOnGrid': 0,
             'showEditorOnGrid': 1,
             'logoAnimation': 'FadeInDown',
+            'showBackgroundImageCalendar': 0,
+            'imageBackgroundFile': '',
           },
         );
         // Create the Emulators table

@@ -54,8 +54,9 @@ class _CalendarViewEventsState extends State<CalendarViewEvents> {
           titleColor: isInMonth ? Color.fromARGB(255, 0, 0, 0) : Colors.white,
           date: date,
           events: events,
+          tileColor: Colors.blue,
           backgroundColor:
-              isInMonth ? Color.fromARGB(255, 76, 175, 79) : Colors.black12,
+              isInMonth ? Color.fromARGB(117, 38, 216, 44) : Colors.black12,
         );
       },
     );
