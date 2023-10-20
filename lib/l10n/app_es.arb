@@ -80,6 +80,7 @@
   "optionsPlayOstSelectGame": "Reproducir OST al seleccionar videojuego",
   "optionsShowLogoOnGrid": "Mostrar logo del juego en vez del nombre en la cuadrícula",
   "optionsShowEditorOnGrid": "Mostrar editor bajo el nombre en la cuadrícula",
+  "optionsSelectBackImageCalendar": "Seleccione imagen",
   "optionsSelectLogoAnimation": "Animación de logo en información de juego",
   "optionsVisualsTitle":"Visuales",
   "originWindowAssistant": "Asistente de importación de juegos de Origin",

@@ -80,6 +80,7 @@
   "optionsPlayOstSelectGame": "Play OST when selecting video game",
   "optionsShowLogoOnGrid": "Show game logo instead name on grid",
   "optionsShowEditorOnGrid": "Show editor under the name in the grid",
+  "optionsSelectBackImageCalendar": "Select image",
   "optionsSelectLogoAnimation": "Logo animation in game information",
   "optionsVisualsTitle":"Visuals",
   "originWindowAssistant": "Origin Games Import Wizard",

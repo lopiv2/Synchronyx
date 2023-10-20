@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart' as provider;
 import 'package:provider/provider.dart';
@@ -214,8 +216,7 @@ class _LeftSideState extends State<LeftSide> {
                                   context,
                                   _searchController.text,
                                   widget.appLocalizations);
-                            }
-                            else{
+                            } else {
                               searchByString(_searchController.text);
                             }
                           },
@@ -386,6 +387,7 @@ class _CenterSideState extends State<CenterSide>
   Widget build(BuildContext context) {
     final appState = Provider.of<AppState>(context);
     final AppLocalizations appLocalizations = AppLocalizations.of(context);
+    File imageFile = File(appState.optionsResponse.imageBackgroundFile ?? '');
 
     return FutureBuilder<Database?>(
       future: database.createAndOpenDB(),
@@ -398,17 +400,27 @@ class _CenterSideState extends State<CenterSide>
           return const Text('La base de datos no se inicializó correctamente.');
         } else {
           Constants.database = snapshot.data;
+          // ignore: unused_local_variable
           Future<GlobalOptions?> optionsFuture = getOptions().then((value) {
             if (value != null) {
               appState.selectedOptions = value;
               appState.optionsResponse = GlobalOptions.copy(value);
             }
+            return null;
           });
 
           return Expanded(
             child: Container(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
+              decoration: BoxDecoration(
+                image:
+                    appState.optionsResponse.showBackgroundImageCalendar == 1 &&
+                            _tabController.index == 2
+                        ? DecorationImage(
+                            image: FileImage(imageFile),
+                            fit: BoxFit.cover,
+                          )
+                        : null,
+                gradient: const LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [

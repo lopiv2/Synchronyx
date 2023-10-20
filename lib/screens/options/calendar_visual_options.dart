@@ -1,7 +1,5 @@
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:getwidget/components/toggle/gf_toggle.dart';
 import 'package:provider/provider.dart';
 import 'package:synchronyx/providers/app_state.dart';
 import 'package:synchronyx/widgets/buttons/file_selector_button.dart';
@@ -62,32 +60,25 @@ class _CalendarVisualOptionsState extends State<CalendarVisualOptions> {
                     });
               },
             ),
-            Visibility(
-                visible:
-                    appState.optionsResponse.showBackgroundImageCalendar == 1
-                        ? true
-                        : false,
-                child: FileSelectorButton())
+            Selector<AppState, String?>(
+                selector: (_, provider) =>
+                    provider.optionsResponse.imageBackgroundFile,
+                builder: (context, imageBackgroundFile, child) {
+                  return Visibility(
+                      visible: appState.optionsResponse
+                                  .showBackgroundImageCalendar ==
+                              1
+                          ? true
+                          : false,
+                      child: FileSelectorButton(
+                        databaseValue: imageBackgroundFile,
+                        appLocalizations: widget.appLocalizations,
+                      ));
+                })
           ],
         ),
       ),
     ]);
-  }
-
-  _openFilePicker() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType
-          .any, // Puedes especificar el tipo de archivo que deseas seleccionar (ejemplo: FileType.image)
-    );
-
-    if (result != null) {
-      PlatformFile file = result.files.first;
-      print("Ruta del archivo: ${file.path}");
-      print("Nombre del archivo: ${file.name}");
-      print("Tamaño del archivo: ${file.size}");
-    } else {
-      // El usuario canceló la selección de archivos
-    }
   }
 }
 
