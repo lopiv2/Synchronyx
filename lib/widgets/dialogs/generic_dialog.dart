@@ -29,7 +29,7 @@ class GenericDialog extends StatefulWidget {
 
 class _GenericDialogState extends State<GenericDialog> {
   final AudioManager audioManager = AudioManager();
-  Offset _offset = Offset(0, 0);
+  Offset _offset = const Offset(0, 0);
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +78,7 @@ class _GenericDialogState extends State<GenericDialog> {
                         ),
                         title: Text(
                           widget.dialogTitle,
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.white,
                             fontSize: 12,
                             fontWeight: FontWeight.bold,
@@ -95,10 +95,10 @@ class _GenericDialogState extends State<GenericDialog> {
                         ],
                       ),
                       Padding(
-                        padding: EdgeInsets.fromLTRB(20, 0, 10, 0),
+                        padding: const EdgeInsets.fromLTRB(20, 0, 10, 0),
                         child: Text(
                           widget.dialogHeader ?? '',
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.black,
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -106,7 +106,7 @@ class _GenericDialogState extends State<GenericDialog> {
                         ),
                       ),
                       SizedBox(child: widget.preContent),
-                      SizedBox(height:40),
+                      const SizedBox(height:40),
                       Expanded(
                         child: ListView(
                           children: [
@@ -121,7 +121,7 @@ class _GenericDialogState extends State<GenericDialog> {
                     alignment: Alignment.bottomLeft,
                     child: Container(
                       width: MediaQuery.of(context).size.width,
-                      color: Color.fromARGB(255, 48, 87, 3),
+                      color: const Color.fromARGB(255, 48, 87, 3),
                       padding: const EdgeInsets.symmetric(
                         horizontal: 8.0,
                         vertical: 4.0,

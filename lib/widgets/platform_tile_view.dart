@@ -79,7 +79,7 @@ class PlatformTreeTile extends StatelessWidget {
                             ),
                           ),
                           //iconSize: 80,
-                          padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                          padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                           closedIcon: const Icon(
                             Icons.arrow_right,
                           ),

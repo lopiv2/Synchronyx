@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:pushable_button/pushable_button.dart';
 import 'package:synchronyx/models/responses/gameMedia_response.dart';
 import 'package:synchronyx/utilities/Constants.dart';
+import 'package:synchronyx/utilities/app_directory_singleton.dart';
 import 'package:synchronyx/utilities/audio_singleton.dart';
 import 'package:synchronyx/utilities/generic_functions.dart';
 import 'package:synchronyx/widgets/buttons/icon_button_colored.dart';
@@ -93,8 +94,7 @@ class _GameInfoPanelState extends State<GameInfoPanel>
         appState.selectedGame!.media.screenshots.split(',');
     String id = screensPaths[0].split('_')[0];
     String folder = '\\Synchronyx\\media\\screenshots\\$id\\';
-    await Constants.initialize();
-    String screenFolder = '${Constants.appDocumentsDirectory.path}$folder';
+    String screenFolder = '${AppDirectories.instance.appDocumentsDirectory.path}$folder';
     List<ImageProvider<Object>> imageProvidersMarquee = List.generate(
       screensPaths.length,
       (index) => FileImage(File('$screenFolder${screensPaths[index]}')),
@@ -696,7 +696,7 @@ class _GameInfoPanelState extends State<GameInfoPanel>
     audioManager.audioPlayer.setReleaseMode(ReleaseMode.loop);
     if (appState.selectedGame?.media.musicUrl != '') {
       await audioManager.playFile(
-          '${Constants.appDocumentsDirectory.path}$soundFolder${appState.selectedGame?.media.musicUrl}');
+          '${AppDirectories.instance.appDocumentsDirectory.path}$soundFolder${appState.selectedGame?.media.musicUrl}');
     }
   }
 

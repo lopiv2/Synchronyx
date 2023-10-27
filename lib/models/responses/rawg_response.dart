@@ -2,6 +2,7 @@ class RawgResponse {
   final String? gameId;
   final String? name;
   final String? imageUrl;
+  final String? marqueeUrl;
   final String? iconUrl;
   final String? description;
   final String? developer;
@@ -17,6 +18,7 @@ class RawgResponse {
     this.gameId,
     this.releaseDate,
     this.iconUrl,
+    this.marqueeUrl,
     required this.imageUrl,
     this.description,
     required this.metacriticInfo,
@@ -33,6 +35,7 @@ class RawgResponse {
       gameId: json['id']?.toString() ?? '',
       name: json['name'] as String? ?? '',
       iconUrl: json['iconUrl'] as String? ?? '',
+      marqueeUrl: json['marqueeUrl'] as String? ?? '',
       imageUrl: json['background_image'] as String? ?? '',
       description: json['description'] as String? ?? '',
       platform: json['platform'] as String? ?? '',

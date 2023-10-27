@@ -138,7 +138,7 @@ class MyMenuBar extends StatelessWidget {
                     child: const MenuAcceleratorLabel('&About'),
                   ),
                   SubmenuButton(
-                    leadingIcon: Icon(Icons.swap_vertical_circle_rounded,
+                    leadingIcon: const Icon(Icons.swap_vertical_circle_rounded,
                         size: 20, color: Colors.blue),
                     menuChildren: <Widget>[
                       MenuItemButton(
@@ -232,7 +232,7 @@ class MyMenuBar extends StatelessWidget {
                             builder: (context) {
                               return ImportDialog(
                                 appLocalizations: appLocalizations,
-                                iconColor: Color.fromARGB(255, 84, 9, 97),
+                                iconColor: const Color.fromARGB(255, 84, 9, 97),
                                 titleIcon: CustomIcons.gog_dot_com,
                                 title: appLocalizations.importGogWindowTitle,
                                 steps: [
@@ -316,7 +316,7 @@ class MyMenuBar extends StatelessWidget {
                                   if (snapshot.connectionState ==
                                       ConnectionState.waiting) {
                                     // Muestra un indicador de carga si estás esperando la respuesta
-                                    return CircularProgressIndicator();
+                                    return const CircularProgressIndicator();
                                   } else {
                                     // Verifica si Constants.foundApiBeforeImport es nulo o no
                                     bool apiExists = snapshot.data != null;
@@ -341,7 +341,7 @@ class MyMenuBar extends StatelessWidget {
                                     return ImportDialog(
                                       appLocalizations: appLocalizations,
                                       iconColor:
-                                          Color.fromARGB(255, 12, 66, 94),
+                                          const Color.fromARGB(255, 12, 66, 94),
                                       titleIcon: CustomIcons.steam,
                                       title: appLocalizations
                                           .importSteamWindowTitle,
@@ -418,7 +418,7 @@ class MyMenuBar extends StatelessWidget {
                             builder: (context) {
                               return ImportDialog(
                                 appLocalizations: appLocalizations,
-                                iconColor: Color.fromARGB(255, 98, 219, 102),
+                                iconColor: const Color.fromARGB(255, 98, 219, 102),
                                 titleIcon: CustomIcons.xbox,
                                 title: appLocalizations.importXboxWindowTitle,
                                 steps: [
@@ -438,7 +438,7 @@ class MyMenuBar extends StatelessWidget {
                     child: MenuAcceleratorLabel(appLocalizations.import),
                   ),
                   SubmenuButton(
-                    leadingIcon: Icon(Icons.file_download,
+                    leadingIcon: const Icon(Icons.file_download,
                         size: 20, color: Color.fromARGB(255, 29, 121, 57)),
                     menuChildren: <Widget>[
                       MenuItemButton(
@@ -461,7 +461,7 @@ class MyMenuBar extends StatelessWidget {
                     child: MenuAcceleratorLabel(appLocalizations.download),
                   ),
                   MenuItemButton(
-                    leadingIcon: Icon(Icons.settings, size: 20),
+                    leadingIcon: const Icon(Icons.settings, size: 20),
                     onPressed: () {
                       showDialog(
                         context: context,

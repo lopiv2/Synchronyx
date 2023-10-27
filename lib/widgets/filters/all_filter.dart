@@ -20,7 +20,7 @@ class AllFilterColumn extends StatelessWidget {
               key: const ValueKey(1),
               onPressed: (() => {
                     appState.updateFilters('all', 'all'),
-                    appState.updateButtonClickedKey(ValueKey(1)),
+                    appState.updateButtonClickedKey(const ValueKey(1)),
                     appState.updateSelectedGame(null),
                     appState.refreshGridView()
                   }),

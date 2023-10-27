@@ -45,13 +45,13 @@ class _TextButtonHoverColored extends State<TextButtonHoverColored> {
       child: InkWell(
         onTap: widget.onPressed,
         child: Container(
-          padding: EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(8.0),
           decoration: BoxDecoration(
             color: isHovered ? widget.backColor : Colors.transparent,
             border: appState.buttonClickedKey == widget.key
                 ? Border.all(color: Colors.blue, width: 2.0)
                 : null,
-            borderRadius: BorderRadius.only(
+            borderRadius: const BorderRadius.only(
                 topRight: Radius.circular(40),
                 bottomRight: Radius.circular(40)),
           ),

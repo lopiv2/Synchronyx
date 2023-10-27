@@ -1,8 +1,4 @@
-import 'package:audioplayers/audioplayers.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:getwidget/getwidget.dart';
-import 'package:path/path.dart';
 import 'package:provider/provider.dart';
 import 'package:synchronyx/models/responses/khinsider_response.dart';
 import 'package:synchronyx/providers/app_state.dart';
@@ -144,7 +140,7 @@ class _OstDownloadDialogState extends State<OstDownloadDialog> {
                                         child: Transform.scale(
                                           scale:
                                               1, // Adjusts the scaling value to make the CircularProgressIndicator smaller.
-                                          child: CircularProgressIndicator(),
+                                          child: const CircularProgressIndicator(),
                                         ),
                                       );
                                     } else if (snapshot.hasError) {
@@ -160,7 +156,7 @@ class _OstDownloadDialogState extends State<OstDownloadDialog> {
                                         border:
                                             TableBorder.all(color: Colors.grey),
                                         defaultColumnWidth:
-                                            FixedColumnWidth(150.0),
+                                            const FixedColumnWidth(150.0),
                                         children:
                                             responses.map((khinsiderResponse) {
                                           final currentIndex = responses
@@ -217,7 +213,7 @@ class _OstDownloadDialogState extends State<OstDownloadDialog> {
                                 ),
                               )
                             ])),
-                            SizedBox(
+                            const SizedBox(
                               height: 16,
                             ),
                             ValueListenableBuilder<int>(
@@ -226,17 +222,17 @@ class _OstDownloadDialogState extends State<OstDownloadDialog> {
                                 return Visibility(
                                   visible: selectedIndex != -1,
                                   child: Container(
-                                    padding: EdgeInsets.fromLTRB(10, 10, 0, 0),
+                                    padding: const EdgeInsets.fromLTRB(10, 10, 0, 0),
                                     child: Column(
                                       children: [
                                         Text(
                                           widget.appLocalizations.trackList,
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 18.0,
                                           ),
                                         ),
-                                        SizedBox(
+                                        const SizedBox(
                                           height: 8,
                                         ),
                                         Table(
@@ -281,7 +277,7 @@ class _OstDownloadDialogState extends State<OstDownloadDialog> {
                                                           child: Text(widget
                                                               .appLocalizations
                                                               .size))),
-                                                  TableCell(
+                                                  const TableCell(
                                                       verticalAlignment:
                                                           TableCellVerticalAlignment
                                                               .middle,
@@ -312,7 +308,7 @@ class _OstDownloadDialogState extends State<OstDownloadDialog> {
                                 return Visibility(
                                   visible: selectedIndex != -1,
                                   child: Container(
-                                    padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
+                                    padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
                                     height: MediaQuery.of(context).size.height *
                                         0.16,
                                     child: ListView(
@@ -340,9 +336,9 @@ class _OstDownloadDialogState extends State<OstDownloadDialog> {
                                                 TableRow(
                                                   decoration: BoxDecoration(
                                                     color: i % 2 == 0
-                                                        ? Color.fromARGB(
+                                                        ? const Color.fromARGB(
                                                             143, 14, 73, 27)
-                                                        : Color.fromARGB(
+                                                        : const Color.fromARGB(
                                                             255,
                                                             64,
                                                             124,
@@ -462,7 +458,7 @@ class _OstDownloadDialogState extends State<OstDownloadDialog> {
                   alignment: Alignment.bottomLeft,
                   child: Container(
                     width: MediaQuery.of(context).size.width,
-                    color: Color.fromARGB(255, 48, 87, 3),
+                    color: const Color.fromARGB(255, 48, 87, 3),
                     padding: const EdgeInsets.symmetric(
                       horizontal: 8.0,
                       vertical: 4.0,
@@ -532,7 +528,7 @@ class _MusicBarControlState extends State<MusicBarControl> {
               return SliderTheme(
                   data: SliderTheme.of(context).copyWith(
                     // Personaliza el tamaño de la esfera aquí
-                    thumbShape: RoundSliderThumbShape(
+                    thumbShape: const RoundSliderThumbShape(
                         enabledThumbRadius: 5.0, elevation: 0.2),
                   ),
                   child: Slider(

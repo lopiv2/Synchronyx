@@ -1,65 +1,93 @@
 import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:synchronyx/models/event.dart';
+import 'package:synchronyx/providers/app_state.dart';
+import 'package:synchronyx/utilities/generic_database_functions.dart';
 import 'package:synchronyx/widgets/custom_calendar_cell.dart';
 
-class CalendarViewEvents extends StatefulWidget {
-  const CalendarViewEvents({super.key});
+class CalendarViewEvents extends StatelessWidget {
+  final EventController controller;
+  CalendarViewEvents({super.key, required this.controller});
 
   @override
-  State<CalendarViewEvents> createState() => _CalendarViewEventsState();
-}
+  bool get wantKeepAlive => true;
 
-class _CalendarViewEventsState extends State<CalendarViewEvents> {
-  Map<DateTime, List<dynamic>> _events = {};
-
-  @override
-  void initState() {
-    super.initState();
-    _loadEvents(); // Carga tus eventos aquí
-  }
+  final Map<DateTime, List<dynamic>> _events = {};
 
   @override
   Widget build(BuildContext context) {
+    //super.build(context);
     final currentLocale = Localizations.localeOf(context);
+    final appState = Provider.of<AppState>(context);
     final languageCode = currentLocale.languageCode;
     final countryCode = currentLocale.countryCode;
     final localeCode =
         '$languageCode${countryCode != null ? '_$countryCode' : ''}';
-    final EventController controller = EventController();
-    final event = CalendarEventData(
-      date: DateTime(2023, 9, 07),
-      title: 'Duplicate',
-    );
-    controller.add(event);
+    return FutureBuilder<List<Event>>(
+        future: getAllEvents(),
+        builder: (context, eventsSnapshot) {
+          if (eventsSnapshot.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator();
+          } else if (eventsSnapshot.hasError) {
+            return Text('Error: ${eventsSnapshot.error}');
+          } else if (!eventsSnapshot.hasData) {
+            return const Text('Cargando contenedores...');
+          } else {
+            List<Event> eventsList = eventsSnapshot.data!;
+            appState.addAllEvents(eventsList);
+            return MonthView(
+              pageTransitionCurve: Curves.easeInCubic,
+              controller: controller,
+              startDay: WeekDays.monday,
+              headerStringBuilder: (date, {secondaryDate}) {
+                // Build the string for the header here
+                final year = DateFormat.y().format(date);
+                return '${getNameMonthLocated(date, localeCode)} $year'; // Returns the formatted string
+              },
+              weekDayStringBuilder: (index) {
+                return getDayOfWeekFromIndex(index, localeCode);
+              },
+              cellBuilder: (date, events, isToday, isInMonth) {
+                final eventMetadata = getEventMetadata(eventsList, date);
+                return CustomCalendarCell(
+                  eventsMetadata: eventMetadata,
+                  isInMonth: isInMonth,
+                  boldMonthDays: true,
+                  highlightRadius: 15,
+                  shouldHighlight: isToday,
+                  titleColor: isInMonth
+                      ? const Color.fromARGB(255, 0, 0, 0)
+                      : Colors.white,
+                  date: date,
+                  events: events,
+                  tileColor: Colors.blue,
+                  backgroundColor: isInMonth
+                      ? const Color.fromARGB(117, 38, 216, 44)
+                      : Colors.black12,
+                );
+              },
+            );
+          }
+        });
+  }
 
-    return MonthView(
-      pageTransitionCurve: Curves.easeInCubic,
-      controller: controller,
-      startDay: WeekDays.monday,
-      headerStringBuilder: (date, {secondaryDate}) {
-        // Build the string for the header here
-        final year = DateFormat.y().format(date);
-        return '${getNameMonthLocated(date, localeCode)} $year'; // Returns the formatted string
-      },
-      weekDayStringBuilder: (index) {
-        return getDayOfWeekFromIndex(index, localeCode);
-      },
-      cellBuilder: (date, events, isToday, isInMonth) {
-        return CustomCalendarCell(
-          isInMonth: isInMonth,
-          boldMonthDays: true,
-          highlightRadius: 15,
-          shouldHighlight: isToday,
-          titleColor: isInMonth ? Color.fromARGB(255, 0, 0, 0) : Colors.white,
-          date: date,
-          events: events,
-          tileColor: Colors.blue,
-          backgroundColor:
-              isInMonth ? Color.fromARGB(117, 38, 216, 44) : Colors.black12,
-        );
-      },
-    );
+  Event getEventMetadata(List<Event> eventsList, DateTime date) {
+    for (final event in eventsList) {
+      if (event.releaseDate == date) {
+        // Suponiendo que tienes un campo "date" en la clase Event
+        return event;
+      }
+    }
+    // Si no se encuentra un evento para la fecha, puedes devolver un evento nulo o algún valor predeterminado.
+    return Event(
+        releaseDate: DateTime.now(),
+        dismissed: 0,
+        name: '',
+        game: '',
+        image:
+            ''); // Esto es solo un ejemplo, asegúrate de manejar los casos adecuadamente.
   }
 
   String getDayOfWeekFromIndex(int index, String localeCode) {
@@ -84,13 +112,5 @@ class _CalendarViewEventsState extends State<CalendarViewEvents> {
 
   List<dynamic> _getEventsForDay(DateTime day) {
     return _events[day] ?? [];
-  }
-
-  void _loadEvents() {
-    // Aquí debes cargar tus eventos en el mapa _events
-    // Por ejemplo, agrega un evento el 2023-09-20
-    _events[DateTime(2023, 9, 20)] = ['Evento 1', 'Evento 2'];
-
-    // Debes cargar tus eventos de acuerdo a tus datos
   }
 }

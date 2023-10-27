@@ -27,7 +27,7 @@ class CheapSharkResultsList extends StatelessWidget {
                     child: Transform.scale(
                       scale:
                           1, // Adjusts the scaling value to make the CircularProgressIndicator smaller.
-                      child: CircularProgressIndicator(),
+                      child: const CircularProgressIndicator(),
                     ),
                   );
                 } else if (snapshot.hasError) {
@@ -81,7 +81,7 @@ class CheapSharkResultsList extends StatelessWidget {
                                 30,
                                 0),
                             child: Table(
-                              border: TableBorder(
+                              border: const TableBorder(
                                 bottom: BorderSide(color: Colors.grey),
                               ),
                               children: [
@@ -96,7 +96,7 @@ class CheapSharkResultsList extends StatelessWidget {
                                           height: 55,
                                           imageUrl: cheapSharkResponse.logo,
                                           placeholder: (context, url) =>
-                                              CircularProgressIndicator(),
+                                              const CircularProgressIndicator(),
                                           errorWidget: (context, url, error) =>
                                               Image.asset(
                                                   'assets/icons/noimage.png'),

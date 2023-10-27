@@ -1,13 +1,32 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:math';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:palette_generator/palette_generator.dart';
 import 'package:synchronyx/models/emulators.dart';
 import 'package:synchronyx/models/responses/emulator_download_response.dart';
+import 'package:synchronyx/utilities/app_directory_singleton.dart';
 import 'package:synchronyx/utilities/generic_api_functions.dart';
 import 'Constants.dart';
+
+/* ----Choose a text color depending on the background color, to make it stand out. */
+Color determineTextColor(Color backgroundColor) {
+  // Calculates the luminance of the background color
+  final backgroundLuminance = (0.299 * backgroundColor.red +
+          0.587 * backgroundColor.green +
+          0.114 * backgroundColor.blue) /
+      255;
+
+  // Defines a luminance threshold to determine whether the text color should be dark or light
+  const luminanceThreshold =
+      0.5; // You can adjust this value according to your preferences
+
+  // Checks if the background color is dark enough to use light text
+  return backgroundLuminance > luminanceThreshold ? Colors.black : Colors.white;
+}
 
 /* ------------------------- Delete a file per name ------------------------- */
 Future<void> deleteFile(String fileName) async {
@@ -77,6 +96,42 @@ void deleteFilesFromFolder(String folderPath, List<String> files) {
   }
 }
 
+/* ------- Detects the dominant color of a local image, and returns it ------- */
+Future<Color> detectDominantColor(String imageUrl) async {
+  File image = File(imageUrl); // Or any other way to get a File instance.
+  if (!await image.exists()) {
+    // Manejar el caso en el que el archivo de imagen no existe.
+    return Colors.white; // Color predeterminado en caso de error.
+  }
+
+  var decodedImage = await decodeImageFromList(image.readAsBytesSync());
+
+  final double centerX = decodedImage.width / 2;
+  final double centerY = decodedImage.height / 2;
+  const double regionSize = 50.0; // Tamaño de la región (en píxeles).
+
+  final double left = centerX - (regionSize / 2);
+  final double top = centerY - (regionSize / 2);
+  final double right = centerX + (regionSize / 2);
+  final double bottom = centerY + (regionSize / 2);
+
+  if (left < 0 || top < 0 || right > decodedImage.width || bottom > decodedImage.height) {
+    // Asegurarse de que la región no se encuentre fuera de los límites de la imagen.
+    return Colors.white; // Color predeterminado en caso de error.
+  }
+
+  final Rect region = Rect.fromPoints(Offset(left, top), Offset(right, bottom));
+
+  final paletteGenerator = await PaletteGenerator.fromImage(
+    decodedImage,
+    region: region,
+  );
+
+  final Color dominantColor = paletteGenerator.dominantColor!.color;
+
+  return dominantColor;
+}
+
 /* -------------- Converts minutes to hours, minutes and seconds ------------- */
 String formatMinutesToHMS(int totalMinutes) {
   int hours = totalMinutes ~/ 60;
@@ -99,6 +154,7 @@ bool convertIntBool(int? value) {
   return true;
 }
 
+/* --------------------------- Convert bool to int -------------------------- */
 int convertBoolInt(bool? value) {
   if (value == true) return 1;
   return 0;
@@ -121,13 +177,14 @@ Future<void> checkAssetLoading(String assetPath) async {
   }
 }
 
+/* ---------------- Processes an array of screenshots when downloading them ---------------- */
 Future<void> processScreenshots(
     String imageUrl, String fileName, String folder) async {
   try {
     var response = await http.get(Uri.parse(imageUrl));
     if (response.statusCode == 200) {
-      Directory imageFolder =
-          Directory('${Constants.appDocumentsDirectory.path}$folder');
+      Directory imageFolder = Directory(
+          '${AppDirectories.instance.appDocumentsDirectory.path}$folder');
 
       // Create the directory if it doesn't exist
       if (!imageFolder.existsSync()) {
@@ -145,6 +202,7 @@ Future<void> processScreenshots(
   }
 }
 
+/* -------------------------- Download file from URL ------------------------- */
 Future<void> downloadFile(String url) async {
   try {
     final response = await http.get(Uri.parse(url));
@@ -152,9 +210,9 @@ Future<void> downloadFile(String url) async {
       String folder = '\\Synchronyx\\downloads\\';
       List<String> parts = url.split("/");
       String fileName = parts.last;
-      await Constants.initialize();
-      Directory fileFolder =
-          Directory('${Constants.appDocumentsDirectory.path}$folder');
+      //await Constants.initialize();
+      Directory fileFolder = Directory(
+          '${AppDirectories.instance.appDocumentsDirectory.path}$folder');
 
       // Create the directory if it doesn't exist
       if (!fileFolder.existsSync()) {
@@ -194,8 +252,8 @@ Future<void> downloadAndSaveAudioOst(
   try {
     var response = await http.get(Uri.parse(audioUrl));
     if (response.statusCode == 200) {
-      Directory imageFolder =
-          Directory('${Constants.appDocumentsDirectory.path}$folder');
+      Directory imageFolder = Directory(
+          '${AppDirectories.instance.appDocumentsDirectory.path}$folder');
 
       // Create the directory if it doesn't exist
       if (!imageFolder.existsSync()) {
@@ -219,8 +277,8 @@ Future<void> downloadAndSaveImage(
   try {
     var response = await http.get(Uri.parse(imageUrl));
     if (response.statusCode == 200) {
-      Directory imageFolder =
-          Directory('${Constants.appDocumentsDirectory.path}$folder');
+      Directory imageFolder = Directory(
+          '${AppDirectories.instance.appDocumentsDirectory.path}$folder');
 
       // Create the directory if it doesn't exist
       if (!imageFolder.existsSync()) {

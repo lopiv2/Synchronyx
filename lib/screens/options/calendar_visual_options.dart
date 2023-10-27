@@ -3,6 +3,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:synchronyx/providers/app_state.dart';
 import 'package:synchronyx/widgets/buttons/file_selector_button.dart';
+import 'package:synchronyx/widgets/sliders/notice_hours_alert_slider.dart';
 
 class CalendarVisualOptions extends StatefulWidget {
   final AppLocalizations appLocalizations;
@@ -74,7 +75,19 @@ class _CalendarVisualOptionsState extends State<CalendarVisualOptions> {
                         databaseValue: imageBackgroundFile,
                         appLocalizations: widget.appLocalizations,
                       ));
-                })
+                }),
+            Selector<AppState, int?>(
+                selector: (_, provider) =>
+                    provider.optionsResponse.hoursAdvanceNotice,
+                builder: (context, hours, child) {
+                  return NoticeHoursSlider(
+                    onChanged: (value) {
+                      appState.optionsResponse.hoursAdvanceNotice = value;
+                    },
+                    text: widget.appLocalizations.optionsHoursNotice,
+                    databaseValue: hours!.toDouble(),
+                  );
+                }),
           ],
         ),
       ),

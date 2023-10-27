@@ -7,9 +7,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../models/platforms.dart';
 import '../utilities/Constants.dart';
 import 'package:collection/collection.dart';
-import '../utilities/generic_functions.dart';
-import 'package:synchronyx/utilities/generic_database_functions.dart'
-    as databaseFunctions;
 
 class PlatformTreeView extends StatefulWidget {
   final AppLocalizations appLocalizations;

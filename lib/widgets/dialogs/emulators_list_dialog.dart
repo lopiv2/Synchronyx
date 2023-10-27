@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:getwidget/components/accordion/gf_accordion.dart';
 import 'package:provider/provider.dart';
@@ -30,13 +29,13 @@ class EmulatorListDialog extends StatelessWidget {
       future: getAllEmulators(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator();
+          return const CircularProgressIndicator();
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         } else if (!snapshot.hasData) {
-          return Text('Cargando datos...'); // Mensaje durante la carga inicial
+          return const Text('Cargando datos...'); // Mensaje durante la carga inicial
         } else if (snapshot.data!.isEmpty) {
-          return Text('');
+          return const Text('');
         } else {
           listOfEmulators = snapshot.data!;
           return GenericDialog(
@@ -49,7 +48,7 @@ class EmulatorListDialog extends StatelessWidget {
             dialogHeader: appLocalizations.emulators,
             preContent: const DownloadProgress(),
             dialogTitle: appLocalizations.emulators,
-            icon: Icon(CustomIcons.emulators, size: 20),
+            icon: const Icon(CustomIcons.emulators, size: 20),
           );
         }
       },
@@ -120,7 +119,7 @@ class EmulatorContentDialog extends StatelessWidget {
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               // Muestra un indicador de carga mientras se obtienen los datos
-              return CircularProgressIndicator();
+              return const CircularProgressIndicator();
             } else if (snapshot.hasError) {
               // Maneja errores si ocurren
               return Text('Error: ${snapshot.error}');
@@ -151,7 +150,7 @@ class EmulatorContentDialog extends StatelessWidget {
                   ),
                   Text(
                     '${emulator.name}',
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.black,
                     ),
                   ),
@@ -168,7 +167,7 @@ class EmulatorContentDialog extends StatelessWidget {
 
       // Create a GridView for emulator texts
       Widget gridView = GridView.builder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 4, // Cambia esto según tus preferencias
         ),
         shrinkWrap: true, // Ajustar al contenido
@@ -182,7 +181,7 @@ class EmulatorContentDialog extends StatelessWidget {
         titleChild: Row(
           children: [
             Text(platform), 
-            SizedBox(width: 8.0), 
+            const SizedBox(width: 8.0), 
             Image(
               image: im.image, 
               width: 60, 

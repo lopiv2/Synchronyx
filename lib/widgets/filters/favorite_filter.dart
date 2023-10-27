@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:synchronyx/providers/app_state.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:synchronyx/widgets/buttons/text_button_colored.dart';
-import 'package:synchronyx/widgets/grid_view_game_covers.dart';
 
 class FavoriteFilterColumn extends StatelessWidget {
   const FavoriteFilterColumn({required this.appLocalizations, super.key});
@@ -22,7 +21,7 @@ class FavoriteFilterColumn extends StatelessWidget {
                 key: const ValueKey(1),
                 onPressed: (() => {
                       appState.updateFilters('favorite', 'all'),
-                      appState.updateButtonClickedKey(ValueKey(1)),
+                      appState.updateButtonClickedKey(const ValueKey(1)),
                       appState.updateSelectedGame(null),
                       appState.refreshGridView()
                     }),
@@ -32,7 +31,7 @@ class FavoriteFilterColumn extends StatelessWidget {
                 key: const ValueKey(2),
                 onPressed: (() => {
                       appState.updateFilters('favorite', 'yes'),
-                      appState.updateButtonClickedKey(ValueKey(2)),
+                      appState.updateButtonClickedKey(const ValueKey(2)),
                       appState.refreshGridView()
                     }),
               ),
@@ -41,7 +40,7 @@ class FavoriteFilterColumn extends StatelessWidget {
                 key: const ValueKey(3),
                 onPressed: (() => {
                       appState.updateFilters('favorite', 'no'),
-                      appState.updateButtonClickedKey(ValueKey(3)),
+                      appState.updateButtonClickedKey(const ValueKey(3)),
                       appState.refreshGridView()
                     }),
               ),

@@ -20,24 +20,24 @@ class GenericImportStep extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
         alignment: Alignment.centerLeft,
-        padding: EdgeInsets.only(left: 40, top: 10, right: 10),
+        padding: const EdgeInsets.only(left: 40, top: 10, right: 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               stepContentTitleText, // Usar el valor del campo stepContent en lugar del texto fijo
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(
               stepContentDescriptionText, // Usar el valor del campo stepContent en lugar del texto fijo
-              style: TextStyle(fontSize: 14),
+              style: const TextStyle(fontSize: 14),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(
               appLocalizations?.nextForContinue ??
                   '', // Use null-aware operator and provide a default value (empty string in this case)
-              style: TextStyle(fontSize: 14),
+              style: const TextStyle(fontSize: 14),
             )
           ],
         )); // Utilizar el widget proporcionado en lugar de mostrar el texto directamente

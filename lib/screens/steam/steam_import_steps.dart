@@ -70,7 +70,7 @@ class SteamImportSteps extends StatefulWidget {
               style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20),
-            Text("76561198013304798"),
+            const Text("76561198013304798"),
             const SizedBox(height: 20),
             Text(
               appLocalizations.steamWindowAssistantStep2,
@@ -105,7 +105,7 @@ class SteamImportSteps extends StatefulWidget {
                         controller: steamIdController,
                         enabled: true,
                         enableInteractiveSelection: true,
-                        style: TextStyle(color: Colors.white),
+                        style: const TextStyle(color: Colors.white),
                         onSubmitted: (value) {},
                         // Add properties to the TextField as needed
                       ),
@@ -173,7 +173,7 @@ class SteamImportSteps extends StatefulWidget {
                       ),
                       child: TextField(
                         controller: steamApiController,
-                        style: TextStyle(color: Colors.white),
+                        style: const TextStyle(color: Colors.white),
                         onSubmitted: (value) {
                           // Guardar el valor ingresado en la variable
                           //String steamApi = Constants.con[1].text;
@@ -234,11 +234,11 @@ class SteamImportSteps extends StatefulWidget {
                   ],
                 ),
                 appState.isImporting == 'importing'
-                    ? CircularProgressIndicator() // Show progress indicator if import is in progress
+                    ? const CircularProgressIndicator() // Show progress indicator if import is in progress
                     : appState.isImporting == 'finished'
-                        ? Text(
+                        ? const Text(
                             'Finalizado') // Show 'Finished' if import is completed
-                        : Text(''),
+                        : const Text(''),
                 //LinearProgressIndicator(value: Constants.importProgress),
               ],
             );

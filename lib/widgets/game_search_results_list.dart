@@ -15,7 +15,7 @@ class RawgResponseListWidget extends StatelessWidget {
     return Consumer<AppState>(builder: (context, appState, child) {
       return Padding(
         padding:
-            EdgeInsets.all(10.0), // Agrega un padding de 16 en todos los lados
+            const EdgeInsets.all(10.0), // Agrega un padding de 16 en todos los lados
         child: Container(
           height: MediaQuery.of(context).size.height *
               0.8, // Define la altura deseada
@@ -38,7 +38,7 @@ class RawgResponseListWidget extends StatelessWidget {
                     child: CachedNetworkImage(
                       imageUrl: rawgResponse.iconUrl ?? '',
                       placeholder: (context, url) =>
-                          CircularProgressIndicator(),
+                          const CircularProgressIndicator(),
                       errorWidget: (context, url, error) =>
                           Image.asset('assets/icons/noimage.png'),
                     )),

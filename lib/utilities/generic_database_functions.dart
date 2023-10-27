@@ -5,9 +5,11 @@ import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:synchronyx/models/emulators.dart';
+import 'package:synchronyx/models/event.dart';
 import 'package:synchronyx/models/global_options.dart';
 import 'package:synchronyx/models/responses/gameMedia_response.dart';
 import 'package:synchronyx/models/media.dart';
+import 'package:synchronyx/utilities/app_directory_singleton.dart';
 import '../models/api.dart';
 import 'package:synchronyx/utilities/constants.dart';
 import '../models/game.dart';
@@ -98,6 +100,17 @@ Future<Database?> createAndOpenDB() async {
           'metadataJson TEXT'
           ')',
         );
+        // Create the events table
+        await db.execute(
+          'CREATE TABLE IF NOT EXISTS events('
+          'id INTEGER PRIMARY KEY AUTOINCREMENT,'
+          'name TEXT,'
+          'game TEXT,'
+          'image TEXT,'
+          'dismissed INTEGER,'
+          'releaseDate TEXT'
+          ')',
+        );
         // Create the Medias table
         await db.execute(
           'CREATE TABLE IF NOT EXISTS medias('
@@ -125,6 +138,7 @@ Future<Database?> createAndOpenDB() async {
           'showEditorOnGrid INTEGER,'
           'logoAnimation TEXT,'
           'showBackgroundImageCalendar INTEGER,'
+          'hoursAdvanceNotice INTEGER,'
           'imageBackgroundFile TEXT'
           ')',
         );
@@ -137,6 +151,7 @@ Future<Database?> createAndOpenDB() async {
             'showEditorOnGrid': 1,
             'logoAnimation': 'FadeInDown',
             'showBackgroundImageCalendar': 0,
+            'hoursAdvanceNotice': 48,
             'imageBackgroundFile': '',
           },
         );
@@ -224,6 +239,21 @@ Future<List<Game>> getAllGamesWithFilter(String filter, String value) async {
   }
 
   return maps.map((map) => Game.fromMap(map)).toList();
+}
+
+/* ------- A method that retrieves all the events from the events table. ------ */
+Future<List<Event>> getAllEvents() async {
+  // Get a reference to the database.
+  final db = Constants.database;
+
+  List<Map<String, dynamic>> maps = List.empty(growable: true);
+
+  if (db != null) {
+    // Query the table for all The Games.
+    maps = await db.query('events');
+  }
+
+  return maps.map((map) => Event.fromMap(map)).toList();
 }
 
 /* ----------------------- Get all available emulators ---------------------- */
@@ -365,8 +395,10 @@ Future<void> deleteMediaByName(GameMediaResponse game) async {
   String id = fileNames[0].split('_')[0]; //Game ID according to Steam
   String folder = '\\Synchronyx\\media\\screenshots\\$id\\';
   String aFolder = '\\Synchronyx\\media\\audio\\$id\\';
-  String screenFolder = '${Constants.appDocumentsDirectory.path}$folder';
-  String audioFolder = '${Constants.appDocumentsDirectory.path}$aFolder';
+  String screenFolder =
+      '${AppDirectories.instance.appDocumentsDirectory.path}$folder';
+  String audioFolder =
+      '${AppDirectories.instance.appDocumentsDirectory.path}$aFolder';
   deleteDirectory(screenFolder);
   deleteDirectory(audioFolder);
   // Remove the Game from the database.
@@ -389,6 +421,18 @@ Future<void> insertApi(Api api) async {
   await Constants.database?.insert(
     'apis',
     api.toMap(),
+    conflictAlgorithm: ConflictAlgorithm.ignore,
+  );
+
+  //await Constants.database?.close();
+}
+
+/* ---------------------- ///Inserts an Event in database --------------------- */
+Future<void> insertEvent(Event event) async {
+  //var database = await createAndOpenDB();
+  await Constants.database?.insert(
+    'events',
+    event.toMap(),
     conflictAlgorithm: ConflictAlgorithm.ignore,
   );
 

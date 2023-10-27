@@ -10,6 +10,7 @@ import 'package:sqflite_common/sqlite_api.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:synchronyx/icons/custom_icons_icons.dart';
 import 'package:synchronyx/models/emulators.dart';
+import 'package:synchronyx/utilities/app_directory_singleton.dart';
 import 'package:synchronyx/widgets/animation_container_logo.dart';
 import '../models/api.dart';
 
@@ -483,7 +484,6 @@ class Constants {
   static Api? foundApiBeforeImport;
   static Database? database;
   static double importProgress = 0.0;
-  static late Directory appDocumentsDirectory;
 
   static List<Emulators> emulatorsList = [
     Emulators(
@@ -545,8 +545,7 @@ class Constants {
         installed: 0),
   ];
 
-  static Map<String, Widget Function(AnimationController)>
-      animationWidgets = {
+  static Map<String, Widget Function(AnimationController)> animationWidgets = {
     // ignore: no_leading_underscores_for_local_identifiers
     'FadeInDown': (_controller) {
       return FadeInDown(
@@ -900,14 +899,4 @@ class Constants {
       );
     },
   };
-
-  static Future<void> initialize() async {
-    try {
-      appDocumentsDirectory = await getApplicationDocumentsDirectory();
-      /*print(
-          'appDocumentsDirectory initialized to: ${appDocumentsDirectory.path}');*/
-    } catch (e) {
-      print('Error initializing appDocumentsDirectory: $e');
-    }
-  }
 }

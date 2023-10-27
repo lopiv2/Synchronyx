@@ -353,7 +353,7 @@ class CustomOptionsButton extends StatelessWidget {
         );
       } else {
         return Row(children: [
-          SizedBox(width: 5),
+          const SizedBox(width: 5),
           icon,
           title,
         ]);

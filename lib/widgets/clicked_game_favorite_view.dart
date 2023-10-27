@@ -1,14 +1,19 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:provider/provider.dart';
 import 'package:synchronyx/icons/custom_icons_icons.dart';
+import 'package:synchronyx/models/event.dart';
 import 'package:synchronyx/models/game.dart';
+import 'package:synchronyx/models/media.dart';
 import 'package:synchronyx/models/responses/rawg_response.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:synchronyx/providers/app_state.dart';
+import 'package:synchronyx/utilities/Constants.dart';
+import 'package:synchronyx/utilities/app_directory_singleton.dart';
 import 'package:synchronyx/utilities/generic_database_functions.dart'
     // ignore: library_prefixes
     as databaseFunctions;
@@ -23,6 +28,10 @@ class ClickedGameBuyableView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    DateTime dateReleased = DateTime.now();
+    if (game.releaseDate != null) {
+      dateReleased = DateTime.parse(game.releaseDate ?? '');
+    }
     ScrollController scrollController = ScrollController();
     return Consumer<AppState>(builder: (context, appState, child) {
       return Column(children: [
@@ -46,7 +55,7 @@ class ClickedGameBuyableView extends StatelessWidget {
                           //appState.gameClicked = null,
                         }),
                     hoverColor: Colors.blueGrey,
-                    icon: Icon(
+                    icon: const Icon(
                         color: Colors.amber, CustomIcons.arrow_back_outline),
                   ),
                   /* ------------------------ Degraded shadow with data ----------------------- */
@@ -61,7 +70,7 @@ class ClickedGameBuyableView extends StatelessWidget {
                             color: Colors.black.withOpacity(0.75),
                             spreadRadius: 2,
                             blurRadius: 20,
-                            offset: Offset(2, 2),
+                            offset: const Offset(2, 2),
                           ),
                         ],
                       ),
@@ -93,7 +102,7 @@ class ClickedGameBuyableView extends StatelessWidget {
                                 .withOpacity(0.8), // Shadow color and opacity
                             spreadRadius: 2, // Shadow expansion radius
                             blurRadius: 2, // Shadow blurring radius
-                            offset: Offset(
+                            offset: const Offset(
                                 2, 2), // Desplazamiento en X e Y de la sombra
                           ),
                         ],
@@ -121,7 +130,7 @@ class ClickedGameBuyableView extends StatelessWidget {
                         children: [
                           FadeIn(
                             animate: true,
-                            duration: Duration(seconds: 2),
+                            duration: const Duration(seconds: 2),
                             child: Text(
                               game.name ?? '',
                               style: TextStyle(
@@ -130,7 +139,7 @@ class ClickedGameBuyableView extends StatelessWidget {
                                 fontWeight: FontWeight.bold,
                                 shadows: [
                                   Shadow(
-                                    offset: Offset(3.0,
+                                    offset: const Offset(3.0,
                                         3.0), // X and Y shadow displacement
                                     blurRadius: 1.0, // Shadow blurring radius
                                     color: Colors.black.withOpacity(
@@ -143,7 +152,7 @@ class ClickedGameBuyableView extends StatelessWidget {
                             ),
                           ),
                           Padding(
-                            padding: EdgeInsets.fromLTRB(4, 3, 2, 3),
+                            padding: const EdgeInsets.fromLTRB(4, 3, 2, 3),
                             child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -155,7 +164,7 @@ class ClickedGameBuyableView extends StatelessWidget {
                                         fontWeight: FontWeight.bold,
                                         shadows: [
                                           Shadow(
-                                            offset: Offset(1.5,
+                                            offset: const Offset(1.5,
                                                 1.5), // X and Y shadow displacement
                                             blurRadius:
                                                 0.1, // Shadow blurring radius
@@ -172,7 +181,7 @@ class ClickedGameBuyableView extends StatelessWidget {
                                         fontWeight: FontWeight.bold,
                                         shadows: [
                                           Shadow(
-                                            offset: Offset(1.5,
+                                            offset: const Offset(1.5,
                                                 1.5), // X and Y shadow displacement
                                             blurRadius:
                                                 0.1, // Shadow blurring radius
@@ -214,7 +223,7 @@ class ClickedGameBuyableView extends StatelessWidget {
                                         fontWeight: FontWeight.normal,
                                         shadows: [
                                           Shadow(
-                                            offset: Offset(1.5,
+                                            offset: const Offset(1.5,
                                                 1.5), // X and Y shadow displacement
                                             blurRadius:
                                                 0.1, // Shadow blurring radius
@@ -228,12 +237,20 @@ class ClickedGameBuyableView extends StatelessWidget {
                           ),
 
                           /* ------------------------------- Description ------------------------------ */
-                          const Padding(
-                            padding: EdgeInsets.fromLTRB(8, 0, 2, 8),
-                            child: ToggleFavoriteOwnedButton(),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(8, 0, 2, 8),
+                            child: Row(
+                              children: [
+                                const ToggleFavoriteOwnedButton(),
+                                AddLaunchEventButton(
+                                  releasedDate: dateReleased,
+                                  game: game,
+                                ),
+                              ],
+                            ),
                           ),
                           Container(
-                            color: Color.fromARGB(0, 0, 0, 0),
+                            color: const Color.fromARGB(0, 78, 20, 20),
                             width: MediaQuery.of(context).size.width * 0.25,
                             height: MediaQuery.of(context).size.height * 0.096,
                             child: RawScrollbar(
@@ -266,6 +283,91 @@ class ClickedGameBuyableView extends StatelessWidget {
         ),
       ]);
     });
+  }
+}
+
+class AddLaunchEventButton extends StatefulWidget {
+  final DateTime releasedDate; // Date of released game
+  final RawgResponse game;
+
+  const AddLaunchEventButton({
+    Key? key,
+    required this.releasedDate,
+    required this.game, // Incluye la fecha en el constructor
+  }) : super(key: key);
+
+  @override
+  State<AddLaunchEventButton> createState() => _AddLaunchEventButtonState();
+}
+
+class _AddLaunchEventButtonState extends State<AddLaunchEventButton> {
+  @override
+  Widget build(BuildContext context) {
+    final dio = DioClient();
+    final AppLocalizations appLocalizations = AppLocalizations.of(context);
+    final appState = Provider.of<AppState>(context);
+    Media? mediaInfo;
+    return Padding(
+        padding: const EdgeInsets.fromLTRB(8, 0, 2, 8),
+        child: GFButton(
+          onPressed: () async {
+            String? finalLogoFolder;
+            try {
+              finalLogoFolder = await dio.processMediaFiles(
+                  widget.game.marqueeUrl ?? '',
+                  "event",
+                  widget.game.name ?? '',
+                  mediaInfo);
+            } catch (e) {
+              // Handles any errors that may occur when processing the file.
+              print('Error processing the file: $e');
+            }
+            Event ev;
+            if (finalLogoFolder != null) {
+              ev = Event(
+                  name: appLocalizations.launchEvent(widget.game.name ?? ''),
+                  game: widget.game.name ?? '',
+                  image: finalLogoFolder,
+                  dismissed: 0,
+                  releaseDate: DateTime.parse(widget.game.releaseDate ?? ''));
+              final event = CalendarEventData(
+                date: ev.releaseDate,
+                title: ev.name,
+              );
+              appState.addEvent(event);
+              databaseFunctions.insertEvent(ev);
+              // ignore: use_build_context_synchronously
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text(appLocalizations.alertCreated),
+                    backgroundColor: Colors.lightGreen,
+                    content: Text(appLocalizations.alertCreatedCalendar),
+                    actions: <Widget>[
+                      TextButton(
+                        child: Text(appLocalizations.close),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ],
+                  );
+                },
+              );
+            } else {
+              // Maneja el caso en el que finalLogoFolder es nulo o no se pudo obtener.
+              print('Could not obtain finalLogoFolder.');
+            }
+          },
+          color: GFColors.ALT,
+          hoverColor: Colors.blueGrey,
+          text: appLocalizations.createAlert,
+          icon: const Icon(
+            color: Colors.amber,
+            Icons.calendar_month,
+          ),
+        ));
   }
 }
 
@@ -312,8 +414,9 @@ class _ToggleFavoriteOwnedButtonState extends State<ToggleFavoriteOwnedButton> {
                         appState.enableGameSearchViewPanel(false);
                       }
                     },
-              color:
-                  isOwned ? Color.fromARGB(255, 36, 100, 62) : GFColors.DANGER,
+              color: isOwned
+                  ? const Color.fromARGB(255, 36, 100, 62)
+                  : GFColors.DANGER,
               hoverColor: Colors.blueGrey,
               text: !isOwned
                   ? appLocalizations.addToFavorite

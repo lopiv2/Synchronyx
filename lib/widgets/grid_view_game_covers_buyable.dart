@@ -6,42 +6,42 @@ import '../models/responses/gameMedia_response.dart';
 import '../models/media.dart';
 import 'image_cover_model.dart';
 import 'package:synchronyx/utilities/generic_database_functions.dart'
+    // ignore: library_prefixes
     as databaseFunctions;
 
-class GridViewGameCoversBuyable extends StatefulWidget {
+class GridViewGameCoversBuyable extends StatelessWidget {
   const GridViewGameCoversBuyable({Key? key}) : super(key: key);
 
   @override
-  State<GridViewGameCoversBuyable> createState() => _GridViewGameCoversBuyableState();
-}
+  bool get wantKeepAlive => true;
 
-class _GridViewGameCoversBuyableState extends State<GridViewGameCoversBuyable> {
   @override
   Widget build(BuildContext context) {
-    final appState = Provider.of<AppState>(context);
+    //super.build(context);
     return FutureBuilder<List<Game>>(
       future: databaseFunctions.getAllGamesWithFilter('owned', 'no'),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator();
+          return const CircularProgressIndicator();
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         } else if (!snapshot.hasData) {
-          return Text('Cargando datos...'); // Mensaje durante la carga inicial
+          return const Text(
+              'Cargando datos...'); // Mensaje durante la carga inicial
         } else if (snapshot.data!.isEmpty) {
-          return Text('');
+          return const Text('');
         } else {
           List<Game> listOfGames = snapshot.data!;
           return FutureBuilder<List<Container>>(
-            future: _buildGridTileList(listOfGames),
+            future: _buildGridTileList(context, listOfGames),
             builder: (context, containerSnapshot) {
               if (containerSnapshot.connectionState ==
                   ConnectionState.waiting) {
-                return CircularProgressIndicator();
+                return const CircularProgressIndicator();
               } else if (containerSnapshot.hasError) {
                 return Text('Error: ${containerSnapshot.error}');
               } else if (!containerSnapshot.hasData) {
-                return Text('Cargando contenedores...');
+                return const Text('Cargando contenedores...');
               } else {
                 List<Container> containers = containerSnapshot.data!;
                 return GridView.count(
@@ -59,7 +59,8 @@ class _GridViewGameCoversBuyableState extends State<GridViewGameCoversBuyable> {
     );
   }
 
-  Future<List<Container>> _buildGridTileList(List<Game> listOfGames) async {
+  Future<List<Container>> _buildGridTileList(
+      BuildContext context, List<Game> listOfGames) async {
     final appState = Provider.of<AppState>(context, listen: false);
     appState.gamesInGrid.clear();
     List<Container> containers = [];

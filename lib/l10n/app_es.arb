@@ -3,6 +3,8 @@
   "actions": "Acciones",
   "addDate": "Fecha de Adición",
   "addToFavorite": "Añadir a favoritos",
+  "alertCreated": "Alerta creada",
+  "alertCreatedCalendar": "La alerta de lanzamiento se ha creado con éxito en el Calendario.",
   "all": "Todo",
   "amazonWindowAssistant": "Asistente de importación de juegos de Amazon Games",
   "apiKeyText": "Clave API:",
@@ -12,9 +14,11 @@
   "cancel": "Cancelar",
   "categoryPlatform": "Categoría de Plataforma",
   "clickToOpen": "Pulse para abrir",
+  "close": "Cerrar",
   "computers": "Ordenadores",
   "confirmDelete": "¿Confirmar borrado?",
   "consoles": "Consolas",
+  "createAlert": "Crear alerta",
   "dealsNotFound": "No hay ofertas disponibles en estos momentos",
   "delete": "Eliminar",
   "description": "Descripción",
@@ -64,6 +68,14 @@
   "itchWindowAssistant": "Asistente de importación de juegos de Itch.IO",
   "lastPlayed": "Última jugada",
   "launchDate": "Fecha de lanzamiento",
+  "launchEvent": "Lanzamiento {game}",
+  "@launchEvent": {
+    "placeholders": {
+      "game": {
+        "type": "String"
+      }
+    }
+  },
   "length": "Duración",
   "maxPlayers": "Jugadores máximos",
   "menu": "Menu",
@@ -74,10 +86,11 @@
   "ok": "Ok",
   "options3dBackgroundImage": "Mostrar imagen de fondo en calendario",
   "options3dViewGames": "Ver caratulas de juegos en 3d/2d",
-  "optionsPreferencesTitle":"Preferencias",
   "optionsGameTitle":"Juegos",
   "optionsGeneralTitle":"General",
+  "optionsHoursNotice":"Horas de antelación de alertas",
   "optionsPlayOstSelectGame": "Reproducir OST al seleccionar videojuego",
+  "optionsPreferencesTitle":"Preferencias",
   "optionsShowLogoOnGrid": "Mostrar logo del juego en vez del nombre en la cuadrícula",
   "optionsShowEditorOnGrid": "Mostrar editor bajo el nombre en la cuadrícula",
   "optionsSelectBackImageCalendar": "Seleccione imagen",

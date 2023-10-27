@@ -46,7 +46,7 @@ class _ImageCoverModel extends State<ImageCoverModel>
     final appState = Provider.of<AppState>(context, listen: false);
     _animationController = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 500),
     );
     //Compruebo para que solo rote el elemento con indice clickado
   }
@@ -117,7 +117,7 @@ class _ImageCoverModel extends State<ImageCoverModel>
                       children: [
                         Text(
                           widget.game.title,
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.white,
                             fontSize: 6.0,
                             fontWeight: FontWeight.bold,
@@ -127,14 +127,14 @@ class _ImageCoverModel extends State<ImageCoverModel>
                         appState.selectedOptions.showEditorOnGrid == 1
                             ? Text(
                                 widget.game.developer.split(',')[0],
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: Color.fromARGB(255, 192, 218, 231),
                                   fontSize: 5.0,
                                   fontWeight: FontWeight.normal,
                                 ),
                                 softWrap: true,
                               )
-                            : Text(""),
+                            : const Text(""),
                       ])))
           : Positioned(
               top: MediaQuery.of(context).size.width * 0.093,
@@ -155,14 +155,14 @@ class _ImageCoverModel extends State<ImageCoverModel>
                     appState.selectedOptions.showEditorOnGrid == 1
                         ? Text(
                             widget.game.developer.split(',')[0],
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: Color.fromARGB(255, 192, 218, 231),
                               fontSize: 5.0,
                               fontWeight: FontWeight.normal,
                             ),
                             softWrap: true,
                           )
-                        : Text(""),
+                        : const Text(""),
                   ]),
             ),
     ]);
@@ -383,7 +383,7 @@ class TwoDGameCover extends StatelessWidget {
                         aspectRatio: 8.5 / 12,
                         child: Container(
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                            borderRadius: const BorderRadius.all(Radius.circular(20)),
                             image: DecorationImage(
                               image: imageWidgetFront,
                             ),

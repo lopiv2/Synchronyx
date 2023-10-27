@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:synchronyx/providers/app_state.dart';
 import 'package:synchronyx/utilities/Constants.dart';
+import 'package:synchronyx/utilities/app_directory_singleton.dart';
 
 class DownloadProgress extends StatefulWidget {
   const DownloadProgress({Key? key});
@@ -48,10 +49,10 @@ class _DownloadProgressState extends State<DownloadProgress> {
                             minHeight: 20.0,
                             backgroundColor: Colors.grey,
                             valueColor:
-                                AlwaysStoppedAnimation<Color>(Colors.blue),
+                                const AlwaysStoppedAnimation<Color>(Colors.blue),
                           ),
                           Text('${(_progressValue).round()}%'),
-                          Text(
+                          const Text(
                             'Descargando archivo...',
                             style: TextStyle(fontSize: 18.0),
                           ),
@@ -65,7 +66,7 @@ class _DownloadProgressState extends State<DownloadProgress> {
           },
         );
       } else {
-        return Text("");
+        return const Text("");
       }
     });
   }
@@ -76,9 +77,9 @@ class _DownloadProgressState extends State<DownloadProgress> {
     String folder = '\\Synchronyx\\downloads\\';
     List<String> parts = url.split("/");
     String fileName = parts.last;
-    await Constants.initialize();
+    //await Constants.initialize();
     Directory fileFolder =
-        Directory('${Constants.appDocumentsDirectory.path}$folder');
+        Directory('${AppDirectories.instance.appDocumentsDirectory.path}$folder');
     try {
       final response = await dio.get(
         url,

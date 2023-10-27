@@ -35,7 +35,7 @@ class SettingsDialog extends StatefulWidget {
 }
 
 class _SettingsDialogState extends State<SettingsDialog> {
-  Offset _offset = Offset(0, 0);
+  Offset _offset = const Offset(0, 0);
   final List<String> options = ['Option 1', 'Option 2', 'Option 3'];
   final AudioManager audioManager = AudioManager();
 
@@ -125,7 +125,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
                       options: options,
                       appLocalizations: widget.appLocalizations,
                     ),
-                    SizedBox(width: 16),
+                    const SizedBox(width: 16),
                     ValueListenableBuilder<String>(
                         valueListenable: appState.selectedOptionClicked,
                         builder: (context, selectedOption, child) {
@@ -134,14 +134,14 @@ class _SettingsDialogState extends State<SettingsDialog> {
                             optionClicked: selectedOption,
                           );
                         }),
-                    SizedBox(width: 16),
+                    const SizedBox(width: 16),
                   ],
                 )),
             Align(
               alignment: Alignment.bottomLeft,
               child: Container(
                 width: MediaQuery.of(context).size.width,
-                color: Color.fromARGB(255, 48, 87, 3),
+                color: const Color.fromARGB(255, 48, 87, 3),
                 padding: const EdgeInsets.symmetric(
                   horizontal: 8.0,
                   vertical: 4.0,
@@ -245,7 +245,7 @@ class RightColumn extends StatelessWidget {
             Container(
               height: MediaQuery.of(context).size.height * 0.60,
               width: MediaQuery.of(context).size.width * 0.27,
-              padding: EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: const Color.fromARGB(17, 238, 238, 238),
                 border: Border.all(
@@ -253,7 +253,7 @@ class RightColumn extends StatelessWidget {
                   width: 1.0, // Ancho del borde
                 ),
                 borderRadius:
-                    BorderRadius.all(Radius.circular(2.0)), // Radio del borde
+                    const BorderRadius.all(Radius.circular(2.0)), // Radio del borde
               ),
               child: buildOptions(appState, appLocalizations),
             )
@@ -268,7 +268,7 @@ class RightColumn extends StatelessWidget {
       case "calendar":
         return CalendarVisualOptions(appLocalizations: appLocalizations);
       default:
-        return Text("data");
+        return const Text("data");
     }
   }
 }

@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart' as provider;
 import 'package:provider/provider.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:synchronyx/models/event.dart';
 import 'package:synchronyx/models/global_options.dart';
 import 'package:synchronyx/models/responses/rawg_response.dart';
 import 'package:synchronyx/providers/app_state.dart';
+import 'package:synchronyx/utilities/app_directory_singleton.dart';
 import 'package:synchronyx/utilities/audio_singleton.dart';
 import 'package:synchronyx/utilities/generic_database_functions.dart'
     as database;
@@ -33,21 +35,20 @@ import 'package:synchronyx/utilities/generic_api_functions.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Constants.initialize().then((_) {
-    runApp(MultiProvider(providers: [
-      //ChangeNotifierProvider(create: (_) => TrackListState()),
-      ChangeNotifierProvider(create: (_) => AppState()),
-    ], child: MyApp()));
+  await AppDirectories.instance.initialize();
+  runApp(MultiProvider(providers: [
+    //ChangeNotifierProvider(create: (_) => TrackListState()),
+    ChangeNotifierProvider(create: (_) => AppState()),
+  ], child: const MyApp()));
 
-    doWhenWindowReady(() {
-      final win = appWindow;
-      const initialSize = Size(1024, 768);
-      win.minSize = initialSize;
-      win.size = initialSize;
-      win.alignment = Alignment.center;
-      win.title = "Synchronyx";
-      win.show();
-    });
+  doWhenWindowReady(() {
+    final win = appWindow;
+    const initialSize = Size(1024, 768);
+    win.minSize = initialSize;
+    win.size = initialSize;
+    win.alignment = Alignment.center;
+    win.title = "Synchronyx";
+    win.show();
   });
 }
 
@@ -83,66 +84,167 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MainGrid extends StatelessWidget {
+// ignore: must_be_immutable
+class MainGrid extends StatefulWidget {
   final BuildContext context;
+  bool isLoading=false;
 
-  const MainGrid({super.key, required this.context});
+  MainGrid({super.key, required this.context, this.isLoading=false});
+
+  @override
+  State<MainGrid> createState() => _MainGridState();
+}
+
+class _MainGridState extends State<MainGrid>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+  int selectedTabIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 3, vsync: this);
+    _tabController.addListener(_handleTabSelection);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  void _handleTabSelection() {
+    final appState = Provider.of<AppState>(context, listen: false);
+    if (_tabController.index != selectedTabIndex) {
+      selectedTabIndex = _tabController.index;
+      if (_tabController.index == 0) {
+        appState.toggleGameSearch(false);
+        appState.updateSelectedGame(null);
+      } else if (_tabController.index == 1) {
+        appState.resetFilter();
+        appState.toggleGameSearch(true);
+        appState.updateSelectedGame(null);
+      } else if (_tabController.index == 2) {
+        appState.resetFilter();
+        appState.updateSelectedGame(null);
+        appState.toggleGameSearch(true);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final AppLocalizations appLocalizations = AppLocalizations.of(context);
     final appState = Provider.of<AppState>(context);
     final AudioManager audioManager = AudioManager();
+    late File imageFile;
     if (appState.selectedGame == null) {
       audioManager.stop();
     }
-    return Container(
-      color: Constants.SIDE_BAR_COLOR,
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              MyMenuBar(appLocalizations: appLocalizations),
-              Expanded(
-                flex: 2,
-                child: WindowTitleBarBox(
-                  child: MoveWindow(),
-                ),
-              ),
-              const Expanded(
-                  flex: 1,
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        ArcadeBoxButtonWidget(),
-                        NotificationButtonWidget()
-                      ])),
-              const WindowButtons(),
-            ],
-          ),
-          Expanded(
-            // Utiliza Expanded aquí para que el Column ocupe todo el espacio vertical disponible
-            child: Row(
-              children: [
-                LeftSide(appLocalizations: appLocalizations),
-                const CenterSide(),
-                RightSide(appLocalizations: appLocalizations),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
+    int eventCounterNotifications = 0;
+    return FutureBuilder<Database?>(
+        future: database.createAndOpenDB(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator();
+          } else if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          } else if (snapshot.data == null) {
+            return const Text('The database was not initialized correctly.');
+          } else {
+            Constants.database = snapshot.data;
+            // ignore: unused_local_variable
+            return FutureBuilder<GlobalOptions?>(
+                future: getOptions(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const CircularProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else if (snapshot.data != null) {
+                    appState.selectedOptions = snapshot.data!;
+                    appState.optionsResponse =
+                        GlobalOptions.copy(snapshot.data!);
+                    imageFile = File(
+                        appState.optionsResponse.imageBackgroundFile ?? '');
+                  }
+                  return FutureBuilder<List<Event>>(
+                      future: getAllEvents(),
+                      builder: (context, eventsSnapshot) {
+                        if (eventsSnapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const CircularProgressIndicator();
+                        } else if (eventsSnapshot.hasError) {
+                          return Text('Error: ${eventsSnapshot.error}');
+                        } else if (!eventsSnapshot.hasData) {
+                          return const Text('Cargando contenedores...');
+                        } else {
+                          List<Event> eventsList = eventsSnapshot.data!;
+                          appState.addAllEvents(eventsList);
+                          return Container(
+                            color: Constants.SIDE_BAR_COLOR,
+                            child: Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    MyMenuBar(
+                                        appLocalizations: appLocalizations),
+                                    Expanded(
+                                      flex: 2,
+                                      child: WindowTitleBarBox(
+                                        child: MoveWindow(),
+                                      ),
+                                    ),
+                                    Expanded(
+                                        flex: 1,
+                                        child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceEvenly,
+                                            children: [
+                                              ArcadeBoxButtonWidget(),
+                                              NotificationButtonWidget(
+                                                appState: appState,
+                                                eventsList: eventsList,
+                                              )
+                                            ])),
+                                    const WindowButtons(),
+                                  ],
+                                ),
+                                Expanded(
+                                  // Utiliza Expanded aquí para que el Column ocupe todo el espacio vertical disponible
+                                  child: Row(
+                                    children: [
+                                      LeftSide(
+                                          appLocalizations: appLocalizations),
+                                      CenterSide(
+                                        tabController: _tabController,
+                                        imageFile: imageFile,
+                                      ),
+                                      RightSide(
+                                          appLocalizations: appLocalizations),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        }
+                      });
+                });
+          }
+        });
   }
 }
 
 class LeftSide extends StatefulWidget {
   final AppLocalizations appLocalizations;
 
-  LeftSide({Key? key, required this.appLocalizations}) : super(key: key);
+  const LeftSide({Key? key, required this.appLocalizations}) : super(key: key);
 
   @override
+  // ignore: library_private_types_in_public_api
   _LeftSideState createState() => _LeftSideState();
 }
 
@@ -151,7 +253,7 @@ class _LeftSideState extends State<LeftSide> {
 
   @override
   Widget build(BuildContext context) {
-    final TextEditingController _searchController = TextEditingController();
+    final TextEditingController searchController = TextEditingController();
 
     return Container(
         width: MediaQuery.of(context).size.width * 0.18,
@@ -183,10 +285,10 @@ class _LeftSideState extends State<LeftSide> {
                       child: Stack(
                     children: [
                       TextField(
-                        controller: _searchController,
+                        controller: searchController,
                         decoration: InputDecoration(
-                          contentPadding:
-                              EdgeInsets.symmetric(vertical: 10, horizontal: 6),
+                          contentPadding: const EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 6),
                           filled: true,
                           fillColor: const Color.fromARGB(127, 11, 129, 46),
                           border: const OutlineInputBorder(),
@@ -194,7 +296,7 @@ class _LeftSideState extends State<LeftSide> {
                               ? widget.appLocalizations.searchInternet
                               : widget.appLocalizations.searchLibrary,
                         ),
-                        style: TextStyle(fontSize: 14),
+                        style: const TextStyle(fontSize: 14),
                         onSubmitted: (String searchString) async {
                           if (appState.searchGameEnabled) {
                             handleSearchInternetButtonPress(
@@ -214,10 +316,10 @@ class _LeftSideState extends State<LeftSide> {
                             if (appState.searchGameEnabled) {
                               handleSearchInternetButtonPress(
                                   context,
-                                  _searchController.text,
+                                  searchController.text,
                                   widget.appLocalizations);
                             } else {
-                              searchByString(_searchController.text);
+                              searchByString(searchController.text);
                             }
                           },
                         ),
@@ -300,13 +402,13 @@ class _LeftSideState extends State<LeftSide> {
               height: MediaQuery.of(context).size.height * 0.5,
             ),
             Text(
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: const TextStyle(fontWeight: FontWeight.bold),
               appLocalizations.searchingGames,
             ),
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.05,
             ),
-            Center(
+            const Center(
               child: CircularProgressIndicator(),
             ),
           ],
@@ -318,12 +420,13 @@ class _LeftSideState extends State<LeftSide> {
     final dio = DioClient();
     responses = await dio.searchGamesRawg(
         key: '68239c29cb2c49f2acfddf9703077032', searchString: searchString);
+    // ignore: use_build_context_synchronously
     Navigator.of(context).pop(); // Cierra el diálogo
 
     if (responses.isNotEmpty) {
       appState.showResults(responses, true);
     } else {
-      Text("No results");
+      const Text("No results");
     }
   }
 
@@ -336,149 +439,97 @@ class _LeftSideState extends State<LeftSide> {
 }
 
 class CenterSide extends StatefulWidget {
-  const CenterSide({Key? key}) : super(key: key);
+  File imageFile;
+  final TabController tabController;
+  CenterSide({super.key, required this.imageFile, required this.tabController});
 
   @override
+  // ignore: library_private_types_in_public_api
   _CenterSideState createState() => _CenterSideState();
 }
 
 class _CenterSideState extends State<CenterSide>
     with SingleTickerProviderStateMixin {
-  late TabController _tabController;
-  int _previousTabIndex = 0;
-
-  void _handleTabSelection() {
-    final appState = Provider.of<AppState>(context, listen: false);
-
-    if (_tabController.index != _previousTabIndex) {
-      // Verifica si el índice ha cambiado
-      _previousTabIndex = _tabController.index; // Actualiza el índice anterior
-
-      if (_tabController.index == 0) {
-        appState.toggleGameSearch(false);
-        appState.updateSelectedGame(null);
-      } else if (_tabController.index == 1) {
-        appState.resetFilter();
-        appState.toggleGameSearch(true);
-        appState.updateSelectedGame(null);
-      } else if (_tabController.index == 2) {
-        appState.resetFilter();
-        appState.updateSelectedGame(null);
-        appState.toggleGameSearch(true);
-      }
-    }
-  }
 
   @override
   void initState() {
     super.initState();
-    _tabController =
-        TabController(length: 3, vsync: this); // 2 tabs (library and list)
-    _tabController.addListener(_handleTabSelection);
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final appState = Provider.of<AppState>(context);
     final AppLocalizations appLocalizations = AppLocalizations.of(context);
-    File imageFile = File(appState.optionsResponse.imageBackgroundFile ?? '');
-
-    return FutureBuilder<Database?>(
-      future: database.createAndOpenDB(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const CircularProgressIndicator();
-        } else if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}');
-        } else if (snapshot.data == null) {
-          return const Text('La base de datos no se inicializó correctamente.');
-        } else {
-          Constants.database = snapshot.data;
-          // ignore: unused_local_variable
-          Future<GlobalOptions?> optionsFuture = getOptions().then((value) {
-            if (value != null) {
-              appState.selectedOptions = value;
-              appState.optionsResponse = GlobalOptions.copy(value);
-            }
-            return null;
-          });
-
-          return Expanded(
-            child: Container(
-              decoration: BoxDecoration(
-                image:
-                    appState.optionsResponse.showBackgroundImageCalendar == 1 &&
-                            _tabController.index == 2
-                        ? DecorationImage(
-                            image: FileImage(imageFile),
-                            fit: BoxFit.cover,
-                          )
-                        : null,
-                gradient: const LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Constants.BACKGROUND_START_COLOR,
-                    Constants.BACKGROUND_END_COLOR,
-                    Color.fromARGB(255, 48, 87, 3)
-                  ],
-                ),
+    widget.imageFile = File(appState.optionsResponse.imageBackgroundFile ?? '');
+    return Expanded(
+      child: Container(
+        decoration: BoxDecoration(
+          image: appState.optionsResponse.showBackgroundImageCalendar == 1 &&
+                  widget.tabController.index == 2
+              ? DecorationImage(
+                  image: FileImage(widget.imageFile),
+                  fit: BoxFit.cover,
+                )
+              : null,
+          gradient: const LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Constants.BACKGROUND_START_COLOR,
+              Constants.BACKGROUND_END_COLOR,
+              Color.fromARGB(255, 48, 87, 3)
+            ],
+          ),
+        ),
+        child: Column(
+          children: [
+            TabBar(
+              controller: widget.tabController,
+              tabs: [
+                Tab(text: appLocalizations.tabLibrary),
+                Tab(text: appLocalizations.tabShopList),
+                Tab(text: appLocalizations.tabCalendar),
+              ],
+              indicator: const UnderlineTabIndicator(
+                borderSide: BorderSide(
+                    width: 4.0,
+                    color: Colors.blue), // Indicator thickness and color
+                insets:
+                    EdgeInsets.symmetric(horizontal: 16.0), // Indicator width
               ),
-              child: Column(
+            ),
+            Expanded(
+              child: TabBarView(
+                controller: widget.tabController,
                 children: [
-                  TabBar(
-                    controller: _tabController,
-                    tabs: [
-                      Tab(text: appLocalizations.tabLibrary),
-                      Tab(text: appLocalizations.tabShopList),
-                      Tab(text: appLocalizations.tabCalendar),
-                    ],
-                    indicator: const UnderlineTabIndicator(
-                      borderSide: BorderSide(
-                          width: 4.0,
-                          color: Colors.blue), // Grosor y color del indicador
-                      insets: EdgeInsets.symmetric(
-                          horizontal: 16.0), // Ancho del indicador
-                    ),
+                  Consumer<AppState>(
+                    builder: (context, appState, child) {
+                      return const GridViewGameCovers(); // Contents of the 'Library' tab
+                    },
                   ),
-                  Expanded(
-                    child: TabBarView(
-                      controller: _tabController,
-                      children: [
-                        Consumer<AppState>(
-                          builder: (context, appState, child) {
-                            return const GridViewGameCovers(); // Contents of the 'Library' tab
-                          },
-                        ),
-                        Consumer<AppState>(
-                          builder: (context, appState, child) {
-                            return appState.enableGameSearchView == false
-                                ? const GridViewGameCoversBuyable()
-                                : ClickedGameBuyableView(
-                                    game: appState
-                                        .gameClicked); // Contents of the 'List' tab
-                          },
-                        ),
-                        Consumer<AppState>(
-                          builder: (context, appState, child) {
-                            return const CalendarViewEvents(); // Contents of the 'Calendar' tab
-                          },
-                        ),
-                      ],
-                    ),
+                  Consumer<AppState>(
+                    builder: (context, appState, child) {
+                      return appState.enableGameSearchView == false
+                          ? const GridViewGameCoversBuyable()
+                          : ClickedGameBuyableView(
+                              game: appState
+                                  .gameClicked); // Contents of the 'List' tab
+                    },
+                  ),
+                  Consumer<AppState>(
+                    builder: (context, appState, child) {
+                      final eventController = appState.eventController;
+                      return CalendarViewEvents(
+                        controller: eventController,
+                      ); // Contents of the 'Calendar' tab
+                    },
                   ),
                 ],
               ),
             ),
-          );
-        }
-      },
+          ],
+        ),
+      ),
     );
   }
 }

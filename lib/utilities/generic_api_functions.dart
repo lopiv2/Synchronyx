@@ -13,6 +13,7 @@ import 'package:synchronyx/models/responses/emulator_download_response.dart';
 import 'package:synchronyx/models/responses/khinsider_response.dart';
 import 'package:synchronyx/models/responses/rawg_response.dart';
 import 'package:synchronyx/models/responses/steamgriddb_response.dart';
+import 'package:synchronyx/utilities/app_directory_singleton.dart';
 import '../models/game.dart';
 import 'package:html/parser.dart' as parser;
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
@@ -77,7 +78,7 @@ class DioClient {
     await databaseFunctions.insertGame(gameInsert);
     Response screensData =
         await _dio.get('$_rawgApiUrl/${game.gameId}/screenshots?key=$key');
-    await Constants.initialize();
+    //await Constants.initialize();
     Map<String, dynamic> responseScreensData = screensData.data;
     Media? mediaInfo;
     String screenNames = '';
@@ -127,7 +128,7 @@ class DioClient {
   Future<void> getAndImportSteamGames(
       {required String key, required String steamId}) async {
     int requestCount = 0; //Number of request per progress bar counting
-    await Constants.initialize();
+    //Constants.initialize();
     Response userData = await _dio.get(
         _steamApiUrl + '$key&steamid=$steamId&format=json&include_appinfo=1');
     String jsonData = jsonEncode(userData.data);
@@ -163,7 +164,7 @@ class DioClient {
       String finalmarqueeFolder =
           await processMediaFiles(marqueeFrontUrl, "marquee", name, mediaInfo);
 
-      //We import by default from SteamGridDB, marquee image
+      //We import by default from SteamGridDB, logo image
       String logoUrl = await getAndImportSteamGridDBLogoBySteamIdAndPlatform(
           key: 'fa61b6d47dfe3b6ab65a516b1f8bd0a3',
           steamId: '$appId',
@@ -238,6 +239,7 @@ class DioClient {
                 stResp = await getAndImportSteamGridDBMediaByGame(
                     key: 'fa61b6d47dfe3b6ab65a516b1f8bd0a3',
                     searchString: gameName);
+                String marqueeUrl = stResp.marqueeUrl ?? '';
                 String iconUrl = stResp.iconUrl ?? '';
                 String coverUrl = stResp.coverUrl ?? '';
                 String id = data['id'].toString();
@@ -317,6 +319,7 @@ class DioClient {
                       description: description,
                       imageUrl: coverUrl,
                       iconUrl: iconUrl,
+                      marqueeUrl: marqueeUrl,
                       developer: developersNames,
                       publisher: publisherNames,
                       platform: platformName,
@@ -405,11 +408,22 @@ class DioClient {
           deleteFile(mediaInfo.logoUrl);
         }
         break;
+      case "event":
+        imageFolder = '\\Synchronyx\\media\\events\\';
+        //Delete file before download a new one
+        /*if (mediaInfo != null) {
+          deleteFile(mediaInfo.marqueeUrl);
+        }*/
+        break;
     }
-    downloadAndSaveImage(img, imageName, imageFolder);
-    String finalImageFolder =
-        '${Constants.appDocumentsDirectory.path}$imageFolder$imageName';
-    return finalImageFolder;
+    if (lastPartFile != '') {
+      downloadAndSaveImage(img, imageName, imageFolder);
+      String finalImageFolder =
+          '${AppDirectories.instance.appDocumentsDirectory.path}$imageFolder$imageName';
+      return finalImageFolder;
+    } else {
+      return '';
+    }
   }
 
   /* -------------------------------------------------------------------------- */
@@ -462,14 +476,14 @@ class DioClient {
     if (dealData?.statusCode == 200 || dealData?.statusCode == 304) {
       final Map<String, dynamic> jsonResponse = dealData?.data;
 
-      // Extraer información del juego
+      // Extract information from the game
       final String title = jsonResponse['info']['title'];
       if (jsonResponse['info']['steamAppID'] != null) {
         final String steamAppID = jsonResponse['info']['steamAppID'];
       }
       final String thumb = jsonResponse['info']['thumb'];
 
-      // Extraer información de las ofertas
+      // Extracting information from deals
       final List<dynamic> deals = jsonResponse['deals'];
       for (final Map<String, dynamic> deal in deals) {
         final String storeID = deal['storeID'];
@@ -492,6 +506,7 @@ class DioClient {
     return results;
   }
 
+  /* ---------------------- Search CheapShark Store by id --------------------- */
   CheapSharkStore searchStoreById(String id, List<CheapSharkStore> stores) {
     String searchStoreID = id; // The ID of the store you wish to search for
 
@@ -754,85 +769,96 @@ class DioClient {
     String marqueeImage = '';
     String icon = '';
     String logo = '';
-    Response userData = await _dio.get(
-        '${_steamGridDBApiUrl}search/autocomplete/$searchString',
-        options: Options(headers: headers));
-
-    Map<String, dynamic> responseData = userData.data;
-    // Obtain the "data" list
-    List<dynamic> dataList = responseData['data'];
-
-    if (dataList.isNotEmpty) {
-      // Get the first item in the list
-      Map<String, dynamic> firstData = dataList[0];
-
-      String gameId = firstData['id'].toString();
-
-      //Cover image
-      Response userData2 = await _dio.get(
-          '${_steamGridDBApiUrl}grids/game/$gameId',
-          options: Options(headers: headers));
-
-      Map<String, dynamic> responseData2 = userData2.data;
-      List<dynamic> dataList2 = responseData2['data'];
-      if (dataList2.isNotEmpty) {
-        // Get the first item in the list
-        Map<String, dynamic> firstData2 = dataList2[0];
-        coverImage = firstData2['url'];
-      }
-
-      //ICON
-      Response userData3 = await _dio.get(
-          '${_steamGridDBApiUrl}icons/game/$gameId',
-          options: Options(headers: headers));
-      Map<String, dynamic> responseData3 = userData3.data;
-      List<dynamic> dataList3 = responseData3['data'];
-      if (dataList3.isNotEmpty) {
-        // Obtener el primer elemento de la lista
-        Map<String, dynamic> firstData3 = dataList3[0];
-        icon = firstData3['thumb'];
-      }
-
-      //LOGO
-      Response userData4 = await _dio.get(
-          '${_steamGridDBApiUrl}logos/game/$gameId',
-          options: Options(headers: headers));
-
-      Map<String, dynamic> responseData4 = userData4.data;
-      // Obtener la lista "data"
-      List<dynamic> dataList4 = responseData4['data'];
-
-      if (dataList4.isNotEmpty) {
-        // Obtener el primer elemento de la lista
-        Map<String, dynamic> firstData4 = dataList4[0];
-
-        // Obtener el valor del campo "url"
-        logo = firstData4['thumb'];
-      }
-
-      //Marquee Image
-      Response userData5 = await _dio.get(
-          '${_steamGridDBApiUrl}heroes/game/$gameId',
-          options: Options(headers: headers));
-
-      Map<String, dynamic> responseData5 = userData5.data;
-      // Obtener la lista "data"
-      List<dynamic> dataList5 = responseData5['data'];
-
-      if (dataList5.isNotEmpty) {
-        // Obtener el primer elemento de la lista
-        Map<String, dynamic> firstData5 = dataList5[0];
-
-        // Obtener el valor del campo "url"
-        marqueeImage = firstData5['thumb'];
-      }
-    }
     SteamgridDBResponse st = SteamgridDBResponse(
         name: searchString,
-        coverUrl: coverImage,
-        marqueeUrl: marqueeImage,
-        iconUrl: icon,
-        logoUrl: logo);
+        coverUrl: '',
+        marqueeUrl: '',
+        iconUrl: '',
+        logoUrl: '');
+    try {
+      Response userData = await _dio.get(
+          '${_steamGridDBApiUrl}search/autocomplete/$searchString',
+          options: Options(headers: headers));
+      if (userData.statusCode == 200 || userData.statusCode == 304) {
+        Map<String, dynamic> responseData = userData.data;
+        // Obtain the "data" list
+        List<dynamic> dataList = responseData['data'];
+
+        if (dataList.isNotEmpty) {
+          // Get the first item in the list
+          Map<String, dynamic> firstData = dataList[0];
+
+          String gameId = firstData['id'].toString();
+
+          //Cover image
+          Response userData2 = await _dio.get(
+              '${_steamGridDBApiUrl}grids/game/$gameId',
+              options: Options(headers: headers));
+
+          Map<String, dynamic> responseData2 = userData2.data;
+          List<dynamic> dataList2 = responseData2['data'];
+          if (dataList2.isNotEmpty) {
+            // Get the first item in the list
+            Map<String, dynamic> firstData2 = dataList2[0];
+            coverImage = firstData2['url'];
+          }
+
+          //ICON
+          Response userData3 = await _dio.get(
+              '${_steamGridDBApiUrl}icons/game/$gameId',
+              options: Options(headers: headers));
+          Map<String, dynamic> responseData3 = userData3.data;
+          List<dynamic> dataList3 = responseData3['data'];
+          if (dataList3.isNotEmpty) {
+            // Obtener el primer elemento de la lista
+            Map<String, dynamic> firstData3 = dataList3[0];
+            icon = firstData3['thumb'];
+          }
+
+          //LOGO
+          Response userData4 = await _dio.get(
+              '${_steamGridDBApiUrl}logos/game/$gameId',
+              options: Options(headers: headers));
+
+          Map<String, dynamic> responseData4 = userData4.data;
+          // Obtener la lista "data"
+          List<dynamic> dataList4 = responseData4['data'];
+
+          if (dataList4.isNotEmpty) {
+            // Obtener el primer elemento de la lista
+            Map<String, dynamic> firstData4 = dataList4[0];
+
+            // Obtener el valor del campo "url"
+            logo = firstData4['thumb'];
+          }
+
+          //Marquee Image
+          Response userData5 = await _dio.get(
+              '${_steamGridDBApiUrl}heroes/game/$gameId',
+              options: Options(headers: headers));
+
+          Map<String, dynamic> responseData5 = userData5.data;
+          // Obtener la lista "data"
+          List<dynamic> dataList5 = responseData5['data'];
+
+          if (dataList5.isNotEmpty) {
+            // Obtener el primer elemento de la lista
+            Map<String, dynamic> firstData5 = dataList5[0];
+
+            // Obtener el valor del campo "url"
+            marqueeImage = firstData5['thumb'];
+          }
+        }
+        st = SteamgridDBResponse(
+            name: searchString,
+            coverUrl: coverImage,
+            marqueeUrl: marqueeImage,
+            iconUrl: icon,
+            logoUrl: logo);
+      }
+    } catch (e) {
+      if (e is DioException && e.response?.statusCode == 404) {}
+    }
     return st;
   }
 

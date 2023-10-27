@@ -3,14 +3,8 @@ import 'package:flutter_fancy_tree_view/flutter_fancy_tree_view.dart';
 import 'package:provider/provider.dart';
 import 'package:synchronyx/providers/app_state.dart';
 import 'package:synchronyx/widgets/options_tile_view.dart';
-import 'package:synchronyx/widgets/platform_tile_view.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../models/Options.dart';
-import '../utilities/Constants.dart';
-import 'package:collection/collection.dart';
-import '../utilities/generic_functions.dart';
-import 'package:synchronyx/utilities/generic_database_functions.dart'
-    as databaseFunctions;
 
 class OptionsTreeView extends StatefulWidget {
   final AppLocalizations appLocalizations;

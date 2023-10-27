@@ -1,7 +1,10 @@
+import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
+import 'package:synchronyx/models/event.dart';
 import 'package:synchronyx/models/global_options.dart';
 import 'package:synchronyx/models/responses/gameMedia_response.dart';
 import 'package:synchronyx/models/responses/rawg_response.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AppState extends ChangeNotifier {
   GameMediaResponse? selectedGame;
@@ -36,9 +39,32 @@ class AppState extends ChangeNotifier {
   List<RawgResponse> results = [];
   late RawgResponse
       gameClicked; //Variable to save the game clicked on in the search
+  List<CalendarEventData> events = [];
+  final EventController eventController = EventController();
 
   bool enableGameSearchView =
       false; // Variable that activates the preview panel of the game that we will add to favorite
+
+  //Add event to calendar
+  void addEvent(CalendarEventData event) {
+    events.add(event);
+    eventController.add(event);
+    notifyListeners();
+  }
+
+  //Add all stored events to calendar and get them at program start
+  void addAllEvents(List<Event> eventsList) {
+    late CalendarEventData event;
+    for (Event e in eventsList) {
+      event = CalendarEventData(
+        date: e.releaseDate,
+        title: e.name,
+        color: Colors.orangeAccent
+      );
+      events.add(event);
+      eventController.add(event);
+    }
+  }
 
   // This method will update the value of logoAnimation in optionsResponse
   void updateLogoAnimation(String newLogoAnimation) {

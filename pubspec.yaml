@@ -61,6 +61,8 @@ dependencies:
   dio_cache_interceptor_file_store: ^1.2.2
   url_launcher: ^6.1.14
   file_picker: ^5.2.10
+  palette_generator: ^0.3.3+3
+  popover: ^0.2.8+2
 
 dev_dependencies:
   flutter_test:

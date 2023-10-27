@@ -78,7 +78,7 @@ class OptionsTreeTile extends StatelessWidget {
                               text: entry.node.title,
                             ),
                           ),
-                          padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                          padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                           closedIcon: const Icon(
                             Icons.arrow_right,
                           ),

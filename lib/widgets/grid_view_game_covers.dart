@@ -8,32 +8,35 @@ import 'image_cover_model.dart';
 import 'package:synchronyx/utilities/generic_database_functions.dart'
     as database_functions;
 
-class GridViewGameCovers extends StatefulWidget {
+class GridViewGameCovers extends StatelessWidget {
   const GridViewGameCovers({Key? key}) : super(key: key);
 
   @override
-  State<GridViewGameCovers> createState() => _GridViewGameCoversState();
-}
+  bool get wantKeepAlive => true;
 
-class _GridViewGameCoversState extends State<GridViewGameCovers> {
   @override
   Widget build(BuildContext context) {
+    //super.build(context);
     final appState = Provider.of<AppState>(context);
     return FutureBuilder<List<Game>>(
-      future: database_functions.getAllGamesWithFilter(appState.filter, appState.filterValue), //Automatically filters according to the filter we apply from other filters
+      future: database_functions.getAllGamesWithFilter(
+          appState.filter,
+          appState
+              .filterValue), //Automatically filters according to the filter we apply from other filters
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const CircularProgressIndicator();
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         } else if (!snapshot.hasData) {
-          return const Text('Cargando datos...'); // Mensaje durante la carga inicial
+          return const Text(
+              'Cargando datos...'); // Mensaje durante la carga inicial
         } else if (snapshot.data!.isEmpty) {
           return const Text('');
         } else {
           List<Game> listOfGames = snapshot.data!;
           return FutureBuilder<List<Container>>(
-            future: _buildGridTileList(listOfGames),
+            future: _buildGridTileList(context, listOfGames),
             builder: (context, containerSnapshot) {
               if (containerSnapshot.connectionState ==
                   ConnectionState.waiting) {
@@ -59,7 +62,7 @@ class _GridViewGameCoversState extends State<GridViewGameCovers> {
     );
   }
 
-  Future<List<Container>> _buildGridTileList(List<Game> listOfGames) async {
+  Future<List<Container>> _buildGridTileList(BuildContext context, List<Game> listOfGames) async {
     final appState = Provider.of<AppState>(context, listen: false);
     appState.gamesInGrid.clear();
     List<Container> containers = [];
