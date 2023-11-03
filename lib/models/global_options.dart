@@ -8,6 +8,7 @@ class GlobalOptions {
   late int showBackgroundImageCalendar;
   late int hoursAdvanceNotice; //Hours of advance notice of events
   String? imageBackgroundFile;
+  late String selectedTheme;
 
   GlobalOptions({
     this.id,
@@ -19,6 +20,7 @@ class GlobalOptions {
     required this.hoursAdvanceNotice,
     required this.showBackgroundImageCalendar,
     this.imageBackgroundFile,
+    required this.selectedTheme,
   });
 
   Map<String, dynamic> toMap() {
@@ -32,6 +34,7 @@ class GlobalOptions {
       'hoursAdvanceNotice': hoursAdvanceNotice,
       'showBackgroundImageCalendar': showBackgroundImageCalendar,
       'imageBackgroundFile': imageBackgroundFile,
+      'selectedTheme':selectedTheme,
     };
   }
 
@@ -46,11 +49,12 @@ class GlobalOptions {
     hoursAdvanceNotice = other.hoursAdvanceNotice;
     showBackgroundImageCalendar = other.showBackgroundImageCalendar;
     imageBackgroundFile = other.imageBackgroundFile;
+    selectedTheme=other.selectedTheme;
   }
 
   @override
   String toString() {
-    return 'Options{id: $id, twoDThreeDCovers: $twoDThreeDCovers,playOSTOnSelectGame: $playOSTOnSelectGame, showLogoNameOnGrid: $showLogoNameOnGrid, showEditorOnGrid: $showEditorOnGrid, logoAnimation: $logoAnimation, hoursAdvanceNotice: $hoursAdvanceNotice, showBackgroundImageCalendar=$showBackgroundImageCalendar}';
+    return 'Options{id: $id, twoDThreeDCovers: $twoDThreeDCovers,playOSTOnSelectGame: $playOSTOnSelectGame, showLogoNameOnGrid: $showLogoNameOnGrid, showEditorOnGrid: $showEditorOnGrid, logoAnimation: $logoAnimation, hoursAdvanceNotice: $hoursAdvanceNotice, showBackgroundImageCalendar=$showBackgroundImageCalendar,selectedTheme=$selectedTheme}';
   }
 
   static GlobalOptions fromMap(Map<String, dynamic> map) {
@@ -64,6 +68,7 @@ class GlobalOptions {
       logoAnimation: map['logoAnimation'] ?? 'FadeInDown',
       showBackgroundImageCalendar: map['showBackgroundImageCalendar'] ?? '0',
       imageBackgroundFile: map['imageBackgroundFile'] ?? '',
+      selectedTheme: map['selectedTheme'] ?? 'Slime World',
     );
   }
 }

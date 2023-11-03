@@ -1,15 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:getwidget/getwidget.dart';
+import 'package:intl/intl.dart';
 import 'package:popover/popover.dart';
+import 'package:provider/provider.dart';
 import 'package:synchronyx/models/event.dart';
 import 'package:synchronyx/providers/app_state.dart';
+import 'package:synchronyx/utilities/generic_database_functions.dart';
 
 class NotificationButtonWidget extends StatefulWidget {
   final List<Event> eventsList;
   final AppState appState;
+  final Function onEventDismissedCallback;
 
-  const NotificationButtonWidget(
-      {super.key, required this.eventsList, required this.appState});
+  const NotificationButtonWidget({
+    super.key,
+    required this.eventsList,
+    required this.appState,
+    required this.onEventDismissedCallback,
+  });
 
   @override
   State<NotificationButtonWidget> createState() =>
@@ -51,14 +58,26 @@ class _NotificationButtonWidgetState extends State<NotificationButtonWidget>
     _isRotating = true;
     _controller.repeat(reverse: true);
 
-    // Detener la animación después de un segundo
     await Future.delayed(const Duration(seconds: 1));
-    _controller.stop();
+    if (mounted) {
+      _controller.stop();
+      setState(() {
+        _isRotating = false;
+      });
+      await Future.delayed(const Duration(seconds: 1));
+      _startRotation();
+    }
+  }
+
+  void _handleEventDismissed() {
     setState(() {
-      _isRotating = false;
+      notifyEvents = getEventsWithinNextXHours(
+        widget.eventsList,
+        widget.appState.optionsResponse.hoursAdvanceNotice,
+      );
+      notificationCount = notifyEvents.length;
     });
-    await Future.delayed(const Duration(seconds: 1));
-    _startRotation();
+    widget.onEventDismissedCallback();
   }
 
   @override
@@ -84,13 +103,19 @@ class _NotificationButtonWidgetState extends State<NotificationButtonWidget>
                           50.0; // Altura estimada de cada elemento
 
                       return ListItems(
-                          notifyEvents: notifyEvents, totalHeight: totalHeight);
+                        notifyEvents: notifyEvents,
+                        totalHeight: totalHeight,
+                        closePopover: () {
+                          Navigator.of(context).pop(); // Cierra el Popover
+                        },
+                        onEventDismissed: _handleEventDismissed,
+                      );
                     },
                   );
                 },
                 direction: PopoverDirection.bottom,
                 backgroundColor: Colors.green,
-                width: 200,
+                width: 300,
                 arrowHeight: 15,
                 arrowWidth: 30,
               );
@@ -141,32 +166,94 @@ class _NotificationButtonWidgetState extends State<NotificationButtonWidget>
   }
 }
 
-class ListItems extends StatelessWidget {
+class ListItems extends StatefulWidget {
   final List<Event> notifyEvents;
   final double totalHeight;
+  final Function closePopover;
+  final Function onEventDismissed;
 
   const ListItems({
     Key? key,
     required this.notifyEvents,
     required this.totalHeight,
+    required this.closePopover,
+    required this.onEventDismissed,
   }) : super(key: key);
 
   @override
+  State<ListItems> createState() => _ListItemsState();
+}
+
+class _ListItemsState extends State<ListItems> {
+  List<bool> itemDismissed = [];
+
+  @override
+  void initState() {
+    super.initState();
+    itemDismissed = List.filled(widget.notifyEvents.length, false);
+  }
+
+  @override
   Widget build(BuildContext context) {
+    //final appState = Provider.of<AppState>(context);
     return SizedBox(
-        height: totalHeight, // Usar la altura calculada
-        child: ListView.builder(
-          itemCount: notifyEvents.length,
-          itemBuilder: (context, index) {
-            return ListTile(
-              title: Text(
-                '${notifyEvents[index].name} - ${notifyEvents[index].releaseDate.toLocal()}',
-                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 10),
-              ),
-              trailing: IconButton(onPressed: () {}, icon: const Icon(Icons.done), splashRadius: 20,),
-            );
-          },
-        ));
+      height: widget.totalHeight,
+      child: ListView.builder(
+        itemCount: widget.notifyEvents.length,
+        itemBuilder: (context, index) {
+          String formattedDate =
+              DateFormat('d-M-y', Localizations.localeOf(context).languageCode)
+                  .format(widget.notifyEvents[index].releaseDate);
+
+          return itemDismissed[index]
+              ? SizedBox.shrink()
+              : ListTile(
+                  title: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          '${widget.notifyEvents[index].name} - ',
+                          overflow: TextOverflow.clip,
+                          maxLines: 2,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 10,
+                          ),
+                        ),
+                      ),
+                      Text(
+                        formattedDate,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 10,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                  trailing: IconButton(
+                    onPressed: () {
+                      // Change the status to delete the item
+                      setState(() {
+                        itemDismissed[index] = true;
+                      });
+
+                      // Call the dismiss function and pass the event name
+                      getEventAndDismiss(widget.notifyEvents[index].name);
+                      if (itemDismissed.every((dismissed) => dismissed)) {
+                        // Cerrar el Popover si todos los elementos se han eliminado
+                        widget.closePopover();
+                      }
+                      widget.onEventDismissed();
+                    },
+                    color: Colors.black,
+                    icon: const Icon(Icons.done),
+                    splashRadius: 20,
+                  ),
+                );
+        },
+      ),
+    );
   }
 }
 

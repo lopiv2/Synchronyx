@@ -35,7 +35,7 @@ class DropDownCategories extends State<DropdownWidget> {
       child: Container(
         height: 30,
         decoration: BoxDecoration(
-          color: const Color.fromARGB(90, 28, 102, 50),
+          color: const Color.fromARGB(126, 160, 247, 186),
           borderRadius: BorderRadius.circular(2),
           border: Border.all(),
         ),

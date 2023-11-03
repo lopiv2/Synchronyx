@@ -12,6 +12,28 @@ import 'package:synchronyx/utilities/app_directory_singleton.dart';
 import 'package:synchronyx/utilities/generic_api_functions.dart';
 import 'Constants.dart';
 
+/* -------------------- Converts a color from ARGB to Hex ------------------- */
+String colorToHex(Color color) {
+  return '#${color.value.toRadixString(16).padLeft(8, '0')}';
+}
+
+/* -------------------------- Converts Hex to ARGB -------------------------- */
+Color hexToColor(String code) {
+  code = code.replaceAll("#", "");
+  if (code.length == 6) {
+    code = "FF" + code; // Añade el valor alfa (alpha) FF si no está presente en el código hexadecimal
+  }
+  int value = int.parse(code, radix: 16);
+  return Color(value);
+}
+
+/* ----------------- Applies alpha and converts Hex to ARGB ----------------- */
+Color hexToColorWithAlpha(String code, int alpha) {
+  code = code.replaceAll("#", "");
+  int value = int.parse(code, radix: 16);
+  return Color.fromARGB(alpha, value >> 16 & 0xFF, value >> 8 & 0xFF, value & 0xFF);
+}
+
 /* ----Choose a text color depending on the background color, to make it stand out. */
 Color determineTextColor(Color backgroundColor) {
   // Calculates the luminance of the background color

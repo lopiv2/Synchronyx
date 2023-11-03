@@ -4,11 +4,12 @@ import 'package:synchronyx/models/event.dart';
 import 'package:synchronyx/models/global_options.dart';
 import 'package:synchronyx/models/responses/gameMedia_response.dart';
 import 'package:synchronyx/models/responses/rawg_response.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:synchronyx/models/themes.dart';
 
 class AppState extends ChangeNotifier {
   GameMediaResponse? selectedGame;
   late GlobalOptions selectedOptions; //Current using options
+  late Themes themeApplied; //Current using theme
   late GlobalOptions
       optionsResponse; //Temporary Response for options until saved
   List<GameMediaResponse> gamesInGrid = [];
@@ -62,7 +63,7 @@ class AppState extends ChangeNotifier {
         color: Colors.orangeAccent
       );
       events.add(event);
-      eventController.add(event);
+      //eventController.add(event);
     }
   }
 

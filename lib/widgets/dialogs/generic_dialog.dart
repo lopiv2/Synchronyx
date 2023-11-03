@@ -5,6 +5,7 @@ import 'package:synchronyx/providers/app_state.dart';
 import 'package:synchronyx/utilities/audio_singleton.dart';
 import 'package:synchronyx/utilities/constants.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:synchronyx/utilities/generic_functions.dart';
 import 'package:synchronyx/widgets/dialogs/import_dialog.dart';
 
 class GenericDialog extends StatefulWidget {
@@ -52,13 +53,13 @@ class _GenericDialogState extends State<GenericDialog> {
                     color: const Color.fromARGB(255, 2, 34, 14),
                     width: 0.2,
                   ),
-                  gradient: const LinearGradient(
+                  gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      Constants.SIDE_BAR_COLOR,
-                      Color.fromARGB(255, 33, 109, 72),
-                      Color.fromARGB(255, 48, 87, 3),
+                      hexToColor(appState.themeApplied.backgroundStartColor),
+                      hexToColor(appState.themeApplied.backgroundMediumColor),
+                      hexToColor(appState.themeApplied.backgroundEndColor),
                     ],
                   ),
                 ),
@@ -67,7 +68,8 @@ class _GenericDialogState extends State<GenericDialog> {
                       child: Column(
                     children: [
                       AppBar(
-                        backgroundColor: Constants.SIDE_BAR_COLOR,
+                        backgroundColor:
+                            hexToColor(appState.themeApplied.sideBarColor),
                         elevation: 0.0,
                         toolbarHeight: 35.0,
                         titleSpacing: -20.0,
@@ -106,7 +108,7 @@ class _GenericDialogState extends State<GenericDialog> {
                         ),
                       ),
                       SizedBox(child: widget.preContent),
-                      const SizedBox(height:40),
+                      const SizedBox(height: 40),
                       Expanded(
                         child: ListView(
                           children: [
@@ -121,7 +123,7 @@ class _GenericDialogState extends State<GenericDialog> {
                     alignment: Alignment.bottomLeft,
                     child: Container(
                       width: MediaQuery.of(context).size.width,
-                      color: const Color.fromARGB(255, 48, 87, 3),
+                      color: hexToColor(appState.themeApplied.backgroundEndColor),
                       padding: const EdgeInsets.symmetric(
                         horizontal: 8.0,
                         vertical: 4.0,

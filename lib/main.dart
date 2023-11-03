@@ -7,12 +7,14 @@ import 'package:sqflite/sqflite.dart';
 import 'package:synchronyx/models/event.dart';
 import 'package:synchronyx/models/global_options.dart';
 import 'package:synchronyx/models/responses/rawg_response.dart';
+import 'package:synchronyx/models/themes.dart';
 import 'package:synchronyx/providers/app_state.dart';
 import 'package:synchronyx/utilities/app_directory_singleton.dart';
 import 'package:synchronyx/utilities/audio_singleton.dart';
 import 'package:synchronyx/utilities/generic_database_functions.dart'
     as database;
 import 'package:synchronyx/utilities/generic_database_functions.dart';
+import 'package:synchronyx/utilities/generic_functions.dart';
 import 'package:synchronyx/widgets/buttons/notification_button.dart';
 import 'package:synchronyx/widgets/calendar_view_events.dart';
 import 'package:synchronyx/widgets/clicked_game_favorite_view.dart';
@@ -87,9 +89,9 @@ class MyApp extends StatelessWidget {
 // ignore: must_be_immutable
 class MainGrid extends StatefulWidget {
   final BuildContext context;
-  bool isLoading=false;
+  bool isLoading = false;
 
-  MainGrid({super.key, required this.context, this.isLoading=false});
+  MainGrid({super.key, required this.context, this.isLoading = false});
 
   @override
   State<MainGrid> createState() => _MainGridState();
@@ -141,7 +143,6 @@ class _MainGridState extends State<MainGrid>
     if (appState.selectedGame == null) {
       audioManager.stop();
     }
-    int eventCounterNotifications = 0;
     return FutureBuilder<Database?>(
         future: database.createAndOpenDB(),
         builder: (context, snapshot) {
@@ -168,69 +169,99 @@ class _MainGridState extends State<MainGrid>
                     imageFile = File(
                         appState.optionsResponse.imageBackgroundFile ?? '');
                   }
-                  return FutureBuilder<List<Event>>(
-                      future: getAllEvents(),
-                      builder: (context, eventsSnapshot) {
-                        if (eventsSnapshot.connectionState ==
+                  return FutureBuilder<Themes?>(
+                      future: getThemeByName(
+                          appState.selectedOptions.selectedTheme),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
                             ConnectionState.waiting) {
                           return const CircularProgressIndicator();
-                        } else if (eventsSnapshot.hasError) {
-                          return Text('Error: ${eventsSnapshot.error}');
-                        } else if (!eventsSnapshot.hasData) {
-                          return const Text('Cargando contenedores...');
-                        } else {
-                          List<Event> eventsList = eventsSnapshot.data!;
-                          appState.addAllEvents(eventsList);
-                          return Container(
-                            color: Constants.SIDE_BAR_COLOR,
-                            child: Column(
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    MyMenuBar(
-                                        appLocalizations: appLocalizations),
-                                    Expanded(
-                                      flex: 2,
-                                      child: WindowTitleBarBox(
-                                        child: MoveWindow(),
-                                      ),
-                                    ),
-                                    Expanded(
-                                        flex: 1,
-                                        child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceEvenly,
-                                            children: [
-                                              ArcadeBoxButtonWidget(),
-                                              NotificationButtonWidget(
-                                                appState: appState,
-                                                eventsList: eventsList,
-                                              )
-                                            ])),
-                                    const WindowButtons(),
-                                  ],
-                                ),
-                                Expanded(
-                                  // Utiliza Expanded aquí para que el Column ocupe todo el espacio vertical disponible
-                                  child: Row(
+                        } else if (snapshot.hasError) {
+                          return Text('Error: ${snapshot.error}');
+                        } else if (snapshot.data != null) {
+                          appState.themeApplied = snapshot.data!;
+                        }
+                        return FutureBuilder<List<Event>>(
+                            future: getAllEvents(),
+                            builder: (context, eventsSnapshot) {
+                              if (eventsSnapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const CircularProgressIndicator();
+                              } else if (eventsSnapshot.hasError) {
+                                return Text('Error: ${eventsSnapshot.error}');
+                              } else if (!eventsSnapshot.hasData) {
+                                return const Text('Cargando contenedores...');
+                              } else {
+                                List<Event> eventsList =
+                                    eventsSnapshot.data ?? [];
+                                appState.addAllEvents(eventsList);
+                                return Container(
+                                  color: hexToColor(
+                                      appState.themeApplied.sideBarColor),
+                                  child: Column(
                                     children: [
-                                      LeftSide(
-                                          appLocalizations: appLocalizations),
-                                      CenterSide(
-                                        tabController: _tabController,
-                                        imageFile: imageFile,
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          MyMenuBar(
+                                              appLocalizations:
+                                                  appLocalizations),
+                                          Expanded(
+                                            flex: 2,
+                                            child: WindowTitleBarBox(
+                                              child: MoveWindow(),
+                                            ),
+                                          ),
+                                          Expanded(
+                                              flex: 1,
+                                              child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceEvenly,
+                                                  children: [
+                                                    ArcadeBoxButtonWidget(),
+                                                    NotificationButtonWidget(
+                                                      appState: appState,
+                                                      eventsList: eventsList
+                                                          .where((element) =>
+                                                              element
+                                                                  .dismissed ==
+                                                              0)
+                                                          .toList(),
+                                                      onEventDismissedCallback:
+                                                          () {
+                                                        // Aquí puedes realizar cualquier acción que necesites en el widget padre
+                                                        // cuando se descarta un evento, como la reconstrucción.
+                                                        setState(() {});
+                                                      },
+                                                    )
+                                                  ])),
+                                          const WindowButtons(),
+                                        ],
                                       ),
-                                      RightSide(
-                                          appLocalizations: appLocalizations),
+                                      Expanded(
+                                        // Utiliza Expanded aquí para que el Column ocupe todo el espacio vertical disponible
+                                        child: Row(
+                                          children: [
+                                            LeftSide(
+                                                appLocalizations:
+                                                    appLocalizations),
+                                            CenterSide(
+                                              tabController: _tabController,
+                                              imageFile: imageFile,
+                                            ),
+                                            RightSide(
+                                                appLocalizations:
+                                                    appLocalizations),
+                                          ],
+                                        ),
+                                      ),
                                     ],
                                   ),
-                                ),
-                              ],
-                            ),
-                          );
-                        }
+                                );
+                              }
+                            });
                       });
                 });
           }
@@ -254,7 +285,7 @@ class _LeftSideState extends State<LeftSide> {
   @override
   Widget build(BuildContext context) {
     final TextEditingController searchController = TextEditingController();
-
+    final appState = Provider.of<AppState>(context);
     return Container(
         width: MediaQuery.of(context).size.width * 0.18,
         decoration: BoxDecoration(
@@ -262,13 +293,13 @@ class _LeftSideState extends State<LeftSide> {
             color: const Color.fromARGB(255, 2, 34, 14), // Color del borde
             width: 0.2, // Ancho del borde
           ),
-          gradient: const LinearGradient(
+          gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Constants.SIDE_BAR_COLOR,
-              Color.fromARGB(255, 33, 109, 72),
-              Color.fromARGB(255, 48, 87, 3)
+              hexToColor(appState.themeApplied.sideBarColor),
+              hexToColor(appState.themeApplied.backgroundStartColor),
+              hexToColor(appState.themeApplied.backgroundEndColor),
             ],
           ),
         ),
@@ -290,7 +321,7 @@ class _LeftSideState extends State<LeftSide> {
                           contentPadding: const EdgeInsets.symmetric(
                               vertical: 10, horizontal: 6),
                           filled: true,
-                          fillColor: const Color.fromARGB(127, 11, 129, 46),
+                          fillColor: Color.fromARGB(126, 160, 247, 186),
                           border: const OutlineInputBorder(),
                           hintText: appState.searchGameEnabled
                               ? widget.appLocalizations.searchInternet
@@ -450,7 +481,6 @@ class CenterSide extends StatefulWidget {
 
 class _CenterSideState extends State<CenterSide>
     with SingleTickerProviderStateMixin {
-
   @override
   void initState() {
     super.initState();
@@ -471,13 +501,13 @@ class _CenterSideState extends State<CenterSide>
                   fit: BoxFit.cover,
                 )
               : null,
-          gradient: const LinearGradient(
+          gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Constants.BACKGROUND_START_COLOR,
-              Constants.BACKGROUND_END_COLOR,
-              Color.fromARGB(255, 48, 87, 3)
+              hexToColor(appState.themeApplied.backgroundStartColor),
+              hexToColor(appState.themeApplied.backgroundMediumColor),
+              hexToColor(appState.themeApplied.backgroundEndColor),
             ],
           ),
         ),
@@ -545,6 +575,7 @@ class RightSide extends StatefulWidget {
 class _RightSideState extends State<RightSide> {
   @override
   Widget build(BuildContext context) {
+    final appState = Provider.of<AppState>(context);
     return Container(
       width: MediaQuery.of(context).size.width * 0.28,
       decoration: BoxDecoration(
@@ -552,13 +583,13 @@ class _RightSideState extends State<RightSide> {
           color: const Color.fromARGB(255, 2, 34, 14), // Color del borde
           width: 0.2, // Ancho del borde
         ),
-        gradient: const LinearGradient(
+        gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            Constants.SIDE_BAR_COLOR,
-            Color.fromARGB(255, 33, 109, 72),
-            Color.fromARGB(255, 48, 87, 3)
+            hexToColor(appState.themeApplied.backgroundStartColor),
+            hexToColor(appState.themeApplied.backgroundMediumColor),
+            hexToColor(appState.themeApplied.backgroundEndColor),
           ],
         ),
       ),

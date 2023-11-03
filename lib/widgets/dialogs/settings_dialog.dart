@@ -4,10 +4,12 @@ import 'package:synchronyx/models/global_options.dart';
 import 'package:synchronyx/providers/app_state.dart';
 import 'package:synchronyx/screens/options/calendar_visual_options.dart';
 import 'package:synchronyx/screens/options/game_visual_options.dart';
+import 'package:synchronyx/screens/options/theme_visual_options.dart';
 import 'package:synchronyx/utilities/audio_singleton.dart';
 import 'package:synchronyx/utilities/constants.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:synchronyx/utilities/generic_database_functions.dart';
+import 'package:synchronyx/utilities/generic_functions.dart';
 import 'package:synchronyx/widgets/options_tree_view.dart';
 
 import 'custom_dialog.dart';
@@ -71,19 +73,19 @@ class _SettingsDialogState extends State<SettingsDialog> {
               color: const Color.fromARGB(255, 2, 34, 14),
               width: 0.2,
             ),
-            gradient: const LinearGradient(
+            gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-                Constants.SIDE_BAR_COLOR,
-                Color.fromARGB(255, 33, 109, 72),
-                Color.fromARGB(255, 48, 87, 3),
+                hexToColor(appState.themeApplied.backgroundStartColor),
+                hexToColor(appState.themeApplied.backgroundMediumColor),
+                hexToColor(appState.themeApplied.backgroundEndColor),
               ],
             ),
           ),
           child: Column(children: [
             AppBar(
-              backgroundColor: Constants.SIDE_BAR_COLOR,
+              backgroundColor: hexToColor(appState.themeApplied.sideBarColor),
               elevation: 0.0,
               toolbarHeight: 35.0,
               titleSpacing: -20.0,
@@ -141,7 +143,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
               alignment: Alignment.bottomLeft,
               child: Container(
                 width: MediaQuery.of(context).size.width,
-                color: const Color.fromARGB(255, 48, 87, 3),
+                color: hexToColor(appState.themeApplied.backgroundEndColor),
                 padding: const EdgeInsets.symmetric(
                   horizontal: 8.0,
                   vertical: 4.0,
@@ -201,6 +203,7 @@ class LeftColumn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final appState = Provider.of<AppState>(context);
     return Expanded(
         child:
             Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
@@ -210,13 +213,13 @@ class LeftColumn extends StatelessWidget {
             color: const Color.fromARGB(255, 2, 34, 14), // Color del borde
             width: 0.2, // Ancho del borde
           ),
-          gradient: const LinearGradient(
+          gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Colors.green,
-              Color.fromARGB(255, 41, 190, 66),
-              Color.fromARGB(255, 48, 87, 3)
+              hexToColor(appState.themeApplied.backgroundStartColor),
+              hexToColor(appState.themeApplied.backgroundMediumColor),
+              hexToColor(appState.themeApplied.backgroundEndColor),
             ],
           ),
         ),
@@ -252,8 +255,8 @@ class RightColumn extends StatelessWidget {
                   color: Colors.grey, // Color del borde
                   width: 1.0, // Ancho del borde
                 ),
-                borderRadius:
-                    const BorderRadius.all(Radius.circular(2.0)), // Radio del borde
+                borderRadius: const BorderRadius.all(
+                    Radius.circular(2.0)), // Radio del borde
               ),
               child: buildOptions(appState, appLocalizations),
             )
@@ -267,6 +270,8 @@ class RightColumn extends StatelessWidget {
         return GameVisualOptions(appLocalizations: appLocalizations);
       case "calendar":
         return CalendarVisualOptions(appLocalizations: appLocalizations);
+      case "theme":
+        return ThemeVisualOptions(appLocalizations: appLocalizations);
       default:
         return const Text("data");
     }

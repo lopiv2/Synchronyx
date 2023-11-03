@@ -53,13 +53,13 @@ class _OstDownloadDialogState extends State<OstDownloadDialog> {
                 color: const Color.fromARGB(255, 2, 34, 14),
                 width: 0.2,
               ),
-              gradient: const LinearGradient(
+              gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  Constants.SIDE_BAR_COLOR,
-                  Color.fromARGB(255, 33, 109, 72),
-                  Color.fromARGB(255, 48, 87, 3),
+                  hexToColor(appState.themeApplied.sideBarColor),
+                  hexToColor(appState.themeApplied.backgroundMediumColor),
+                  hexToColor(appState.themeApplied.backgroundEndColor),
                 ],
               ),
             ),
@@ -69,7 +69,7 @@ class _OstDownloadDialogState extends State<OstDownloadDialog> {
                   child: Column(
                     children: [
                       AppBar(
-                        backgroundColor: Constants.SIDE_BAR_COLOR,
+                        backgroundColor: hexToColor(appState.themeApplied.sideBarColor),
                         elevation: 0.0,
                         toolbarHeight: 35.0,
                         titleSpacing: -20.0,
@@ -458,7 +458,7 @@ class _OstDownloadDialogState extends State<OstDownloadDialog> {
                   alignment: Alignment.bottomLeft,
                   child: Container(
                     width: MediaQuery.of(context).size.width,
-                    color: const Color.fromARGB(255, 48, 87, 3),
+                    color: hexToColor(appState.themeApplied.backgroundEndColor),
                     padding: const EdgeInsets.symmetric(
                       horizontal: 8.0,
                       vertical: 4.0,

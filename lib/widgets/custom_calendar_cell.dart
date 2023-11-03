@@ -78,7 +78,7 @@ class CustomCalendarCell<T extends Object?> extends StatelessWidget {
             } else if (snapshot.hasError) {
               return Text('Error: ${snapshot.error}');
             } else if (!snapshot.hasData) {
-              return Text('Cargando color...');
+              return const Text('Loading color...');
             } else {
               final backgroundColorText = snapshot.data!;
               final textColor = determineTextColor(backgroundColorText);

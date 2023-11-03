@@ -94,7 +94,8 @@ class _GameInfoPanelState extends State<GameInfoPanel>
         appState.selectedGame!.media.screenshots.split(',');
     String id = screensPaths[0].split('_')[0];
     String folder = '\\Synchronyx\\media\\screenshots\\$id\\';
-    String screenFolder = '${AppDirectories.instance.appDocumentsDirectory.path}$folder';
+    String screenFolder =
+        '${AppDirectories.instance.appDocumentsDirectory.path}$folder';
     List<ImageProvider<Object>> imageProvidersMarquee = List.generate(
       screensPaths.length,
       (index) => FileImage(File('$screenFolder${screensPaths[index]}')),
@@ -420,7 +421,8 @@ class _GameInfoPanelState extends State<GameInfoPanel>
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
             child: Container(
                 decoration: BoxDecoration(
-                  color: const Color.fromARGB(46, 12, 77, 12),
+                  color: hexToColorWithAlpha(
+                      appState.themeApplied.backgroundStartColor, 150),
                   borderRadius: BorderRadius.circular(20),
                   //border: Border.all(),
                   boxShadow: const [
@@ -442,8 +444,8 @@ class _GameInfoPanelState extends State<GameInfoPanel>
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                    style:
-                                        const TextStyle(fontWeight: FontWeight.bold),
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold),
                                     widget.appLocalizations.launchDate),
                               ],
                             ),
@@ -476,8 +478,8 @@ class _GameInfoPanelState extends State<GameInfoPanel>
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                    style:
-                                        const TextStyle(fontWeight: FontWeight.bold),
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold),
                                     widget.appLocalizations.developer),
                               ],
                             ),
@@ -592,11 +594,13 @@ class _GameInfoPanelState extends State<GameInfoPanel>
                           26, 0, 26, 0), // Agrega el padding deseado
                       child: Divider()),
                 ]))),
+        //Description Box
         Padding(
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
             child: Container(
                 decoration: BoxDecoration(
-                  color: const Color.fromARGB(46, 12, 77, 12),
+                  color: hexToColorWithAlpha(
+                      appState.themeApplied.backgroundStartColor, 150),
                   borderRadius: BorderRadius.circular(20),
                   //border: Border.all(),
                   boxShadow: const [

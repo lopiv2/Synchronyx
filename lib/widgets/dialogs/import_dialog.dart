@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:synchronyx/providers/app_state.dart';
 import 'package:synchronyx/utilities/constants.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:synchronyx/utilities/generic_functions.dart';
 
 class ImportDialog extends StatefulWidget {
   final IconData titleIcon;
@@ -32,6 +33,7 @@ class _ImportDialogState extends State<ImportDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final appState = Provider.of<AppState>(context);
     return GestureDetector(
       onPanUpdate: (details) {
         setState(() {
@@ -48,13 +50,13 @@ class _ImportDialogState extends State<ImportDialog> {
               color: const Color.fromARGB(255, 2, 34, 14),
               width: 0.2,
             ),
-            gradient: const LinearGradient(
+            gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-                Constants.SIDE_BAR_COLOR,
-                Color.fromARGB(255, 33, 109, 72),
-                Color.fromARGB(255, 48, 87, 3),
+                hexToColor(appState.themeApplied.backgroundStartColor),
+                hexToColor(appState.themeApplied.backgroundMediumColor),
+                hexToColor(appState.themeApplied.backgroundEndColor),
               ],
             ),
           ),
@@ -64,7 +66,7 @@ class _ImportDialogState extends State<ImportDialog> {
                 child: Column(
                   children: [
                     AppBar(
-                      backgroundColor: Constants.SIDE_BAR_COLOR,
+                      backgroundColor: hexToColor(appState.themeApplied.sideBarColor),
                       elevation: 0.0,
                       toolbarHeight: 35.0,
                       titleSpacing: -20.0,

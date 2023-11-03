@@ -9,6 +9,7 @@ import 'package:synchronyx/models/event.dart';
 import 'package:synchronyx/models/global_options.dart';
 import 'package:synchronyx/models/responses/gameMedia_response.dart';
 import 'package:synchronyx/models/media.dart';
+import 'package:synchronyx/models/themes.dart';
 import 'package:synchronyx/utilities/app_directory_singleton.dart';
 import '../models/api.dart';
 import 'package:synchronyx/utilities/constants.dart';
@@ -139,7 +140,8 @@ Future<Database?> createAndOpenDB() async {
           'logoAnimation TEXT,'
           'showBackgroundImageCalendar INTEGER,'
           'hoursAdvanceNotice INTEGER,'
-          'imageBackgroundFile TEXT'
+          'imageBackgroundFile TEXT,'
+          'selectedTheme TEXT'
           ')',
         );
         await db.insert(
@@ -153,6 +155,7 @@ Future<Database?> createAndOpenDB() async {
             'showBackgroundImageCalendar': 0,
             'hoursAdvanceNotice': 48,
             'imageBackgroundFile': '',
+            'selectedTheme': 'Slime World',
           },
         );
         // Create the Emulators table
@@ -167,6 +170,29 @@ Future<Database?> createAndOpenDB() async {
           'installed INTEGER,'
           ')',
         );
+        // Create the Themes table
+        await db.execute(
+          'CREATE TABLE IF NOT EXISTS themes('
+          'id INTEGER PRIMARY KEY AUTOINCREMENT,'
+          'name TEXT,'
+          'sideBarColor TEXT,'
+          'backgroundStartColor TEXT,'
+          'backgroundMediumColor TEXT,'
+          'backgroundEndColor TEXT,'
+          'backendFont TEXT'
+          ')',
+        );
+        await db.insert(
+          'themes',
+          {
+            'name': 'Slime World',
+            'sideBarColor': colorToHex(const Color.fromARGB(255, 56, 156, 75)),
+            'backgroundStartColor': colorToHex(const Color.fromARGB(255, 33, 187, 115)),
+            'backgroundMediumColor': colorToHex(const Color.fromARGB(255, 33, 109, 72)),
+            'backgroundEndColor': colorToHex(const Color.fromARGB(255, 5, 148, 29)),
+            'backendFont': 0,
+          },
+        );
       },
       version: 1,
     );
@@ -180,6 +206,36 @@ Future<Database?> createAndOpenDB() async {
 /* -------------------------------------------------------------------------- */
 /*                                GET FUNCTIONS                               */
 /* -------------------------------------------------------------------------- */
+
+/* ----------------------- Get all available emulators ---------------------- */
+Future<List<Emulators>> getAllEmulators() async {
+  // Get a reference to the database.
+  final db = Constants.database;
+
+  List<Map<String, dynamic>> maps = List.empty(growable: true);
+
+  if (db != null) {
+    // Query the table for all The Emulators.
+    maps = await db.query('emulators');
+  }
+
+  return maps.map((map) => Emulators.fromMap(map)).toList();
+}
+
+/* ------- A method that retrieves all the events from the events table. ------ */
+Future<List<Event>> getAllEvents() async {
+  // Get a reference to the database.
+  final db = Constants.database;
+
+  List<Map<String, dynamic>> maps = List.empty(growable: true);
+
+  if (db != null) {
+    // Query the table for all The Events.
+    maps = await db.query('events');
+  }
+
+  return maps.map((map) => Event.fromMap(map)).toList();
+}
 
 /* ------- A method that retrieves all the games from the games table. ------ */
 Future<List<Game>> getAllGames() async {
@@ -241,34 +297,32 @@ Future<List<Game>> getAllGamesWithFilter(String filter, String value) async {
   return maps.map((map) => Game.fromMap(map)).toList();
 }
 
-/* ------- A method that retrieves all the events from the events table. ------ */
-Future<List<Event>> getAllEvents() async {
+/* ------- A method that retrieves all the Themes from the themes table. ------ */
+Future<List<Themes>> getAllThemes() async {
   // Get a reference to the database.
   final db = Constants.database;
 
   List<Map<String, dynamic>> maps = List.empty(growable: true);
 
   if (db != null) {
-    // Query the table for all The Games.
-    maps = await db.query('events');
+    // Query the table for all The Themes.
+    maps = await db.query('themes');
   }
 
-  return maps.map((map) => Event.fromMap(map)).toList();
+  return maps.map((map) => Themes.fromMap(map)).toList();
 }
 
-/* ----------------------- Get all available emulators ---------------------- */
-Future<List<Emulators>> getAllEmulators() async {
-  // Get a reference to the database.
-  final db = Constants.database;
-
-  List<Map<String, dynamic>> maps = List.empty(growable: true);
-
-  if (db != null) {
-    // Query the table for all The Games.
-    maps = await db.query('emulators');
+/* ---------------------------- Get event to dismiss --------------------------- */
+Future<void> getEventAndDismiss(String name) async {
+  // Verify if the database is open before continuing
+  if (Constants.database != null) {
+    await Constants.database?.update(
+      'events',
+      {'dismissed': 1}, // Valores a actualizar
+      where: 'name = ?',
+      whereArgs: [name],
+    );
   }
-
-  return maps.map((map) => Emulators.fromMap(map)).toList();
 }
 
 /* ------------------------- Get options from table ------------------------- */
@@ -361,6 +415,22 @@ Future<Media?> getMediaById(int id) async {
     }
   }
   return null;
+}
+
+Future<Themes?> getThemeByName(String name) async {
+  final db = Constants.database;
+  if (db != null) {
+    final maps = await db.query(
+      'themes',
+      where: 'name = ?',
+      whereArgs: [name],
+    );
+
+    if (maps.isNotEmpty) {
+      return Themes.fromMap(maps.first);
+    }
+  }
+  return null; // Returns null if the subject is not found in the database.
 }
 
 /* -------------------------------------------------------------------------- */

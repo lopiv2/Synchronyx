@@ -8,6 +8,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:synchronyx/utilities/generic_database_functions.dart'
     as databaseFunctions;
 import 'package:synchronyx/utilities/generic_api_functions.dart';
+import 'package:synchronyx/utilities/generic_functions.dart';
 import 'package:synchronyx/widgets/dialogs/emulators_list_dialog.dart';
 import 'package:synchronyx/widgets/dialogs/import_dialog.dart';
 import 'package:synchronyx/widgets/dialogs/settings_dialog.dart';
@@ -92,7 +93,9 @@ class MyMenuBar extends StatelessWidget {
         SizedBox(
           child: MenuBar(
             style: MenuStyle(
-              backgroundColor: myColor,
+              backgroundColor: MaterialStateProperty.resolveWith((states) {
+                return hexToColor(appState.themeApplied.sideBarColor);
+              }),
             ),
             children: <Widget>[
               SubmenuButton(
@@ -418,7 +421,8 @@ class MyMenuBar extends StatelessWidget {
                             builder: (context) {
                               return ImportDialog(
                                 appLocalizations: appLocalizations,
-                                iconColor: const Color.fromARGB(255, 98, 219, 102),
+                                iconColor:
+                                    const Color.fromARGB(255, 98, 219, 102),
                                 titleIcon: CustomIcons.xbox,
                                 title: appLocalizations.importXboxWindowTitle,
                                 steps: [
@@ -445,7 +449,8 @@ class MyMenuBar extends StatelessWidget {
                         leadingIcon:
                             const Icon(CustomIcons.emulators, size: 20),
                         onPressed: () async {
-                          await databaseFunctions.insertEmulators(Constants.emulatorsList);
+                          await databaseFunctions
+                              .insertEmulators(Constants.emulatorsList);
                           showDialog(
                             context: context,
                             barrierDismissible: false,

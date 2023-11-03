@@ -57,8 +57,10 @@ class _OptionsTreeViewState extends State<OptionsTreeView> {
         value: 'prefs'));
     v.children.add(Options(
         title: widget.appLocalizations.optionsGameTitle, value: 'games'));
-    v.children.add(Options(
-        title: widget.appLocalizations.tabCalendar, value: 'calendar'));
+    v.children.add(
+        Options(title: widget.appLocalizations.tabCalendar, value: 'calendar'));
+    v.children.add(
+        Options(title: widget.appLocalizations.optionsThemeTitle, value: 'theme'));
     return optionsNodes;
   }
 

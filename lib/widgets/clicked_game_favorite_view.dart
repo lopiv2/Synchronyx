@@ -18,6 +18,7 @@ import 'package:synchronyx/utilities/generic_database_functions.dart'
     // ignore: library_prefixes
     as databaseFunctions;
 import 'package:synchronyx/utilities/generic_api_functions.dart';
+import 'package:synchronyx/utilities/generic_functions.dart';
 import 'package:synchronyx/widgets/cheap_shark_results_list.dart';
 
 // ignore: must_be_immutable
@@ -415,7 +416,7 @@ class _ToggleFavoriteOwnedButtonState extends State<ToggleFavoriteOwnedButton> {
                       }
                     },
               color: isOwned
-                  ? const Color.fromARGB(255, 36, 100, 62)
+                  ? hexToColor(appState.themeApplied.backgroundStartColor)
                   : GFColors.DANGER,
               hoverColor: Colors.blueGrey,
               text: !isOwned

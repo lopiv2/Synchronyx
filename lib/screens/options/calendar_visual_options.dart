@@ -28,7 +28,7 @@ class _CalendarVisualOptionsState extends State<CalendarVisualOptions> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text(widget.appLocalizations.optionsGameTitle,
+            Text(widget.appLocalizations.tabCalendar,
                 style:
                     const TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
           ]),
