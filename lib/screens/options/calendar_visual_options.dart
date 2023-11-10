@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:synchronyx/providers/app_state.dart';
-import 'package:synchronyx/widgets/buttons/file_selector_button.dart';
-import 'package:synchronyx/widgets/sliders/notice_hours_alert_slider.dart';
+import 'package:lioncade/providers/app_state.dart';
+import 'package:lioncade/widgets/buttons/file_selector_button.dart';
+import 'package:lioncade/widgets/sliders/notice_hours_alert_slider.dart';
 
 class CalendarVisualOptions extends StatefulWidget {
   final AppLocalizations appLocalizations;

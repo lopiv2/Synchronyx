@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_fancy_tree_view/flutter_fancy_tree_view.dart';
-import 'package:synchronyx/models/Options.dart';
-import 'package:synchronyx/widgets/buttons/custom_options_button.dart';
+import 'package:lioncade/models/Options.dart';
+import 'package:lioncade/widgets/buttons/custom_options_button.dart';
 
 class OptionsTreeTile extends StatelessWidget {
   const OptionsTreeTile({

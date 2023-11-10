@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.synchronyx">
+    package="com.example.lioncade">
    <application
-        android:label="synchronyx"
+        android:label="lioncade"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

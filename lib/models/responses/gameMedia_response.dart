@@ -1,4 +1,4 @@
-import 'package:synchronyx/models/media.dart';
+import 'package:lioncade/models/media.dart';
 
 import '../game.dart';
 

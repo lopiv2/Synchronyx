@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_fancy_tree_view/flutter_fancy_tree_view.dart';
-import 'package:synchronyx/models/platforms.dart';
-import 'package:synchronyx/widgets/buttons/custom_folder_button.dart';
+import 'package:lioncade/models/platforms.dart';
+import 'package:lioncade/widgets/buttons/custom_folder_button.dart';
 
 class PlatformTreeTile extends StatelessWidget {
   const PlatformTreeTile({

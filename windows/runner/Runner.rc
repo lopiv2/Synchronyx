@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "synchronyx" "\0"
+            VALUE "FileDescription", "lioncade" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "synchronyx" "\0"
+            VALUE "InternalName", "lioncade" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2023 com.example. All rights reserved." "\0"
-            VALUE "OriginalFilename", "synchronyx.exe" "\0"
-            VALUE "ProductName", "synchronyx" "\0"
+            VALUE "OriginalFilename", "lioncade.exe" "\0"
+            VALUE "ProductName", "lioncade" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

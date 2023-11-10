@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:synchronyx/models/responses/cheapSharkResponse_response.dart';
-import 'package:synchronyx/utilities/generic_api_functions.dart';
+import 'package:lioncade/models/responses/cheapSharkResponse_response.dart';
+import 'package:lioncade/utilities/generic_api_functions.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 

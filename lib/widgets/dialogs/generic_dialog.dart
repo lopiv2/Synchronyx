@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:synchronyx/icons/custom_icons_icons.dart';
-import 'package:synchronyx/providers/app_state.dart';
-import 'package:synchronyx/utilities/audio_singleton.dart';
-import 'package:synchronyx/utilities/constants.dart';
+import 'package:lioncade/icons/custom_icons_icons.dart';
+import 'package:lioncade/providers/app_state.dart';
+import 'package:lioncade/utilities/audio_singleton.dart';
+import 'package:lioncade/utilities/constants.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:synchronyx/utilities/generic_functions.dart';
-import 'package:synchronyx/widgets/dialogs/import_dialog.dart';
+import 'package:lioncade/utilities/generic_functions.dart';
+import 'package:lioncade/widgets/dialogs/import_dialog.dart';
 
 class GenericDialog extends StatefulWidget {
   GenericDialog(

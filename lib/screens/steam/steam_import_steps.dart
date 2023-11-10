@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:synchronyx/models/api.dart';
-import 'package:synchronyx/providers/app_state.dart';
-import 'package:synchronyx/screens/generic_import_step.dart';
-import 'package:synchronyx/utilities/generic_database_functions.dart'
+import 'package:lioncade/models/api.dart';
+import 'package:lioncade/providers/app_state.dart';
+import 'package:lioncade/screens/generic_import_step.dart';
+import 'package:lioncade/utilities/generic_database_functions.dart'
+    // ignore: library_prefixes
     as databaseFunctions;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:synchronyx/utilities/constants.dart';
+import 'package:lioncade/utilities/constants.dart';
 
 typedef OnFinishCallback = void Function(
     Map<String, dynamic> collectedData, PlatformStore store);
@@ -26,13 +27,13 @@ class SteamImportSteps extends StatefulWidget {
 
       // Recorrer las claves (keys) del mapa y obtener los valores de los controladores
       controllerMap.forEach((key, controller) {
-        collectedData['$key'] = controller.text;
+        collectedData[key] = controller.text;
       });
     }
     return collectedData;
   }
 
-  SteamImportSteps({
+  const SteamImportSteps({
     Key? key,
     required this.content,
     this.appLocalizations,
@@ -174,13 +175,7 @@ class SteamImportSteps extends StatefulWidget {
                       child: TextField(
                         controller: steamApiController,
                         style: const TextStyle(color: Colors.white),
-                        onSubmitted: (value) {
-                          // Guardar el valor ingresado en la variable
-                          //String steamApi = Constants.con[1].text;
-                          // Aquí puedes hacer lo que quieras con el valor ingresado
-                          // Por ejemplo, imprimirlo en la consola:
-                          //print('Steam Api: $steamApi');
-                        },
+                        onSubmitted: (value) {},
                       ),
                     ),
                   ),
@@ -223,23 +218,32 @@ class SteamImportSteps extends StatefulWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
                         Map<String, dynamic> collectedData =
                             _collectDataFromControllers();
                         onFinish(collectedData, PlatformStore.Steam);
                         appState.setImportingState('importing');
+                        await Future.delayed(const Duration(seconds: 1));
                       },
-                      child: Text(appLocalizations.finish),
+                      child: Text(appLocalizations.start),
                     ),
                   ],
                 ),
                 appState.isImporting == 'importing'
-                    ? const CircularProgressIndicator() // Show progress indicator if import is in progress
+                    ? Column(
+                        children: [
+                          /*const CircularProgressIndicator(),
+                          const SizedBox(
+                            height: 10,
+                          ),*/
+                          Text(appState.gameBeingImported),
+                        ],
+                      ) // Show progress indicator if import is in progress
                     : appState.isImporting == 'finished'
-                        ? const Text(
-                            'Finalizado') // Show 'Finished' if import is completed
+                        ? Text(appLocalizations
+                            .finished) // Show 'Finished' if import is completed
                         : const Text(''),
-                //LinearProgressIndicator(value: Constants.importProgress),
+                const LinearProgressWidget(),
               ],
             );
           },
@@ -250,7 +254,32 @@ class SteamImportSteps extends StatefulWidget {
   }
 
   @override
+  // ignore: library_private_types_in_public_api
   _SteamImportStepsState createState() => _SteamImportStepsState();
+}
+
+class LinearProgressWidget extends StatelessWidget {
+  const LinearProgressWidget({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final appState = Provider.of<AppState>(context);
+    return Column(
+      children: [
+        LinearProgressIndicator(
+          value: appState.importProgress,
+          minHeight: 20.0,
+          backgroundColor: Colors.grey,
+          valueColor: const AlwaysStoppedAnimation<Color>(Colors.blue),
+        ),
+        appState.isImporting == 'importing'
+            ? Text('${(appState.importProgress) * 100}%')
+            : const Text(''),
+      ],
+    );
+  }
 }
 
 class _SteamImportStepsState extends State<SteamImportSteps> {
@@ -258,7 +287,6 @@ class _SteamImportStepsState extends State<SteamImportSteps> {
   void initState() {
     super.initState();
     _loadFoundApi();
-    //widget.steamIdController.addListener(_printLatestValue);
   }
 
   Future<void> _loadFoundApi() async {
@@ -270,18 +298,11 @@ class _SteamImportStepsState extends State<SteamImportSteps> {
 
   @override
   void dispose() {
-    //widget.steamIdController.dispose();
     super.dispose();
-  }
-
-  void _printLatestValue() {
-    //print('Second text field: ${widget.steamIdController.text}');
   }
 
   @override
   Widget build(BuildContext context) {
-    final appState = Provider.of<AppState>(context);
-    //print(Constants.foundApiBeforeImport);
     return widget.content;
   }
 }

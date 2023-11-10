@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:synchronyx/providers/app_state.dart';
-import 'package:synchronyx/utilities/Constants.dart';
+import 'package:lioncade/providers/app_state.dart';
+import 'package:lioncade/utilities/Constants.dart';
 
 class AnimationsDropdownWithTextToLeft extends StatefulWidget {
   const AnimationsDropdownWithTextToLeft(

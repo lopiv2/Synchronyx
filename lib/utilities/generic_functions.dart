@@ -5,11 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:lioncade/providers/app_state.dart';
 import 'package:palette_generator/palette_generator.dart';
-import 'package:synchronyx/models/emulators.dart';
-import 'package:synchronyx/models/responses/emulator_download_response.dart';
-import 'package:synchronyx/utilities/app_directory_singleton.dart';
-import 'package:synchronyx/utilities/generic_api_functions.dart';
+import 'package:lioncade/models/emulators.dart';
+import 'package:lioncade/models/responses/emulator_download_response.dart';
+import 'package:lioncade/utilities/app_directory_singleton.dart';
+import 'package:lioncade/utilities/generic_api_functions.dart';
 import 'Constants.dart';
 
 /* -------------------- Converts a color from ARGB to Hex ------------------- */
@@ -229,7 +230,7 @@ Future<void> downloadFile(String url) async {
   try {
     final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
-      String folder = '\\Synchronyx\\downloads\\';
+      String folder = '\\Lioncade\\downloads\\';
       List<String> parts = url.split("/");
       String fileName = parts.last;
       //await Constants.initialize();
@@ -324,7 +325,7 @@ String generateRandomAlphanumeric() {
   const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
 
   String randomString = '';
-  for (int i = 0; i < 6; i++) {
+  for (int i = 0; i < 4; i++) {
     int randomIndex = random.nextInt(characters.length);
     randomString += characters[randomIndex];
   }
@@ -417,7 +418,8 @@ Future<List<EmulatorDownloadResponse>> selectEmulatorScrapper(
 }
 
 /* ----------------------- Updates progress bar value ----------------------- */
-void updateProgress(int currentCount, int totalGames) {
+void updateProgress(AppState appState, int currentCount, int totalGames, String name) {
   double progress = currentCount / totalGames;
-  Constants.importProgress = progress;
+  appState.setImportingProgress(progress);
+  appState.setImportingGame(name);
 }

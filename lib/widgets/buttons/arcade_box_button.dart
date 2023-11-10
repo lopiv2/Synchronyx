@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:synchronyx/models/game.dart';
+import 'package:lioncade/models/game.dart';
 
 var game = Game(
   id: 0,

@@ -5,21 +5,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:provider/provider.dart';
-import 'package:synchronyx/icons/custom_icons_icons.dart';
-import 'package:synchronyx/models/event.dart';
-import 'package:synchronyx/models/game.dart';
-import 'package:synchronyx/models/media.dart';
-import 'package:synchronyx/models/responses/rawg_response.dart';
+import 'package:lioncade/icons/custom_icons_icons.dart';
+import 'package:lioncade/models/event.dart';
+import 'package:lioncade/models/game.dart';
+import 'package:lioncade/models/media.dart';
+import 'package:lioncade/models/responses/rawg_response.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:synchronyx/providers/app_state.dart';
-import 'package:synchronyx/utilities/Constants.dart';
-import 'package:synchronyx/utilities/app_directory_singleton.dart';
-import 'package:synchronyx/utilities/generic_database_functions.dart'
+import 'package:lioncade/providers/app_state.dart';
+import 'package:lioncade/utilities/Constants.dart';
+import 'package:lioncade/utilities/app_directory_singleton.dart';
+import 'package:lioncade/utilities/generic_database_functions.dart'
     // ignore: library_prefixes
     as databaseFunctions;
-import 'package:synchronyx/utilities/generic_api_functions.dart';
-import 'package:synchronyx/utilities/generic_functions.dart';
-import 'package:synchronyx/widgets/cheap_shark_results_list.dart';
+import 'package:lioncade/utilities/generic_api_functions.dart';
+import 'package:lioncade/utilities/generic_functions.dart';
+import 'package:lioncade/widgets/cheap_shark_results_list.dart';
 
 // ignore: must_be_immutable
 class ClickedGameBuyableView extends StatelessWidget {

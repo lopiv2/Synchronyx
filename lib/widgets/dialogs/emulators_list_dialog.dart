@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:getwidget/components/accordion/gf_accordion.dart';
 import 'package:provider/provider.dart';
-import 'package:synchronyx/icons/custom_icons_icons.dart';
-import 'package:synchronyx/models/emulators.dart';
-import 'package:synchronyx/models/responses/emulator_download_response.dart';
-import 'package:synchronyx/providers/app_state.dart';
-import 'package:synchronyx/utilities/constants.dart';
-import 'package:synchronyx/utilities/generic_database_functions.dart';
-import 'package:synchronyx/utilities/generic_functions.dart';
-import 'package:synchronyx/widgets/dialogs/download_progress_dialog.dart';
-import 'package:synchronyx/widgets/dialogs/generic_dialog.dart';
+import 'package:lioncade/icons/custom_icons_icons.dart';
+import 'package:lioncade/models/emulators.dart';
+import 'package:lioncade/models/responses/emulator_download_response.dart';
+import 'package:lioncade/providers/app_state.dart';
+import 'package:lioncade/utilities/constants.dart';
+import 'package:lioncade/utilities/generic_database_functions.dart';
+import 'package:lioncade/utilities/generic_functions.dart';
+import 'package:lioncade/widgets/dialogs/download_progress_dialog.dart';
+import 'package:lioncade/widgets/dialogs/generic_dialog.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class EmulatorListDialog extends StatelessWidget {

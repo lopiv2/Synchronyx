@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:synchronyx/models/responses/khinsider_response.dart';
-import 'package:synchronyx/providers/app_state.dart';
-import 'package:synchronyx/utilities/audio_singleton.dart';
-import 'package:synchronyx/utilities/constants.dart';
+import 'package:lioncade/models/responses/khinsider_response.dart';
+import 'package:lioncade/providers/app_state.dart';
+import 'package:lioncade/utilities/audio_singleton.dart';
+import 'package:lioncade/utilities/constants.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:synchronyx/utilities/generic_api_functions.dart';
-import 'package:synchronyx/utilities/generic_database_functions.dart';
-import 'package:synchronyx/utilities/generic_functions.dart';
-import 'package:synchronyx/widgets/buttons/icon_button_colored.dart';
-import 'package:synchronyx/widgets/dialogs/import_dialog.dart';
+import 'package:lioncade/utilities/generic_api_functions.dart';
+import 'package:lioncade/utilities/generic_database_functions.dart';
+import 'package:lioncade/utilities/generic_functions.dart';
+import 'package:lioncade/widgets/buttons/icon_button_colored.dart';
+import 'package:lioncade/widgets/dialogs/import_dialog.dart';
 
 class OstDownloadDialog extends StatefulWidget {
   OstDownloadDialog({super.key, required this.appLocalizations});
@@ -643,7 +643,7 @@ class _AudioControlButtonsState extends State<AudioControlButtons> {
                     String url = widget.audioUrl;
                     mp3Play = await DioClient().getMp3UrlDownload(url: url);
                     int? mediaId = appState.selectedGame?.media.id;
-                    String audioFolder = '\\Synchronyx\\media\\audio\\$id\\';
+                    String audioFolder = '\\Lioncade\\media\\audio\\$id\\';
                     String audioName = '${id}_ost.mp3';
                     downloadAndSaveAudioOst(mp3Play, audioName, audioFolder);
                     updateOstInMedia(audioName, mediaId);

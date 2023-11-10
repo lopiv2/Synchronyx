@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'dart:math';
-import 'package:synchronyx/utilities/generic_api_functions.dart';
+import 'package:lioncade/utilities/generic_api_functions.dart';
 import '../models/game.dart';
 import '../models/responses/gameMedia_response.dart';
 import '../models/media.dart';

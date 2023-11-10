@@ -6,19 +6,19 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:provider/provider.dart';
 import 'package:pushable_button/pushable_button.dart';
-import 'package:synchronyx/models/responses/gameMedia_response.dart';
-import 'package:synchronyx/utilities/Constants.dart';
-import 'package:synchronyx/utilities/app_directory_singleton.dart';
-import 'package:synchronyx/utilities/audio_singleton.dart';
-import 'package:synchronyx/utilities/generic_functions.dart';
-import 'package:synchronyx/widgets/buttons/icon_button_colored.dart';
-import 'package:synchronyx/widgets/cheap_shark_results_list.dart';
-import 'package:synchronyx/widgets/dialogs/image_preview_dialog.dart';
-import 'package:synchronyx/widgets/dialogs/ost_download_dialog.dart';
+import 'package:lioncade/models/responses/gameMedia_response.dart';
+import 'package:lioncade/utilities/Constants.dart';
+import 'package:lioncade/utilities/app_directory_singleton.dart';
+import 'package:lioncade/utilities/audio_singleton.dart';
+import 'package:lioncade/utilities/generic_functions.dart';
+import 'package:lioncade/widgets/buttons/icon_button_colored.dart';
+import 'package:lioncade/widgets/cheap_shark_results_list.dart';
+import 'package:lioncade/widgets/dialogs/image_preview_dialog.dart';
+import 'package:lioncade/widgets/dialogs/ost_download_dialog.dart';
 import '../providers/app_state.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:synchronyx/utilities/generic_database_functions.dart'
+import 'package:lioncade/utilities/generic_database_functions.dart'
     // ignore: library_prefixes
     as databaseFunctions;
 
@@ -93,7 +93,7 @@ class _GameInfoPanelState extends State<GameInfoPanel>
     List<String> screensPaths =
         appState.selectedGame!.media.screenshots.split(',');
     String id = screensPaths[0].split('_')[0];
-    String folder = '\\Synchronyx\\media\\screenshots\\$id\\';
+    String folder = '\\Lioncade\\media\\screenshots\\$id\\';
     String screenFolder =
         '${AppDirectories.instance.appDocumentsDirectory.path}$folder';
     List<ImageProvider<Object>> imageProvidersMarquee = List.generate(
@@ -363,8 +363,7 @@ class _GameInfoPanelState extends State<GameInfoPanel>
                               fit: BoxFit.fitHeight,
                               colorFilter: isHovered
                                   ? ColorFilter.mode(
-                                      const Color.fromARGB(255, 155, 16, 16)
-                                          .withOpacity(0.1),
+                                      hexToColorWithAlpha (appState.themeApplied.backgroundMediumColor,0),
                                       BlendMode.srcATop,
                                     )
                                   : null,
@@ -425,9 +424,10 @@ class _GameInfoPanelState extends State<GameInfoPanel>
                       appState.themeApplied.backgroundStartColor, 150),
                   borderRadius: BorderRadius.circular(20),
                   //border: Border.all(),
-                  boxShadow: const [
+                  boxShadow: [
                     BoxShadow(
-                      color: Color.fromARGB(153, 12, 77, 12),
+                      color: hexToColorWithAlpha(
+                      appState.themeApplied.backgroundMediumColor, 255),
                       spreadRadius: 2,
                       blurRadius: 3,
                       offset: Offset(2, 2), // changes position of shadow
@@ -603,9 +603,10 @@ class _GameInfoPanelState extends State<GameInfoPanel>
                       appState.themeApplied.backgroundStartColor, 150),
                   borderRadius: BorderRadius.circular(20),
                   //border: Border.all(),
-                  boxShadow: const [
+                  boxShadow: [
                     BoxShadow(
-                      color: Color.fromARGB(153, 12, 77, 12),
+                      color: hexToColorWithAlpha(
+                      appState.themeApplied.backgroundMediumColor, 255),
                       spreadRadius: 2,
                       blurRadius: 3,
                       offset: Offset(2, 2), // changes position of shadow
@@ -696,7 +697,7 @@ class _GameInfoPanelState extends State<GameInfoPanel>
   Future<void> playOst(AppState appState) async {
     List<String>? parts = appState.selectedGame?.media.musicUrl.split('_');
     String id = parts!.first;
-    String soundFolder = '\\Synchronyx\\media\\audio\\$id\\';
+    String soundFolder = '\\Lioncade\\media\\audio\\$id\\';
     audioManager.audioPlayer.setReleaseMode(ReleaseMode.loop);
     if (appState.selectedGame?.media.musicUrl != '') {
       await audioManager.playFile(

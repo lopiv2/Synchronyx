@@ -8,10 +8,10 @@ import 'package:path_provider/path_provider.dart';
 // ignore: depend_on_referenced_packages
 import 'package:sqflite_common/sqlite_api.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:synchronyx/icons/custom_icons_icons.dart';
-import 'package:synchronyx/models/emulators.dart';
-import 'package:synchronyx/utilities/app_directory_singleton.dart';
-import 'package:synchronyx/widgets/animation_container_logo.dart';
+import 'package:lioncade/icons/custom_icons_icons.dart';
+import 'package:lioncade/models/emulators.dart';
+import 'package:lioncade/utilities/app_directory_singleton.dart';
+import 'package:lioncade/widgets/animation_container_logo.dart';
 import '../models/api.dart';
 
 enum PlatformStore {
@@ -474,7 +474,7 @@ enum GamePlatforms {
 }
 
 class Constants {
-  static const String APP_NAME = "Synchronyx";
+  static const String APP_NAME = "Lioncade";
   static const int MAX_ITEMS = 10;
   static const double defaultPadding = 16.0;
   static const SIDE_BAR_COLOR = Color.fromARGB(255, 56, 156, 75);
@@ -483,7 +483,6 @@ class Constants {
   static List<Map<String, TextEditingController>> controllerMapList = [];
   static Api? foundApiBeforeImport;
   static Database? database;
-  static double importProgress = 0.0;
 
   static List<Emulators> emulatorsList = [
     Emulators(

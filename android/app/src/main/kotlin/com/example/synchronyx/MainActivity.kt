@@ -1,4 +1,4 @@
-package com.example.synchronyx
+package com.example.lioncade
 
 import io.flutter.embedding.android.FlutterActivity
 

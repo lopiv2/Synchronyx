@@ -1,7 +1,8 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
+import 'package:lioncade/utilities/generic_functions.dart';
 import 'package:provider/provider.dart';
-import 'package:synchronyx/models/responses/gameMedia_response.dart';
+import 'package:lioncade/models/responses/gameMedia_response.dart';
 import '../providers/app_state.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -41,11 +42,16 @@ class _GameInfoPanelState extends State<FilterInfoPanel> {
             child: Stack(
               children: <Widget>[
                 Container(
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage('assets/images/backgrounds/info.jpg'),
-                      fit: BoxFit.cover,
-                    ),
+                        image: const AssetImage(
+                            'assets/images/backgrounds/info.jpg'),
+                        fit: BoxFit.cover,
+                        colorFilter: ColorFilter.mode(
+                          hexToColorWithAlpha(
+                              appState.themeApplied.backgroundMediumColor, 255),
+                          BlendMode.color,
+                        )),
                   ),
                 ),
                 Positioned(
@@ -80,8 +86,7 @@ class _GameInfoPanelState extends State<FilterInfoPanel> {
                   padding: EdgeInsets.fromLTRB(
                       16, 16, 16, 0), // Márgenes izquierdo y derecho
                   child: Text('0h 00m 00s',
-                      style:
-                          TextStyle(color: Colors.white, fontSize: 16)),
+                      style: TextStyle(color: Colors.white, fontSize: 16)),
                 ))
           ],
         ),
@@ -91,15 +96,16 @@ class _GameInfoPanelState extends State<FilterInfoPanel> {
           child: Container(
               height: 200,
               decoration: BoxDecoration(
-                color: const Color.fromARGB(46, 12, 77, 12),
+                color: hexToColorWithAlpha(
+                    appState.themeApplied.backgroundStartColor, 150),
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(),
-                boxShadow: const [
+                boxShadow: [
                   BoxShadow(
-                    color: Color.fromARGB(181, 12, 77, 12),
+                    color: const Color.fromARGB(141, 0, 0, 0),
                     spreadRadius: 1,
                     blurRadius: 1,
-                    offset: Offset(0, 0), // changes position of shadow
+                    offset: Offset(2, 2), // changes position of shadow
                   ),
                 ],
               )),

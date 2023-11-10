@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:synchronyx/icons/custom_icons_icons.dart';
-import 'package:synchronyx/providers/app_state.dart';
-import 'package:synchronyx/screens/steam/steam_import_steps.dart';
-import 'package:synchronyx/utilities/constants.dart';
+import 'package:lioncade/icons/custom_icons_icons.dart';
+import 'package:lioncade/providers/app_state.dart';
+import 'package:lioncade/screens/steam/steam_import_steps.dart';
+import 'package:lioncade/utilities/constants.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:synchronyx/utilities/generic_database_functions.dart'
+import 'package:lioncade/utilities/generic_database_functions.dart'
     as databaseFunctions;
-import 'package:synchronyx/utilities/generic_api_functions.dart';
-import 'package:synchronyx/utilities/generic_functions.dart';
-import 'package:synchronyx/widgets/dialogs/emulators_list_dialog.dart';
-import 'package:synchronyx/widgets/dialogs/import_dialog.dart';
-import 'package:synchronyx/widgets/dialogs/settings_dialog.dart';
+import 'package:lioncade/utilities/generic_api_functions.dart';
+import 'package:lioncade/utilities/generic_functions.dart';
+import 'package:lioncade/widgets/dialogs/emulators_list_dialog.dart';
+import 'package:lioncade/widgets/dialogs/import_dialog.dart';
+import 'package:lioncade/widgets/dialogs/settings_dialog.dart';
 import '../models/api.dart';
 
 MaterialStateProperty<Color?> myColor =
@@ -36,7 +36,7 @@ class MyMenuBar extends StatelessWidget {
       name: '',
       url: '',
     );
-    dynamic apiKeyValue = null;
+    dynamic apiKeyValue;
     //If the api found is not null, I simply import the games with the data from the DB.
     if (Constants.foundApiBeforeImport != null) {
       api.name = Constants.foundApiBeforeImport!.name;
@@ -45,7 +45,7 @@ class MyMenuBar extends StatelessWidget {
     }
     switch (st) {
       case PlatformStore.Steam:
-        dynamic steamIdValue = null;
+        dynamic steamIdValue;
         //If data is null, it means that the api data already exists.
         if (data.isEmpty) {
           //Only adds the SteamID case for Steam Platform
@@ -53,7 +53,6 @@ class MyMenuBar extends StatelessWidget {
               Constants.foundApiBeforeImport!.getMetadata()['steamId'];
         } //If not, create api data from zero
         else {
-          //print("prueba");
           api.name = 'Steam';
           api.url =
               'https://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=';
@@ -68,11 +67,9 @@ class MyMenuBar extends StatelessWidget {
         }
         //appState.startImporting();
         dioClient
-            .getAndImportSteamGames(key: apiKeyValue, steamId: steamIdValue)
+            .getAndImportSteamGames(key: apiKeyValue, steamId: steamIdValue, appState: appState)
             .then((_) {
-          appState.setImportingState('finished');
-          // El método getAndImportSteamGames se ha completado exitosamente
-          // Aquí puedes realizar cualquier acción adicional con los datos obtenidos
+          //appState.setImportingState('finished');
         }).catchError((error) {
           // Ocurrió un error al llamar al método getAndImportSteamGames
           // Aquí puedes manejar el error de acuerdo a tus necesidades
@@ -80,8 +77,6 @@ class MyMenuBar extends StatelessWidget {
         break;
       default:
     }
-    // O llamar a otra función para procesar los datos
-    // processCollectedData(data);
   }
 
   @override
@@ -123,10 +118,10 @@ class MyMenuBar extends StatelessWidget {
                         child: const MenuAcceleratorLabel('&Open'),
                       ),
                     ],
-                    child: MenuAcceleratorLabel('&' + appLocalizations.file),
+                    child: MenuAcceleratorLabel('&${appLocalizations.file}'),
                   ),
                 ],
-                child: MenuAcceleratorLabel('&' + appLocalizations.menu),
+                child: MenuAcceleratorLabel('&${appLocalizations.menu}'),
               ),
               SubmenuButton(
                 menuChildren: <Widget>[
@@ -451,6 +446,7 @@ class MyMenuBar extends StatelessWidget {
                         onPressed: () async {
                           await databaseFunctions
                               .insertEmulators(Constants.emulatorsList);
+                          // ignore: use_build_context_synchronously
                           showDialog(
                             context: context,
                             barrierDismissible: false,
@@ -483,10 +479,10 @@ class MyMenuBar extends StatelessWidget {
                       );
                     },
                     child:
-                        MenuAcceleratorLabel('&' + appLocalizations.settings),
+                        MenuAcceleratorLabel('&${appLocalizations.settings}'),
                   ),
                 ],
-                child: MenuAcceleratorLabel('&' + appLocalizations.tools),
+                child: MenuAcceleratorLabel('&${appLocalizations.tools}'),
               ),
             ],
           ),

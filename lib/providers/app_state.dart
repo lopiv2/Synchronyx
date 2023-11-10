@@ -1,10 +1,10 @@
 import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
-import 'package:synchronyx/models/event.dart';
-import 'package:synchronyx/models/global_options.dart';
-import 'package:synchronyx/models/responses/gameMedia_response.dart';
-import 'package:synchronyx/models/responses/rawg_response.dart';
-import 'package:synchronyx/models/themes.dart';
+import 'package:lioncade/models/event.dart';
+import 'package:lioncade/models/global_options.dart';
+import 'package:lioncade/models/responses/gameMedia_response.dart';
+import 'package:lioncade/models/responses/rawg_response.dart';
+import 'package:lioncade/models/themes.dart';
 
 class AppState extends ChangeNotifier {
   GameMediaResponse? selectedGame;
@@ -15,6 +15,8 @@ class AppState extends ChangeNotifier {
   List<GameMediaResponse> gamesInGrid = [];
   bool shouldRefreshGridView = false;
   String _isImporting = 'no'; //Three states, no, importing and finished
+  double importProgress = 0.0;
+  String gameBeingImported=''; //Gets the game that is being imported
   Key buttonClickedKey = const ValueKey<int>(42);
   int filterIndex =
       10; //Value to set default set selection filters when changing tables
@@ -128,6 +130,16 @@ class AppState extends ChangeNotifier {
 
   void toggleCover() {
     _isCoverRotated = !_isCoverRotated;
+    notifyListeners();
+  }
+
+  void setImportingGame(String value) {
+    gameBeingImported = value;
+    notifyListeners();
+  }
+
+  void setImportingProgress(double value) {
+    importProgress = value;
     notifyListeners();
   }
 

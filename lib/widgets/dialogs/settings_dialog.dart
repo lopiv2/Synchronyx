@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:synchronyx/models/global_options.dart';
-import 'package:synchronyx/providers/app_state.dart';
-import 'package:synchronyx/screens/options/calendar_visual_options.dart';
-import 'package:synchronyx/screens/options/game_visual_options.dart';
-import 'package:synchronyx/screens/options/theme_visual_options.dart';
-import 'package:synchronyx/utilities/audio_singleton.dart';
-import 'package:synchronyx/utilities/constants.dart';
+import 'package:lioncade/models/global_options.dart';
+import 'package:lioncade/providers/app_state.dart';
+import 'package:lioncade/screens/options/calendar_visual_options.dart';
+import 'package:lioncade/screens/options/game_visual_options.dart';
+import 'package:lioncade/screens/options/theme_visual_options.dart';
+import 'package:lioncade/utilities/audio_singleton.dart';
+import 'package:lioncade/utilities/constants.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:synchronyx/utilities/generic_database_functions.dart';
-import 'package:synchronyx/utilities/generic_functions.dart';
-import 'package:synchronyx/widgets/options_tree_view.dart';
+import 'package:lioncade/utilities/generic_database_functions.dart';
+import 'package:lioncade/utilities/generic_functions.dart';
+import 'package:lioncade/widgets/options_tree_view.dart';
 
 import 'custom_dialog.dart';
 

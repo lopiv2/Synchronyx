@@ -4,36 +4,36 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart' as provider;
 import 'package:provider/provider.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:synchronyx/models/event.dart';
-import 'package:synchronyx/models/global_options.dart';
-import 'package:synchronyx/models/responses/rawg_response.dart';
-import 'package:synchronyx/models/themes.dart';
-import 'package:synchronyx/providers/app_state.dart';
-import 'package:synchronyx/utilities/app_directory_singleton.dart';
-import 'package:synchronyx/utilities/audio_singleton.dart';
-import 'package:synchronyx/utilities/generic_database_functions.dart'
+import 'package:lioncade/models/event.dart';
+import 'package:lioncade/models/global_options.dart';
+import 'package:lioncade/models/responses/rawg_response.dart';
+import 'package:lioncade/models/themes.dart';
+import 'package:lioncade/providers/app_state.dart';
+import 'package:lioncade/utilities/app_directory_singleton.dart';
+import 'package:lioncade/utilities/audio_singleton.dart';
+import 'package:lioncade/utilities/generic_database_functions.dart'
     as database;
-import 'package:synchronyx/utilities/generic_database_functions.dart';
-import 'package:synchronyx/utilities/generic_functions.dart';
-import 'package:synchronyx/widgets/buttons/notification_button.dart';
-import 'package:synchronyx/widgets/calendar_view_events.dart';
-import 'package:synchronyx/widgets/clicked_game_favorite_view.dart';
-import 'package:synchronyx/widgets/filter_info_panel.dart';
-import 'package:synchronyx/widgets/filters/all_filter.dart';
-import 'package:synchronyx/widgets/filters/favorite_filter.dart';
-import 'package:synchronyx/widgets/filters/owned_filter.dart';
-import 'package:synchronyx/widgets/game_info_panel.dart';
-import 'package:synchronyx/widgets/game_search_results_list.dart';
-import 'package:synchronyx/widgets/grid_view_game_covers_buyable.dart';
-import 'package:synchronyx/widgets/platform_tree_view.dart';
-import 'package:synchronyx/widgets/top_menu_bar.dart';
+import 'package:lioncade/utilities/generic_database_functions.dart';
+import 'package:lioncade/utilities/generic_functions.dart';
+import 'package:lioncade/widgets/buttons/notification_button.dart';
+import 'package:lioncade/widgets/calendar_view_events.dart';
+import 'package:lioncade/widgets/clicked_game_favorite_view.dart';
+import 'package:lioncade/widgets/filter_info_panel.dart';
+import 'package:lioncade/widgets/filters/all_filter.dart';
+import 'package:lioncade/widgets/filters/favorite_filter.dart';
+import 'package:lioncade/widgets/filters/owned_filter.dart';
+import 'package:lioncade/widgets/game_info_panel.dart';
+import 'package:lioncade/widgets/game_search_results_list.dart';
+import 'package:lioncade/widgets/grid_view_game_covers_buyable.dart';
+import 'package:lioncade/widgets/platform_tree_view.dart';
+import 'package:lioncade/widgets/top_menu_bar.dart';
 import 'widgets/buttons/arcade_box_button.dart';
 import 'widgets/drop_down_filter_order_games.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
-import 'package:synchronyx/utilities/constants.dart';
+import 'package:lioncade/utilities/constants.dart';
 import 'widgets/grid_view_game_covers.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:synchronyx/utilities/generic_api_functions.dart';
+import 'package:lioncade/utilities/generic_api_functions.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -49,7 +49,7 @@ void main() async {
     win.minSize = initialSize;
     win.size = initialSize;
     win.alignment = Alignment.center;
-    win.title = "Synchronyx";
+    win.title = "Lioncade";
     win.show();
   });
 }
@@ -63,7 +63,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner:
           false, // Esta línea elimina el banner de depuración
-      title: 'Synchronyx Game Launcher',
+      title: 'Lioncade Game Launcher',
       localizationsDelegates:
           AppLocalizations.localizationsDelegates, // Cambio aquí
       supportedLocales: AppLocalizations.supportedLocales,

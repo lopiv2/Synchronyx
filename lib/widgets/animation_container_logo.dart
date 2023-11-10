@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:synchronyx/providers/app_state.dart';
+import 'package:lioncade/providers/app_state.dart';
 
 class AnimationLogoContainer extends StatelessWidget { 
   const AnimationLogoContainer({super.key});

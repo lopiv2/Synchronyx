@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:synchronyx/models/themes.dart' as Theme;
-import 'package:synchronyx/models/themes.dart';
-import 'package:synchronyx/providers/app_state.dart';
-import 'package:synchronyx/utilities/Constants.dart';
-import 'package:synchronyx/utilities/generic_database_functions.dart';
+import 'package:lioncade/models/themes.dart' as Theme;
+import 'package:lioncade/models/themes.dart';
+import 'package:lioncade/providers/app_state.dart';
+import 'package:lioncade/utilities/Constants.dart';
+import 'package:lioncade/utilities/generic_database_functions.dart';
 
 class ThemesDropdownWithTextToLeft extends StatefulWidget {
   const ThemesDropdownWithTextToLeft({

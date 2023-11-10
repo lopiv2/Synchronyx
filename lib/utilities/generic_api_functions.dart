@@ -5,19 +5,20 @@ import 'package:dio_cache_interceptor_file_store/dio_cache_interceptor_file_stor
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
-import 'package:synchronyx/icons/custom_icons_icons.dart';
-import 'package:synchronyx/models/cheapSharkStores.dart';
-import 'package:synchronyx/models/media.dart';
-import 'package:synchronyx/models/responses/cheapSharkResponse_response.dart';
-import 'package:synchronyx/models/responses/emulator_download_response.dart';
-import 'package:synchronyx/models/responses/khinsider_response.dart';
-import 'package:synchronyx/models/responses/rawg_response.dart';
-import 'package:synchronyx/models/responses/steamgriddb_response.dart';
-import 'package:synchronyx/utilities/app_directory_singleton.dart';
+import 'package:lioncade/icons/custom_icons_icons.dart';
+import 'package:lioncade/models/cheapSharkStores.dart';
+import 'package:lioncade/models/media.dart';
+import 'package:lioncade/models/responses/cheapSharkResponse_response.dart';
+import 'package:lioncade/models/responses/emulator_download_response.dart';
+import 'package:lioncade/models/responses/khinsider_response.dart';
+import 'package:lioncade/models/responses/rawg_response.dart';
+import 'package:lioncade/models/responses/steamgriddb_response.dart';
+import 'package:lioncade/providers/app_state.dart';
+import 'package:lioncade/utilities/app_directory_singleton.dart';
 import '../models/game.dart';
 import 'package:html/parser.dart' as parser;
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
-import 'package:synchronyx/utilities/generic_database_functions.dart'
+import 'package:lioncade/utilities/generic_database_functions.dart'
     // ignore: library_prefixes
     as databaseFunctions;
 import 'Constants.dart';
@@ -92,7 +93,7 @@ class DioClient {
           String lastPartFile = parts.last;
           String imageName = '${game.gameId}_$lastPartFile';
           String imageFolder =
-              '\\Synchronyx\\media\\screenshots\\${game.gameId}\\';
+              '\\Lioncade\\media\\screenshots\\${game.gameId}\\';
           processScreenshots(scData['image'], imageName, imageFolder);
           sc.add(imageName);
         }
@@ -126,12 +127,13 @@ class DioClient {
 
 /* ----------------------------- Get Steam Games ---------------------------- */
   Future<void> getAndImportSteamGames(
-      {required String key, required String steamId}) async {
+      {required AppState appState,
+      required String key,
+      required String steamId}) async {
     int requestCount = 0; //Number of request per progress bar counting
-    //Constants.initialize();
     Response userData = await _dio.get(
-        _steamApiUrl + '$key&steamid=$steamId&format=json&include_appinfo=1');
-    String jsonData = jsonEncode(userData.data);
+        '$_steamApiUrl$key&steamid=$steamId&format=json&include_appinfo=1');
+    //String jsonData = jsonEncode(userData.data);
     //print('User Info Data: $jsonData');
 
     Map<String, dynamic> responseData = userData.data;
@@ -212,8 +214,15 @@ class DioClient {
           videoUrl: videoUrl);
       await databaseFunctions.insertMedia(mediaInsert, gameInsert);
 
-      updateProgress(requestCount, gamesList.length);
-      if (requestCount > 5) break;
+      //updateProgress(appState,requestCount, gamesList.length);
+      updateProgress(appState, requestCount, 2, name);
+      await Future.delayed(const Duration(seconds: 2));
+      if (requestCount > 1) {
+        appState.setImportingState('finished');
+        appState.setImportingGame('');
+        appState.setImportingProgress(0);
+        break;
+      }
     }
   }
 
@@ -374,42 +383,42 @@ class DioClient {
     //print(mediaInfo?.name);
     switch (mediaType) {
       case "cover":
-        imageFolder = '\\Synchronyx\\media\\frontCovers\\';
+        imageFolder = '\\Lioncade\\media\\frontCovers\\';
         //Delete file before download a new one
         if (mediaInfo != null) {
           deleteFile(mediaInfo.coverImageUrl);
         }
         break;
       case "icon":
-        imageFolder = '\\Synchronyx\\media\\icons\\';
+        imageFolder = '\\Lioncade\\media\\icons\\';
         //Delete file before download a new one
         if (mediaInfo != null) {
           deleteFile(mediaInfo.iconUrl);
         }
         break;
       case "marquee":
-        imageFolder = '\\Synchronyx\\media\\marquees\\';
+        imageFolder = '\\Lioncade\\media\\marquees\\';
         //Delete file before download a new one
         if (mediaInfo != null) {
           deleteFile(mediaInfo.marqueeUrl);
         }
         break;
       case "background":
-        imageFolder = '\\Synchronyx\\media\\backgrounds\\';
+        imageFolder = '\\Lioncade\\media\\backgrounds\\';
         //Delete file before download a new one
         if (mediaInfo != null) {
           deleteFile(mediaInfo.backgroundImageUrl);
         }
         break;
       case "logo":
-        imageFolder = '\\Synchronyx\\media\\logos\\';
+        imageFolder = '\\Lioncade\\media\\logos\\';
         //Delete file before download a new one
         if (mediaInfo != null) {
           deleteFile(mediaInfo.logoUrl);
         }
         break;
       case "event":
-        imageFolder = '\\Synchronyx\\media\\events\\';
+        imageFolder = '\\Lioncade\\media\\events\\';
         //Delete file before download a new one
         /*if (mediaInfo != null) {
           deleteFile(mediaInfo.marqueeUrl);
@@ -971,7 +980,7 @@ class DioClient {
           List<String> parts = scData['image'].split('/');
           String lastPartFile = parts.last;
           String imageName = '${id}_$lastPartFile';
-          String imageFolder = '\\Synchronyx\\media\\screenshots\\$id\\';
+          String imageFolder = '\\Lioncade\\media\\screenshots\\$id\\';
           processScreenshots(scData['image'], imageName, imageFolder);
           sc.add(imageName);
         }

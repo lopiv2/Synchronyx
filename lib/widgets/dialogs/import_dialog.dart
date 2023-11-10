@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:synchronyx/providers/app_state.dart';
-import 'package:synchronyx/utilities/constants.dart';
+import 'package:lioncade/providers/app_state.dart';
+import 'package:lioncade/utilities/constants.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:synchronyx/utilities/generic_functions.dart';
+import 'package:lioncade/utilities/generic_functions.dart';
 
 class ImportDialog extends StatefulWidget {
   final IconData titleIcon;
@@ -66,7 +66,8 @@ class _ImportDialogState extends State<ImportDialog> {
                 child: Column(
                   children: [
                     AppBar(
-                      backgroundColor: hexToColor(appState.themeApplied.sideBarColor),
+                      backgroundColor:
+                          hexToColor(appState.themeApplied.sideBarColor),
                       elevation: 0.0,
                       toolbarHeight: 35.0,
                       titleSpacing: -20.0,
@@ -88,6 +89,9 @@ class _ImportDialogState extends State<ImportDialog> {
                       actions: [
                         IconButton(
                           onPressed: () {
+                            appState.setImportingState('no');
+                            appState.setImportingGame('');
+                            appState.setImportingProgress(0);
                             Navigator.of(context).pop();
                           },
                           icon: const Icon(Icons.close),
@@ -138,6 +142,9 @@ class _ImportDialogState extends State<ImportDialog> {
                             const SizedBox(width: 8),
                             ElevatedButton(
                               onPressed: () {
+                                appState.setImportingState('no');
+                                appState.setImportingGame('');
+                                appState.setImportingProgress(0);
                                 Navigator.of(context).pop();
                               },
                               style: ElevatedButton.styleFrom(
@@ -157,6 +164,9 @@ class _ImportDialogState extends State<ImportDialog> {
                             // Resets Static vars for avoiding garbage in memory
                             Constants.foundApiBeforeImport = null;
                             Constants.controllerMapList = [];
+                            appState.setImportingState('no');
+                            appState.setImportingGame('');
+                            appState.setImportingProgress(0);
                             Navigator.of(context).pop();
                           },
                           child: Text(widget.appLocalizations.finish),

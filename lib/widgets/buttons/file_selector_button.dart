@@ -1,7 +1,7 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:synchronyx/providers/app_state.dart';
+import 'package:lioncade/providers/app_state.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class FileSelectorButton extends StatefulWidget {

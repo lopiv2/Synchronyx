@@ -2,11 +2,11 @@ import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:synchronyx/models/event.dart';
-import 'package:synchronyx/providers/app_state.dart';
-import 'package:synchronyx/utilities/generic_database_functions.dart';
-import 'package:synchronyx/utilities/generic_functions.dart';
-import 'package:synchronyx/widgets/custom_calendar_cell.dart';
+import 'package:lioncade/models/event.dart';
+import 'package:lioncade/providers/app_state.dart';
+import 'package:lioncade/utilities/generic_database_functions.dart';
+import 'package:lioncade/utilities/generic_functions.dart';
+import 'package:lioncade/widgets/custom_calendar_cell.dart';
 
 class CalendarViewEvents extends StatelessWidget {
   final EventController controller;

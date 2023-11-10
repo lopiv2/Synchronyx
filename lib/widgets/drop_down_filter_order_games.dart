@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:synchronyx/providers/app_state.dart';
+import 'package:lioncade/providers/app_state.dart';
 
 import '../utilities/constants.dart';
 

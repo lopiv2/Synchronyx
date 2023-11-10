@@ -1,4 +1,4 @@
-# synchronyx
+# lioncade
 
 A new Flutter project.
 

@@ -4,15 +4,15 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-import 'package:synchronyx/models/emulators.dart';
-import 'package:synchronyx/models/event.dart';
-import 'package:synchronyx/models/global_options.dart';
-import 'package:synchronyx/models/responses/gameMedia_response.dart';
-import 'package:synchronyx/models/media.dart';
-import 'package:synchronyx/models/themes.dart';
-import 'package:synchronyx/utilities/app_directory_singleton.dart';
+import 'package:lioncade/models/emulators.dart';
+import 'package:lioncade/models/event.dart';
+import 'package:lioncade/models/global_options.dart';
+import 'package:lioncade/models/responses/gameMedia_response.dart';
+import 'package:lioncade/models/media.dart';
+import 'package:lioncade/models/themes.dart';
+import 'package:lioncade/utilities/app_directory_singleton.dart';
 import '../models/api.dart';
-import 'package:synchronyx/utilities/constants.dart';
+import 'package:lioncade/utilities/constants.dart';
 import '../models/game.dart';
 import 'generic_functions.dart';
 
@@ -26,7 +26,7 @@ Future<Database?> openExistingDatabase() async {
     return Constants.database;
   }
   var databasesPath = await getDatabasesPath();
-  String path = join(databasesPath, 'synchronyx.db');
+  String path = join(databasesPath, 'lioncade.db');
   var exists = await databaseExists(path);
 
   // Open database if not already open
@@ -42,8 +42,8 @@ Future<Database?> createAndOpenDB() async {
     databaseFactory = databaseFactoryFfi;
   }
   var databasesPath = await getDatabasesPath();
-  //Ruta: Synchronyx\synchronyx\.dart_tool\sqflite_common_ffi\databases
-  String path = join(databasesPath, 'synchronyx.db');
+  //Ruta: Lioncade\lioncade\.dart_tool\sqflite_common_ffi\databases
+  String path = join(databasesPath, 'lioncade.db');
   var exists = await databaseExists(path);
 
   try {
@@ -51,7 +51,7 @@ Future<Database?> createAndOpenDB() async {
       await Directory(dirname(path)).create(recursive: true);
 
       var data =
-          await rootBundle.load(join('assets/database/', 'synchronyx.db'));
+          await rootBundle.load(join('assets/database/', 'lioncade.db'));
       List<int> bytes = data.buffer.asUint8List(
         data.offsetInBytes,
         data.lengthInBytes,
@@ -463,8 +463,8 @@ Future<void> deleteMediaByName(GameMediaResponse game) async {
   //Deleting screenshots folder
   List<String> fileNames = game.media.screenshots.split(',');
   String id = fileNames[0].split('_')[0]; //Game ID according to Steam
-  String folder = '\\Synchronyx\\media\\screenshots\\$id\\';
-  String aFolder = '\\Synchronyx\\media\\audio\\$id\\';
+  String folder = '\\Lioncade\\media\\screenshots\\$id\\';
+  String aFolder = '\\Lioncade\\media\\audio\\$id\\';
   String screenFolder =
       '${AppDirectories.instance.appDocumentsDirectory.path}$folder';
   String audioFolder =

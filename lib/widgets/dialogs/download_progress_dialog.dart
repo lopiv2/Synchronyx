@@ -4,9 +4,9 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:synchronyx/providers/app_state.dart';
-import 'package:synchronyx/utilities/Constants.dart';
-import 'package:synchronyx/utilities/app_directory_singleton.dart';
+import 'package:lioncade/providers/app_state.dart';
+import 'package:lioncade/utilities/Constants.dart';
+import 'package:lioncade/utilities/app_directory_singleton.dart';
 
 class DownloadProgress extends StatefulWidget {
   const DownloadProgress({Key? key});
@@ -74,7 +74,7 @@ class _DownloadProgressState extends State<DownloadProgress> {
   Future<void> _downloadFile(BuildContext context, String url) async {
     final appState = Provider.of<AppState>(context, listen: false);
     final dio = Dio();
-    String folder = '\\Synchronyx\\downloads\\';
+    String folder = '\\Lioncade\\downloads\\';
     List<String> parts = url.split("/");
     String fileName = parts.last;
     //await Constants.initialize();

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_fancy_tree_view/flutter_fancy_tree_view.dart';
 import 'package:provider/provider.dart';
-import 'package:synchronyx/providers/app_state.dart';
-import 'package:synchronyx/widgets/options_tile_view.dart';
+import 'package:lioncade/providers/app_state.dart';
+import 'package:lioncade/widgets/options_tile_view.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../models/Options.dart';
 

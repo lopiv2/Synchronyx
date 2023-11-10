@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
-import 'package:synchronyx/models/event.dart';
-import 'package:synchronyx/utilities/generic_functions.dart';
+import 'package:lioncade/models/event.dart';
+import 'package:lioncade/utilities/generic_functions.dart';
 
 class CustomCalendarCell<T extends Object?> extends StatelessWidget {
   /// Date of current cell.

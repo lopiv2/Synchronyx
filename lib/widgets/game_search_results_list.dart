@@ -1,9 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:synchronyx/models/responses/rawg_response.dart';
-import 'package:synchronyx/providers/app_state.dart';
-import 'package:synchronyx/widgets/buttons/text_button_colored.dart';
+import 'package:lioncade/models/responses/rawg_response.dart';
+import 'package:lioncade/providers/app_state.dart';
+import 'package:lioncade/widgets/buttons/text_button_colored.dart';
 
 class RawgResponseListWidget extends StatelessWidget {
   final List<RawgResponse> rawgResponses;

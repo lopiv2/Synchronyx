@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:synchronyx/providers/app_state.dart';
+import 'package:lioncade/providers/app_state.dart';
 import '../models/game.dart';
 import '../models/responses/gameMedia_response.dart';
 import '../models/media.dart';
 import 'image_cover_model.dart';
-import 'package:synchronyx/utilities/generic_database_functions.dart'
+import 'package:lioncade/utilities/generic_database_functions.dart'
     as database_functions;
 
 class GridViewGameCovers extends StatelessWidget {
@@ -35,6 +35,7 @@ class GridViewGameCovers extends StatelessWidget {
           return const Text('');
         } else {
           List<Game> listOfGames = snapshot.data!;
+          listOfGames.sort((a, b) => a.title.compareTo(b.title));
           return FutureBuilder<List<Container>>(
             future: _buildGridTileList(context, listOfGames),
             builder: (context, containerSnapshot) {
