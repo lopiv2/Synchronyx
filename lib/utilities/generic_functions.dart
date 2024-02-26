@@ -11,7 +11,7 @@ import 'package:lioncade/models/emulators.dart';
 import 'package:lioncade/models/responses/emulator_download_response.dart';
 import 'package:lioncade/utilities/app_directory_singleton.dart';
 import 'package:lioncade/utilities/generic_api_functions.dart';
-import 'Constants.dart';
+import 'package:win32_registry/win32_registry.dart';
 
 /* -------------------- Converts a color from ARGB to Hex ------------------- */
 String colorToHex(Color color) {
@@ -22,7 +22,8 @@ String colorToHex(Color color) {
 Color hexToColor(String code) {
   code = code.replaceAll("#", "");
   if (code.length == 6) {
-    code = "FF" + code; // Añade el valor alfa (alpha) FF si no está presente en el código hexadecimal
+    code = "FF" +
+        code; // Añade el valor alfa (alpha) FF si no está presente en el código hexadecimal
   }
   int value = int.parse(code, radix: 16);
   return Color(value);
@@ -32,7 +33,8 @@ Color hexToColor(String code) {
 Color hexToColorWithAlpha(String code, int alpha) {
   code = code.replaceAll("#", "");
   int value = int.parse(code, radix: 16);
-  return Color.fromARGB(alpha, value >> 16 & 0xFF, value >> 8 & 0xFF, value & 0xFF);
+  return Color.fromARGB(
+      alpha, value >> 16 & 0xFF, value >> 8 & 0xFF, value & 0xFF);
 }
 
 /* ----Choose a text color depending on the background color, to make it stand out. */
@@ -138,7 +140,10 @@ Future<Color> detectDominantColor(String imageUrl) async {
   final double right = centerX + (regionSize / 2);
   final double bottom = centerY + (regionSize / 2);
 
-  if (left < 0 || top < 0 || right > decodedImage.width || bottom > decodedImage.height) {
+  if (left < 0 ||
+      top < 0 ||
+      right > decodedImage.width ||
+      bottom > decodedImage.height) {
     // Asegurarse de que la región no se encuentre fuera de los límites de la imagen.
     return Colors.white; // Color predeterminado en caso de error.
   }
@@ -197,6 +202,32 @@ Future<void> checkAssetLoading(String assetPath) async {
     }
   } catch (error) {
     print('Error al cargar el asset: $error');
+  }
+}
+
+/* ------------------ Check if app is installed in Registry ----------------- */
+
+Future<bool> checkIfAppInstalled(String appName) async {
+  bool isInstalled = false;
+  try {
+    var keyPath =
+        r'Software\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\' +
+            appName;
+    final key = Registry.openPath(RegistryHive.localMachine, path: keyPath);
+
+    final keyValue = key.getValueAsString('DisplayName');
+
+    if (keyValue != '') {
+      print('The application is installed');
+      isInstalled = true;
+    } else {
+      print('The application is not installed');
+      isInstalled = false;
+    }
+    key.close();
+    return isInstalled;
+  } catch (e) {
+    return false;
   }
 }
 
@@ -418,7 +449,8 @@ Future<List<EmulatorDownloadResponse>> selectEmulatorScrapper(
 }
 
 /* ----------------------- Updates progress bar value ----------------------- */
-void updateProgress(AppState appState, int currentCount, int totalGames, String name) {
+void updateProgress(
+    AppState appState, int currentCount, int totalGames, String name) {
   double progress = currentCount / totalGames;
   appState.setImportingProgress(progress);
   appState.setImportingGame(name);

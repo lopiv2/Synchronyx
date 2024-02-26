@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lioncade/screens/steam/uplay_import_steps.dart';
 import 'package:provider/provider.dart';
 import 'package:lioncade/icons/custom_icons_icons.dart';
 import 'package:lioncade/providers/app_state.dart';
@@ -369,9 +370,9 @@ class MyMenuBar extends StatelessWidget {
                                 title: appLocalizations.importUplayWindowTitle,
                                 steps: [
                                   // Aquí colocas los widgets que representan el contenido de cada paso
-                                  SteamImportSteps.step1(appLocalizations),
-                                  //SteamImportSteps.step2(appLocalizations),
-                                  //SteamImportSteps.step3(appLocalizations),
+                                  UplayImportSteps.step1(appLocalizations),
+                                  UplayImportSteps.step2(appLocalizations, appState.showLoadingCircleProgress),
+                                  UplayImportSteps.step3(appLocalizations),
                                 ],
                               );
                             },

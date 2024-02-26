@@ -22,6 +22,7 @@ class AppState extends ChangeNotifier {
       10; //Value to set default set selection filters when changing tables
   String get isImporting => _isImporting;
   int clickedElementIndex = 0;
+  bool showLoadingCircleProgress=false;
   List<bool> elementsAnimations = [];
   bool _isCoverRotated = false;
   bool get isCoverRotated => _isCoverRotated;
@@ -52,6 +53,15 @@ class AppState extends ChangeNotifier {
   void addEvent(CalendarEventData event) {
     events.add(event);
     eventController.add(event);
+    notifyListeners();
+  }
+
+  void updateTimer(){
+    showLoadingCircleProgress=true;
+    Future.delayed(Duration(seconds: 3), () {
+      // Oculta el CircularProgress
+      showLoadingCircleProgress=false;
+    });
     notifyListeners();
   }
 
