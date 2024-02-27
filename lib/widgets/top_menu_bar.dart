@@ -68,13 +68,19 @@ class MyMenuBar extends StatelessWidget {
         }
         //appState.startImporting();
         dioClient
-            .getAndImportSteamGames(key: apiKeyValue, steamId: steamIdValue, appState: appState)
+            .getAndImportSteamGames(
+                key: apiKeyValue, steamId: steamIdValue, appState: appState)
             .then((_) {
           //appState.setImportingState('finished');
         }).catchError((error) {
           // Ocurrió un error al llamar al método getAndImportSteamGames
           // Aquí puedes manejar el error de acuerdo a tus necesidades
         });
+        break;
+      case PlatformStore.Uplay:
+        if (appState.launcherLocation != null) {
+          print(appState.launcherLocation! + 'cache\\configuration');
+        }
         break;
       default:
     }
@@ -371,8 +377,12 @@ class MyMenuBar extends StatelessWidget {
                                 steps: [
                                   // Aquí colocas los widgets que representan el contenido de cada paso
                                   UplayImportSteps.step1(appLocalizations),
-                                  UplayImportSteps.step2(appLocalizations, appState.showLoadingCircleProgress),
-                                  UplayImportSteps.step3(appLocalizations),
+                                  UplayImportSteps.step2(appLocalizations),
+                                  UplayImportSteps.step3(
+                                      appLocalizations,
+                                      (data, st) => _handleLastStepFinish(
+                                          data, st, appState),
+                                      store)
                                 ],
                               );
                             },

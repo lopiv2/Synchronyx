@@ -21,6 +21,7 @@ class UplayImportSteps extends StatefulWidget {
   final Widget content;
   final AppLocalizations? appLocalizations;
   final Function(String)? onTextFieldSubmitted;
+  final BuildContext? context;
 
   static Map<String, dynamic> _collectDataFromControllers() {
     Map<String, dynamic> collectedData = {};
@@ -43,6 +44,7 @@ class UplayImportSteps extends StatefulWidget {
     required this.content,
     this.appLocalizations,
     this.onTextFieldSubmitted,
+    this.context,
   }) : super(key: key);
 
   factory UplayImportSteps.step1(AppLocalizations appLocalizations) {
@@ -56,162 +58,85 @@ class UplayImportSteps extends StatefulWidget {
   }
 
 //UPlay installed or not
-  factory UplayImportSteps.step2(
-    AppLocalizations appLocalizations,
-    bool showLoadingCircleProgress
-  ) {
+  factory UplayImportSteps.step2(AppLocalizations appLocalizations) {
     TextEditingController steamIdController = TextEditingController();
-
+    bool isAppInstalled = false;
     // Función asincrónica para realizar la comprobación
     return UplayImportSteps(
-      content: FutureBuilder<bool>(
-        future: checkIfAppInstalled("Uplay"),
-        builder: (context, snapshot) {
-          {
-            if (snapshot.connectionState == ConnectionState.waiting || showLoadingCircleProgress) {
-              // Muestra el indicador de carga mientras se realiza la comprobación
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            } else {
-              if (snapshot.hasError) {
-                // Maneja errores si ocurren durante la comprobación
-                return Text('Error: ${snapshot.error}');
-              } else {
-                // Si la comprobación se realizó con éxito, muestra el resultado
-                bool isAppInstalled = snapshot.data ?? false;
-                return Container(
-                  alignment: Alignment.centerLeft,
-                  padding: const EdgeInsets.only(left: 40, top: 10, right: 10),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        appLocalizations.uplayWindowAssistantTitleStep2,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      Text(
-                        appLocalizations.uplayWindowAssistantStep2,
-                        style: const TextStyle(fontSize: 14),
-                      ),
-                      const SizedBox(height: 40),
-                      Row(
-                        children: [
-                          isAppInstalled
-                              ? Text('La aplicación está instalada')
-                              : Text('La aplicación no está instalada'),
-                          Expanded(
-                            child: SizedBox(
-                              height: 30,
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 8,
-                                  vertical: 8,
-                                ),
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                    color: Colors.grey,
-                                    width: 1.0,
-                                  ),
-                                  borderRadius: BorderRadius.circular(4),
-                                ),
-                                child: TextField(
-                                  controller: steamIdController,
-                                  enabled: true,
-                                  enableInteractiveSelection: true,
-                                  style: const TextStyle(color: Colors.white),
-                                  onSubmitted: (value) {},
-                                  // Add properties to the TextField as needed
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                );
-              }
-            }
-          }
-        },
-      ),
-      appLocalizations: appLocalizations,
-    );
-  }
-
-//API key
-  factory UplayImportSteps.step3(AppLocalizations appLocalizations) {
-    TextEditingController steamApiController = TextEditingController();
-    Map<String, TextEditingController> controller2Map = {
-      'steamApiController': steamApiController,
-    };
-    Constants.controllerMapList.add(controller2Map);
-    return UplayImportSteps(
-      content: Container(
-        alignment: Alignment.centerLeft,
-        padding: const EdgeInsets.only(left: 40, top: 10, right: 10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              appLocalizations.steamWindowAssistantTitleStep3,
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 20),
-            const Text("57FE16708AA112A68828C14A7469D21E"),
-            const SizedBox(height: 20),
-            Text(
-              appLocalizations.steamWindowAssistantStep3,
-              style: const TextStyle(fontSize: 14),
-            ),
-            const SizedBox(height: 40),
-            Row(
-              children: [
-                Text(
-                  appLocalizations.apiKeyText,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: Color.fromARGB(255, 235, 235, 235),
-                  ),
-                ),
-                Expanded(
-                  child: SizedBox(
-                    height: 30,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 8,
-                      ),
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Colors.grey,
-                          width: 1.0,
-                        ),
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      child: TextField(
-                        controller: steamApiController,
-                        style: const TextStyle(color: Colors.white),
-                        onSubmitted: (value) {},
+      content: Consumer<AppState>(builder: (context, appState, _) {
+        return FutureBuilder<Map<String, dynamic>?>(
+            future: checkIfAppInstalled("Uplay", 3),
+            builder: (context, snapshot) {
+              {
+                isAppInstalled = snapshot.data?['isInstalled'] ?? false;
+                appState.launcherLocation = snapshot.data?['location'];
+                //print(appState.launcherLocation);
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      appLocalizations.uplayWindowAssistantTitleStep2,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
+                    const SizedBox(height: 20),
+                    Text(
+                      appLocalizations.uplayWindowAssistantStep2,
+                      style: const TextStyle(fontSize: 14),
+                    ),
+                    const SizedBox(height: 40),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        snapshot.connectionState == ConnectionState.waiting
+                            ? const Center(
+                                child: CircularProgressIndicator(),
+                              )
+                            : snapshot.hasError
+                                ?
+                                // Maneja errores si ocurren durante la comprobación
+                                Text('Error: ${snapshot.error}')
+                                : isAppInstalled
+                                    ? Column(
+                                        children: [
+                                          Text(
+                                            appLocalizations.appInstalled,
+                                            style: const TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                const SizedBox(height: 20),
+                                                Text(
+                                                  appLocalizations
+                                                      .nextForContinue,
+                                                  style: const TextStyle(
+                                                      fontSize: 14),
+                                                ),
+                                              ])
+                                        ],
+                                      )
+                                    : Text(appLocalizations.appNotInstalled,
+                                        style: const TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold)),
+                      ],
+                    ),
+                  ],
+                );
+              }
+            });
+      }),
       appLocalizations: appLocalizations,
     );
   }
 
-  factory UplayImportSteps.step4(
+  factory UplayImportSteps.step3(
     AppLocalizations appLocalizations,
     OnFinishCallback onFinish,
     PlatformStore selectedPlatform,
@@ -232,7 +157,7 @@ class UplayImportSteps extends StatefulWidget {
                 ),
                 const SizedBox(height: 20),
                 Text(
-                  appLocalizations.steamWindowAssistantStep4,
+                  appLocalizations.uplayWindowAssistantStep4,
                   style: const TextStyle(fontSize: 14),
                 ),
                 const SizedBox(height: 40),
@@ -243,7 +168,7 @@ class UplayImportSteps extends StatefulWidget {
                       onPressed: () async {
                         Map<String, dynamic> collectedData =
                             _collectDataFromControllers();
-                        onFinish(collectedData, PlatformStore.Steam);
+                        onFinish(collectedData, PlatformStore.Uplay);
                         appState.setImportingState('importing');
                         await Future.delayed(const Duration(seconds: 1));
                       },
@@ -305,7 +230,6 @@ class LinearProgressWidget extends StatelessWidget {
 }
 
 class _UplayImportStepsState extends State<UplayImportSteps> {
-
   @override
   void initState() {
     super.initState();

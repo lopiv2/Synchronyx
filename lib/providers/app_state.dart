@@ -15,6 +15,7 @@ class AppState extends ChangeNotifier {
   List<GameMediaResponse> gamesInGrid = [];
   bool shouldRefreshGridView = false;
   String _isImporting = 'no'; //Three states, no, importing and finished
+  String? launcherLocation=''; //The location of the launcher to import its games
   double importProgress = 0.0;
   String gameBeingImported=''; //Gets the game that is being imported
   Key buttonClickedKey = const ValueKey<int>(42);
@@ -22,7 +23,6 @@ class AppState extends ChangeNotifier {
       10; //Value to set default set selection filters when changing tables
   String get isImporting => _isImporting;
   int clickedElementIndex = 0;
-  bool showLoadingCircleProgress=false;
   List<bool> elementsAnimations = [];
   bool _isCoverRotated = false;
   bool get isCoverRotated => _isCoverRotated;
@@ -53,15 +53,6 @@ class AppState extends ChangeNotifier {
   void addEvent(CalendarEventData event) {
     events.add(event);
     eventController.add(event);
-    notifyListeners();
-  }
-
-  void updateTimer(){
-    showLoadingCircleProgress=true;
-    Future.delayed(Duration(seconds: 3), () {
-      // Oculta el CircularProgress
-      showLoadingCircleProgress=false;
-    });
     notifyListeners();
   }
 
